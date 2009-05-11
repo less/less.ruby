@@ -1,0 +1,46 @@
+// LESS
+// the main color
+@base-color: #fff;
+@darker-color: @base-color / 2;
+
+.dookoo {
+    @fa: orange;
+    color: @fa;
+}
+.alt {
+    @base-color: green;
+    @darker-color: @base-color / 2;
+    @another-color: * > @base-color; // #fff 
+}
+.altfoo { color: .alt > @base-color; }
+.foo { border: 1px solid black; color: @base-color; }
+
+#content {    
+    font-size: 12px;
+    @some-color: blue;    
+    #header {        
+        .foo;
+        font-size: * 2;    
+    }
+    #main-page {
+        .small;
+    }    
+    .small {       
+         color: @base-color;        
+         font-size: / 2;    
+         .hover_controls {
+             display: none;
+             color: #content > @some-color;
+             border: 1px solid #content > @some-color; // hard to parse!!!
+         }
+    }
+    .small:hover {
+        background-color: #eee + #content > @some-color;
+        .hover_controls {
+            display: inline-block;
+        }
+    }
+}
+.sidebar {
+    #content > .small; // invoke through hierarchy
+}
