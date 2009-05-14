@@ -10,7 +10,7 @@
 .alt {
     @base-color: green;
     @darker-color: @base-color / 2;
-    @another-color: * > @base-color; // #fff 
+    @another-color: * > @base-color;
 }
 .altfoo { color: .alt > @base-color; }
 .foo { border: 1px solid black; color: @base-color; }
@@ -23,24 +23,26 @@
         font-size: * 2;    
     }
     #main-page {
-        .small;
+        #content > .small;
     }    
     .small {       
          color: @base-color;        
          font-size: / 2;    
          .hover_controls {
+            line-height: 16px;
              display: none;
              color: #content > @some-color;
-             border: 1px solid #content > @some-color; // hard to parse!!!
+             border: 1px solid #fff;
          }
     }
     .small:hover {
         background-color: #eee + #content > @some-color;
         .hover_controls {
+            .dookoo;
             display: inline-block;
         }
     }
 }
 .sidebar {
-    #content > .small; // invoke through hierarchy
+    #content > .small;
 }

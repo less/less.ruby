@@ -24,21 +24,32 @@ module Less
       # in the appropriate data structure in that branch. The declaration itself
       # can then be deleted.
       #
-      @tree = @tree.traverse do |key, value, path, node|
+      @tree = @tree.traverse :leaf do |key, value, path, node|
         matched = if match = key.match( REGEXP[:variable] )
           node[:variables] ||= {}
           node[:variables][ match.captures.first ] = value
         elsif value == :mixin
-          node[:mixins] ||= []
+          node[:mixins] ||= []          
           node[:mixins] << key
         end
         node.delete key if matched # Delete the property if it's LESS-specific
       end
       
       #
-      # Evaluate the variables and mixins
+      # Evaluate mixins
       #
-      @tree = @tree.traverse do |key, value, path, node|
+      @tree = @tree.traverse :branch do |path, node|
+        if node.include? :mixins
+          node[:mixins].each do |m|
+            @tree.find( :mixin, m.delete(' ').split('>') ).each {|k, v| node[ k ] = v }
+          end
+        end
+      end
+      
+      #
+      # Evaluate the variables
+      #
+      @tree = @tree.traverse :leaf do |key, value, path, node|
         convert = ->( key, value, node ) do # We declare this as a lambda, for re-use
           if value.is_a?(String) && value.include?('@') # There's a var to evaluate        
             
@@ -47,7 +58,7 @@ module Less
             var = unless var.include? '>'
               node.var( var ) || @tree.var( var ) # Try local first, then global
             else
-              @tree.find var.split('>')           # Try finding it in a specific namespace
+              @tree.find :var, var.split('>')           # Try finding it in a specific namespace
             end
           
             if var
@@ -68,7 +79,7 @@ module Less
           end
         end
       end
-      
+            
       @tree.to_css
     end
     alias render compile
@@ -89,13 +100,13 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hsh = self.gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",')  # Properties
-                .gsub(/\}/, "},")                                                       # Closing }
-                .gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {') # Selectors
-                .gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                          # Mixins
-                .gsub("\n\n", "\n")                                                     # New-lines
-                .gsub(/\/\/.*\n/, '')                                                   # Comments
-      eval "{" + hsh + "}"                                                              # Return {hash}
+      hash = self.gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",')  # Properties
+                 .gsub(/\}/, "},")                                                       # Closing }
+                 .gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {') # Selectors
+                 .gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                          # Mixins
+                 .gsub("\n\n", "\n")                                                     # New-lines
+                 .gsub(/\/\/.*\n/, '')                                                   # Comments
+      eval "{" + hash + "}"                                                              # Return {hash}
     end
     
   end
@@ -117,25 +128,19 @@ module Less
       self[:variables] ? self[:variables] : nil
     end
     
-    def find path
-    #
-    # Find a variable in the tree, given a path such as ["#header", ".title", "var"]
-    #
-      if path.size == 1                                # We arrived at the end of the path (the variable)
-        self.var path.join                             # Return the value of the variable
-      else
-        self.each do |key, value|                   
-          if path.first == key && value.is_a?(Hash)    # Have we found our selector?
-            value.to_tree.find path[1..-1]             # Convert the hash to a Tree and recurse,
-          end                                          # dropping the first element of the path
+    def find what = :var, path
+      path.inject(self) do |branch, k|        
+        if what == :var && k == path.last
+          branch[:variables][ k ]
+        else
+          branch = branch[ k ]
         end
-        nil                                            # Nothing was found, return nil
       end
     end
     
-    def traverse path = [], &blk
+    def traverse by = :leaf, path = [], &blk
     #
-    # Traverse the whole tree, returning each leaf (recursive)
+    # Traverse the whole tree, returning each leaf or branch (recursive)
     #
     ###
       #   Aside from the key & value, 
@@ -143,24 +148,26 @@ module Less
       #   the branch which contains it (self).
       #
       self.each do |key, value|                        # `self` is the current node, starting with the trunk
-        if value.is_a?(Hash) && key != :variables      # If the node is a branch, we can go deeper
+        if value.is_a? Hash and key != :variables      # If the node is a branch, we can go deeper
           path << key                                  # Add the current branch to the path
           self[ key ] = value.to_tree.                 # Make sure any change is saved to the main tree
-                        traverse path, &blk            # Recurse, with the current node becoming `self`
-        elsif key == :mixins                       
-          next
-        elsif key == :variables
-          next
+                        traverse by, path, &blk        # Recurse, with the current node becoming `self`
+          if by == :branch             
+            yield path, self[ key ]                    # The node is a branch, yield it to the block
+            path.pop
+          end
+        elsif by == :leaf and key.is_a? String
+          yield key, value, path, self                 # The node is a leaf, yield it to the block
+          path.pop
         else
-          yield key, value, path, self                 # The node is a leaf, so yield it to the block
+          next
         end
       end
-      path.pop                                         # We're coming out of a branch, so drop the last element
       self
     end
-    
+
     def to_css css = []
-      self.traverse do |key, value, path, node|
+      self.traverse :branch do |path, node|
         properties = node.inject("") do |s, (k, v)|          
           v.is_a?(String) ? (s + "#{k}: #{v}; ") : s   # Add the property to the list
         end
