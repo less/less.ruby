@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.dirname(__FILE__) + "/../lib"
+
+require 'optparse'
+require 'less'
+
+CSS = '.css'
+
+# Argument defaults
+options = {
+  watch: false
+}
+
+# Get arguments
+opts = OptionParser.new do |o|
+  o.banner = "usage: lessc source [destination]"
+  o.separator ""
+  o.separator "Parsing options:"
+  
+  # String mode
+  o.on("-w", "--watch", "Watchman") do |e|
+    options[:watch] = true
+  end
+  
+  o.separator ""
+  o.separator "Common options:"
+
+  # Help
+  o.on_tail("-h", "--help", "Show this message") do
+    puts opts
+    exit
+  end
+
+  # Version
+  o.on_tail("-v", "--version", "Show version") do
+    puts "Less Compiler " + Less::VERSION
+    exit
+  end
+end
+
+opts.parse! # Parse arguments into `options` hash
+
+# Get source and destintation from command line
+case ARGV.size
+  when 1
+    options[:source] = ARGV[ 0 ]
+  when 2
+    options[:source] = ARGV[ 0 ]
+    options[:destination] = ARGV[ 1 ]
+  else
+    puts opts
+    exit
+end
+options[:destination] = (options[:destination] || options[:source]).gsub /\.(less|lss)/, CSS
+
+Less::Command.new( options ).run!
