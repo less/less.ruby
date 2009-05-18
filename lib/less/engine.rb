@@ -48,7 +48,7 @@ module Less
       # Evaluate the variables
       #
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        convert = ->( key, value, node ) do # We declare this as a lambda, for re-use
+        convert = lambda( key, value, node ) do # We declare this as a lambda, for re-use
           if value.is_a?(String) && value.include?('@') # There's a var to evaluate        
             
             # Find its value
@@ -96,13 +96,13 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",')  # Properties
-                 .gsub(/\}/, "},")                                                       # Closing }
-                 .gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {') # Selectors
-                 .gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                          # Mixins
-                 .gsub("\n\n", "\n")                                                     # New-lines
-                 .gsub(/\/\/.*\n/, '')                                                   # Comments
-      eval "{" + hash + "}"                                                              # Return {hash}
+      hash = self.gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",').  # Properties
+                  gsub(/\}/, "},").                                                       # Closing }
+                  gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {'). # Selectors
+                  gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,').                          # Mixins
+                  gsub("\n\n", "\n").                                                     # New-lines
+                  gsub(/\/\/.*\n/, '')                                                    # Comments
+      eval "{" + hash + "}"                                                               # Return {hash}
     end
   end
 end
