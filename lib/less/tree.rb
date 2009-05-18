@@ -16,7 +16,7 @@ module Less
       self[:variables] ? self[:variables] : nil
     end
     
-    def find what = :var, path
+    def find what = :var, path = []
       path.inject(self) do |branch, k|        
         if what == :var && k == path.last
           branch[:variables][ k ]

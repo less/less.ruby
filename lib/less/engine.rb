@@ -3,7 +3,7 @@ module Less
     REGEXP = {
       :path => /([#.][->#.\w]+)?( ?> ?)?@([\w\-]+)/, # #header > .title > @var
       :selector => /[-\w #.>*_:]/,                   # .cow .milk > a
-      :values => /[-\w @>\/*+#%.'"]/,                # 10px solid #fff
+      :values => /[-\w @>\/*+#%.,'"]/,               # 10px solid #fff
       :variable => /^@([\w\-]+)/                     # @milk-white
     }
     
@@ -48,7 +48,7 @@ module Less
       # Evaluate the variables
       #
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        convert = lambda( key, value, node ) do # We declare this as a lambda, for re-use
+        convert = lambda do |key, value, node| # We declare this as a lambda, for re-use
           if value.is_a?(String) && value.include?('@') # There's a var to evaluate        
             
             # Find its value
@@ -96,7 +96,8 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",').  # Properties
+      hash = self.gsub(/"/, "'").
+                  gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",').  # Properties
                   gsub(/\}/, "},").                                                       # Closing }
                   gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {'). # Selectors
                   gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,').                          # Mixins
