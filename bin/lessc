@@ -9,7 +9,7 @@ CSS = '.css'
 
 # Argument defaults
 options = {
-  watch: false
+  :watch => false
 }
 
 # Get arguments
