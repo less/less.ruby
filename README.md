@@ -1,7 +1,6 @@
 LESS
 ====
-the leaner css
-
+_the leaner css_
 # what?
 LESS allows you to write CSS the way (I think) it was meant to, that is: with variables, nested rules and mixins!
 
