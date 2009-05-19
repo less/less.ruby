@@ -7,24 +7,24 @@ module Less
     def watch?() @options[:watch] end
     def compress?() @options[:compress] end
     
-    def run!
-      # little function which allows us to Ctrl-C exit inside the passed block
-      watch = lambda do |&block|
-        begin
-          block.call
-        rescue Interrupt
-          puts
-          exit 0
-        end
+    # little function which allows us to Ctrl-C exit inside the passed block
+    def watch &block
+      begin
+        block.call
+      rescue Interrupt
+        puts
+        exit 0
       end
-
+    end
+      
+    def run!
       if watch?
         log "Watching for changes in #@source ...Ctrl-C to abort.\n"
         #
         # Main watch loop
         #
         loop do
-          watch.call { sleep 1 }
+          watch { sleep 1 }
           
           # File has changed
           if File.stat( @source ).mtime > File.stat( @destination ).mtime
@@ -39,7 +39,7 @@ module Less
                 error = $!.message.split("\n")[1..-1].collect {|e| e.gsub(/\(eval\)\:\d+\:\s/, '') } * "\n"
                 log " errors were found in the .less file! \n#{error}\n"
                 log "Press [enter] to continue..."
-                watch.call do
+                watch do
                   $stdin.gets
                   print "} "
                 end
