@@ -1,7 +1,9 @@
 LESS
 ====
 _the leaner css_
-# what?
+
+what?
+-----
 LESS allows you to write CSS the way (I think) it was meant to, that is: with variables, nested rules and mixins!
 
 Here's an example LESS file:
