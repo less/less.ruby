@@ -96,7 +96,7 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/"/, "'").
+      hash = self.gsub(/"/, "'").                                                         # ""
                   gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",').  # Properties
                   gsub(/\}/, "},").                                                       # Closing }
                   gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {'). # Selectors
