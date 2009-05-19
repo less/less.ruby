@@ -25,5 +25,5 @@ And the CSS output it produces:
 	.article { border: 1px solid black }
 	
 If you have CSS nightmares, just 
-	`$ lessc style.less`
+	$ lessc style.less
 
