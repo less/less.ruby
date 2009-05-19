@@ -1,9 +1,9 @@
 LESS
 ====
-It's time CSS was done right--LESS is _leaner_ css.
+It's time CSS was done right – LESS is _leaner_ css.
 
-explained
------
+Explained
+---------
 LESS allows you to write CSS the way (I think) it was meant to, that is: with variables, nested rules and mixins!
 
 Here's some example LESS code:
