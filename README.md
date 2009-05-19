@@ -6,7 +6,7 @@ Explained
 ---------
 LESS allows you to write CSS the way (I think) it was meant to, that is: with *variables*, *nested rules* and *mixins*!
 
-Here's some example LESS code:
+### Here's some example LESS code:
 	
 	@dark: #110011;
 	.outline { border: 1px solid black }
@@ -17,7 +17,7 @@ Here's some example LESS code:
 		.outline;
 	}
 	
-And the CSS output it produces:
+### And the CSS output it produces:
 	
 	.outline { border: 1px solid black }
 	.article > a { text-decoration: none }
