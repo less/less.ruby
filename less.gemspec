@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
      "lib/less/command.rb",
      "lib/less/engine.rb",
      "lib/less/tree.rb",
-     "pkg/less-0.5.0.gem",
      "spec/spec.less"
   ]
   s.has_rdoc = true
