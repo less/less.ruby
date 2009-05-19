@@ -1,12 +1,12 @@
 LESS
 ====
-_the leaner css_
+It's time CSS was done right--LESS is _leaner_ css.
 
-what?
+explained
 -----
 LESS allows you to write CSS the way (I think) it was meant to, that is: with variables, nested rules and mixins!
 
-Here's an example LESS file:
+Here's some example LESS code:
 	
 	@dark: #110011;
 	.outline { border: 1px solid black }
