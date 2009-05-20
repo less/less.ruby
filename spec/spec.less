@@ -2,7 +2,11 @@
 // the main color
 @base-color: #fff;
 @darker-color: @base-color / 2;
+/*
 
+lala
+
+*/
 .dookoo a {
   color: black;
 }
@@ -13,11 +17,19 @@
     @fa: grey;
     color: @fa;
     line-height: 1999px;
+    .blah {
+      .bloop {
+        @supernested: iceberg;
+      }
+    }
 }
 .alt {
     @base-color: green;
     @darker-color: @base-color / 2;
     @another-color: * > @base-color;
+}
+#kelkoo {
+  color: .dookoo > .blah > .bloop > @supernested;
 }
 .altfoo { color: .alt > @base-color; }
 .foo { border: 1px solid black; color: @base-color; }
@@ -25,7 +37,7 @@
   width: 10px * 2;
 }
 #content {    
-    font-size: 12px;
+    font-size: "};(*#)";
     @some-color: blue;    
     #header {        
         .foo;
