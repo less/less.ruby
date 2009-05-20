@@ -23,10 +23,11 @@ opts = OptionParser.new do |o|
     options[:watch] = true
   end
   
-  # Compress
-  o.on("-c", "--compress", "compress css file") do
-    options[:compress] = true
-  end
+  # Compression needs a proper algorithm
+  #
+  #  o.on("-c", "--compress", "compress css file") do
+  #    options[:compress] = true
+  #  end
   
   o.separator ""
 
