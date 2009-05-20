@@ -20,28 +20,22 @@ module Less
     def run!
       if watch?
         log "Watching for changes in #@source ...Ctrl-C to abort.\n"
-        #
+  
         # Main watch loop
-        #
         loop do
           watch { sleep 1 }
           
           # File has changed
           if File.stat( @source ).mtime > File.stat( @destination ).mtime
             log "Change detected... "
-            #
-            # Error loop
-            #
-            loop do
-              unless compile
-                log "Press [enter] to continue..."
-                watch { $stdin.gets }
-                next # continue within the error loop, until the error is fixed
-              end
-              break # break to main loop, as no errors were encountered
+            
+            # Loop until error is fixed
+            while not compile
+              log "Press [enter] to continue..."
+              watch { $stdin.gets }
             end
-          end # if
-        end # loop
+          end
+        end
       else
         compile
       end
@@ -56,7 +50,7 @@ module Less
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        puts "#{@destination.split('/').last} was updated!" if watch?
+        puts " [Updated] #{@destination.split('/').last}" if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
       rescue SyntaxError
