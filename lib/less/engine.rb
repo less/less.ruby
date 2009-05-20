@@ -3,7 +3,7 @@ module Less
     REGEXP = {
       :path => /([#.][->#.\w]+)?( ?> ?)?@([\w\-]+)/, # #header > .title > @var
       :selector => /[-\w #.>*_:]/,                   # .cow .milk > a
-      :values => /[-\w @>\/*+#%.,'"]/,               # 10px solid #fff
+      :values => /[-\w \(\)@>\/*+#%.,'"]/,           # 10px solid #fff
       :variable => /^@([\w\-]+)/                     # @milk-white
     }
     
