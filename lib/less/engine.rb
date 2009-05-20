@@ -1,9 +1,9 @@
 module Less  
   class Engine < String
     REGEXP = {
-      :path     => /(?>[#.][->#.\w ]+)?(?> ?> ?)?@([-\w]+)/, # #header > .title > @var
+      :path     => /([#.][->#.\w ]+)?( ?> ?)?@([-\w]+)/,     # #header > .title > @var
       :selector => /[-\w #.>*:]/,                            # .cow .milk > a
-      :variable => /^@([-\w]+)/,                             # @milk-white
+      :variable => /@([-\w]+)/,                              # @milk-white
       :property => /@[-\w]+|[-a-z]+/                         # font-size
     }
     
@@ -23,8 +23,8 @@ module Less
       # can then be deleted.
       #
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        matched = if match = key.match( REGEXP[:variable] )
-          node[:variables] ||= {}
+        matched = if match = key.match( REGEXP[:variable] )          
+          node[:variables] ||= Tree.new
           node[:variables][ match.captures.first ] = value
         elsif value == :mixin
           node[:mixins] ||= []          
@@ -65,9 +65,12 @@ module Less
           if (unit = value.scan(/(%)|\d+(px)|\d+(em)|(#)/i).flatten.compact.uniq).size <= 1
             unit = unit.join            
             value = if unit == '#'
-              evaluate = lambda {|v| unit + eval( v ).to_s(16) }
+              evaluate = lambda do |v| 
+                result = eval v
+                unit + ( result.zero?? '000' : result.to_s(16) )
+              end
               value.gsub(/#([a-z0-9]+)/i) do
-                hex = $1 * ( $1.size == 3 ? 2 : 1 )
+                hex = $1 * ( $1.size < 6 ? 6 / $1.size : 1 )
                 hex.to_i(16)
               end.delete unit
             else
