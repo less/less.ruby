@@ -33,16 +33,9 @@ module Less
             # Error loop
             #
             loop do
-              begin
-                compile
-              rescue SyntaxError
-                error = $!.message.split("\n")[1..-1].collect {|e| e.gsub(/\(eval\)\:\d+\:\s/, '') } * "\n"
-                log " errors were found in the .less file! \n#{error}\n"
+              unless compile
                 log "Press [enter] to continue..."
-                watch do
-                  $stdin.gets
-                  print "} "
-                end
+                watch { $stdin.gets }
                 next # continue within the error loop, until the error is fixed
               end
               break # break to main loop, as no errors were encountered
@@ -59,12 +52,20 @@ module Less
         # Create a new Less object with the contents of a file
         css = Less::Engine.new( File.read( @source ) ).to_css
         css = css.delete " \n" if compress?
+        
         File.open( @destination, "w" ) do |file|
           file.write css
         end
         puts "#{@destination.split('/').last} was updated!" if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
+      rescue SyntaxError
+        error = $!.message.split("\n")[1..-1].collect {|e| e.gsub(/\(eval\)\:\d+\:\s/, '') } * "\n"
+        log " !! errors were found in the .less file! \n#{error}\n"
+      rescue MixedUnitsError
+        log "!! You're  mixing units together! what do you expect?\n"
+      else
+        true
       end
     end
     
