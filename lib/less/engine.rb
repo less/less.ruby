@@ -85,18 +85,18 @@ module Less
       @tree = @tree.traverse :leaf do |key, value, path, node|
         if value.match /[-+\/*]/
           if (unit = value.scan(/(%)|\d+(px)|\d+(em)|(#)/i).flatten.compact.uniq).size <= 1
-            unit = unit.join
+            unit = unit.join            
             value = if unit == '#'
+              evaluate = lambda {|v| unit + eval( v ).to_s(16) }
               value.gsub(/#([a-z0-9]+)/i) do
                 hex = $1 * ( $1.size == 3 ? 2 : 1 )
                 hex.to_i(16)
               end.delete unit
-              evaluate = lambda {|v| unit + eval( v ).to_s(16) }
             else
-              value.gsub(/px|em|%/, '')
               evaluate = lambda {|v| eval( v ).to_s + unit }
-            end.to_s    
-            next if value.match /[a-z]/i            
+              value.gsub(/px|em|%/, '')
+            end.to_s                
+            next if value.match /[a-z]/i
             node[ key ] = evaluate.call value
           else
             raise MixedUnitsError
