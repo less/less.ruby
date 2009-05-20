@@ -1,10 +1,10 @@
 module Less  
   class Engine < String
     REGEXP = {
-      :path => /([#.][->#.\w]+)?( ?> ?)?@([\w\-]+)/, # #header > .title > @var
-      :selector => /[-\w #.>*_:]/,                   # .cow .milk > a
-      :values => /[-\w \(\)@>\/*+#%.,'"]/,           # 10px solid #fff
-      :variable => /^@([\w\-]+)/                     # @milk-white
+      :path     => /(?>[#.][->#.\w ]+)?(?> ?> ?)?@([-\w]+)/, # #header > .title > @var
+      :selector => /[-\w #.>*:]/,                            # .cow .milk > a
+      :variable => /^@([-\w]+)/,                             # @milk-white
+      :property => /@[-\w]+|[-a-z]+/                         # font-size
     }
     
     def initialize s
@@ -119,13 +119,14 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/"/, "'").                                                         # ""
-                  gsub(/([@a-z\-]+):[ \t]*(#{ REGEXP[:values] }+);/, '"\\1" => "\\2",').  # Properties
+      hash = self.gsub(/\/\/.*\n/, '').                                                   # Comments //
+                  gsub(/\/\*.*?\//m, '').                                                 # Comments /*
+                  gsub(/"/, "'").                                                         # " => '
+                  gsub(/("|')(.+?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
+                  gsub(/(#{REGEXP[:property]}):[ \t]*(.+?);/, '"\\1" => "\\2",').         # Declarations
                   gsub(/\}/, "},").                                                       # Closing }
-                  gsub(/([ \t]*)(#{ REGEXP[:selector] }+?)[ \t\n]*\{/m, '\\1"\\2" => {'). # Selectors
-                  gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,').                          # Mixins
-                  gsub("\n\n", "\n").                                                     # New-lines
-                  gsub(/\/\/.*\n/, '')                                                    # Comments
+                  gsub(/([ \t]*)(#{REGEXP[:selector]}+?)[ \t\n]*\{/m, '\\1"\\2" => {').   # Selectors
+                  gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                           # Mixins
       eval "{" + hash + "}"                                                               # Return {hash}
     end
   end

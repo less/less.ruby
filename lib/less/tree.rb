@@ -57,7 +57,7 @@ module Less
     def to_css css = []
       self.traverse :branch do |path, node|
         properties = node.inject("") do |s, (k, v)|          
-          v.is_a?(String) ? (s + "#{k}: #{v}; ") : s   # Add the property to the list
+          v.is_a?(String) ? (s + "#{k}: #{CGI.unescape(v)}; ") : s   # Add the property to the list
         end
         css << path * ' > ' + " { " + properties + "}" # Add the rule-set to the CSS
       end

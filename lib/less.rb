@@ -1,3 +1,5 @@
+require 'cgi'
+
 require 'less/command'
 require 'less/engine'
 require 'less/tree'
