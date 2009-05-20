@@ -14,18 +14,6 @@
     color: @fa;
     line-height: 1999px;
 }
-.ccc {
-  color: black;
-}
-.ddd {
-  color: black;
-}
-.bbb {
-  color: black;
-}
-.aaa {
-  color: red;
-}
 .alt {
     @base-color: green;
     @darker-color: @base-color / 2;
@@ -33,13 +21,15 @@
 }
 .altfoo { color: .alt > @base-color; }
 .foo { border: 1px solid black; color: @base-color; }
-
+.foo2 {
+  width: 10px * 2;
+}
 #content {    
     font-size: 12px;
     @some-color: blue;    
     #header {        
         .foo;
-        font-size: #ffffff * 2;    
+        font-size: #222 / 2;    
     }
     #main-page {
         #content > .small;
