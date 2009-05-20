@@ -4,10 +4,12 @@ module Less
       @source, @destination = options[:source], options[:destination]
       @options = options
     end
-    def watch?() @options[:watch] end
+    
+    def watch?()    @options[:watch]    end
     def compress?() @options[:compress] end
     
-    # little function which allows us to Ctrl-C exit inside the passed block
+    # little function which allows us to 
+    # Ctrl-C exit inside the passed block
     def watch &block
       begin
         block.call
