@@ -14,8 +14,9 @@ lala
   font-family: "Verdana", 'Baka', serif;
 }
 .dookoo {
+    @fi: @fa;
     @fa: grey;
-    color: @fa;
+    color: .alt > @base-color - .alt > @base-color;
     line-height: 1999px;
     .blah {
       .bloop {
@@ -24,9 +25,9 @@ lala
     }
 }
 .alt {
-    @base-color: green;
-    @darker-color: @base-color / 2;
-    @another-color: * > @base-color;
+    @base-color: #876956 - #111;
+    @darker-color: @base-color - @base-color;
+    @another-color: @base-color;
 }
 #kelkoo {
   color: .dookoo > .blah > .bloop > @supernested;
