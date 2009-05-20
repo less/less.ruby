@@ -44,38 +44,16 @@ module Less
         end
       end
       
-      #
-      # Evaluate variables
-      #
+      # Call `evaluate` on variables, such as '@dark: @light / 2'
+      @tree = @tree.traverse :branch do |path, node|
+        node.vars.each do |key, value|
+          evaluate key, value, node.vars
+        end if node.vars?
+      end
+      
+      # Call `evaluate` on css properties, such as 'font-size: @big'
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        convert = lambda do |key, value, node|             # We declare this as a lambda, for re-use
-          if value.is_a?(String) && value.include?('@')    # There's a var to evaluate        
-            
-            # Find its value
-            var = value.delete(' ').match( REGEXP[:path] ).captures.join  
-            var = unless var.include? '>'
-              node.var( var ) || @tree.var( var )          # Try local first, then global
-            else
-              @tree.find :var, var.split('>')              # Try finding it in a specific namespace
-            end
-          
-            if var
-              node[ key ] = value.gsub REGEXP[:path], var  # Substitute variable with value
-            else
-              node.delete key                              # Discard the declaration if the variable wasn't found
-            end
-          end
-        end
-        
-        # Call `convert` on css properties, such as 'font-size: @big'
-        convert.call key, value, node
-        
-        # Call `convert` on variables, such as '@dark: @light / 2'
-        if node.vars? 
-          node.vars.each do |key, value|
-            convert.call key, value, node
-          end
-        end
+        evaluate key, value, node
       end
       
       #
@@ -103,9 +81,30 @@ module Less
           end
         end
       end
-      
     end
     alias render compile
+    
+    #
+    # Evaluate variables
+    #
+    def evaluate key, value, node               
+      if value.is_a? String and value.include? '@'       # There's a var to evaluate    
+        value.scan REGEXP[:path] do |p|
+          p = p.join.delete ' '
+          var = if p.include? '>'
+            @tree.find :var, p.split('>')                # Try finding it in a specific namespace
+          else
+            node.var( p ) || @tree.var( p )              # Try local first, then global
+          end
+
+          if var
+            node[ key ] = value.gsub REGEXP[:path], var  # Substitute variable with value
+          else
+            node.delete key                              # Discard the declaration if the variable wasn't found
+          end
+        end    
+      end
+    end
     
     def to_css
       self.compile.to_css
