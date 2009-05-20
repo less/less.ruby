@@ -3,8 +3,11 @@ require 'less/engine'
 require 'less/tree'
 
 module Less
-  VERSION = '0.5.2'
-  class MixedUnitsError < Exception
+  class MixedUnitsError < Exception 
+  end
+  
+  def self.version
+    File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') )
   end
 end
 

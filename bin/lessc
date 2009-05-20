@@ -38,7 +38,7 @@ opts = OptionParser.new do |o|
 
   # Version
   o.on_tail("-v", "--version", "show version") do
-    puts "Less Compiler " + Less::VERSION
+    puts "lessc " + Less.version
     exit
   end
 end
