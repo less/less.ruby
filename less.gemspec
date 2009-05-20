@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.authors = ["cloudhead"]
   s.date = %q{2009-05-20}
   s.default_executable = %q{lessc}
-  s.description = %q{Compiles LESS files into CSS}
+  s.description = %q{LESS is leaner CSS}
   s.email = %q{alexis@cloudhead.net}
   s.executables = ["lessc"]
   s.extra_rdoc_files = [
@@ -33,6 +33,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://www.lesscss.org}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
+  s.rubyforge_project = %q{less}
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{LESS compiler}
 
