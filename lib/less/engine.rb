@@ -45,24 +45,24 @@ module Less
       end
       
       #
-      # Evaluate the variables
+      # Evaluate variables
       #
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        convert = lambda do |key, value, node| # We declare this as a lambda, for re-use
-          if value.is_a?(String) && value.include?('@') # There's a var to evaluate        
+        convert = lambda do |key, value, node|             # We declare this as a lambda, for re-use
+          if value.is_a?(String) && value.include?('@')    # There's a var to evaluate        
             
             # Find its value
             var = value.delete(' ').match( REGEXP[:path] ).captures.join  
             var = unless var.include? '>'
-              node.var( var ) || @tree.var( var ) # Try local first, then global
+              node.var( var ) || @tree.var( var )          # Try local first, then global
             else
-              @tree.find :var, var.split('>')           # Try finding it in a specific namespace
+              @tree.find :var, var.split('>')              # Try finding it in a specific namespace
             end
           
             if var
-              node[ key ] = value.gsub REGEXP[:path], var # substitute variable with value
+              node[ key ] = value.gsub REGEXP[:path], var  # Substitute variable with value
             else
-              node.delete key # discard the declaration if the variable wasn't found
+              node.delete key                              # Discard the declaration if the variable wasn't found
             end
           end
         end
