@@ -18,7 +18,7 @@ module Less
         exit 0
       end
     end
-      
+
     def run!
       if watch?
         log "Watching for changes in #@source ...Ctrl-C to abort.\n"
@@ -32,7 +32,7 @@ module Less
             log "Change detected... "
             
             # Loop until error is fixed
-            while not compile
+            until compile
               log "Press [enter] to continue..."
               watch { $stdin.gets }
             end

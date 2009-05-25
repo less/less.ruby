@@ -6,12 +6,12 @@ module Less
       :variable => /@([-\w]+)/,                              # @milk-white
       :property => /@[-\w]+|[-a-z]+/                         # font-size
     }
-    
+
     def initialize s
       super
       @tree = Tree.new self.hashify
     end
-  
+
     def compile     
       #
       # Parse the variables and mixins
@@ -61,7 +61,7 @@ module Less
       #
       # Units are: 1px, 1em, 1%, #111
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        if value.match /[-+\/*]/
+        if value =~ /(\s?)[-+\/*](\1)/
           if (unit = value.scan(/(%)|\d+(px)|\d+(em)|(#)/i).flatten.compact.uniq).size <= 1
             unit = unit.join            
             value = if unit == '#'
