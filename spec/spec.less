@@ -1,71 +1,111 @@
-// LESS
-// the main color
-@base-color: #fff;
-@darker-color: @base-color / 2;
-/*
+// ------------------------------------------------
+//                 LESS Spec
+//                 www.lesscss.org
+// ------------------------------------------------
 
-lala
+// Global vars
+@main-color: #444;
+@dark-color: #111;
+@between-color: @main-color - @dark-color;
 
-*/
-.dookoo a {
-  color: black;
+// Mixins
+.theme {
+    color: #ccc;
+    background-color: #aaa;
 }
-.dookoo a {
-  font-family: "Verdana", 'Baka', serif;
-}
-.dookoo {
-    @fi: @fa;
-    @fa: grey;
-    color: .alt > @base-color - .alt > @base-color;
-    margin: 10px -10px 4px 2px;
-    line-height: 1999px;
-    .blah {
-      .bloop {
-        @supernested: iceberg;
-      }
+.extra {
+    @main: #888;
+    .dark-borders {
+        border-color: .extra > @main / 2;    
+    }
+    .light-borders {
+        border-color: .extra > @main;
     }
 }
-.alt {
-    @base-color: #876956 - #111;
-    @darker-color: @base-color - @base-color;
-    @another-color: @base-color;
+
+// Namespaces
+.borders {
+    @thick: 4px;
+    @thin: 2px;    
 }
-#kelkoo {
-  color: .dookoo > .blah > .bloop > @supernested;
-}
-.altfoo { color: .alt > @base-color; }
-.foo { border: 1px solid black; color: @base-color; }
-.foo2 {
-  width: 10px * 2;
-}
-#content {    
-    font-size: "};(*#)";
-    @some-color: blue;    
-    #header {        
-        .foo;
-        font-size: #222 / 2;    
+
+// Hierarchy
+.root {
+    a { 
+        color: blue;
+        display: none;
     }
-    #main-page {
-        #content > .small;
-    }    
-    .small {       
-         color: @base-color;        
-         font-size: 12 / 2;    
-         .hover_controls {
-            line-height: 16px;
-             display: none;
-             color: #content > @some-color;
-             border: 1px solid #fff;
-         }
+    a:hover, a:focus {
+        color: orange;
     }
-    .small:hover {
-        background-color: #eee + #content > @some-color;
-        .hover_controls {
-            .dookoo;
-            display: inline-block;
+    .first {
+        @size: 8px;
+        @dark-color: green;
+        @main-color: red;
+        color: @dark-color; // 'green'
+        .second {
+            @color: blue;
+            .third {
+                color: @main-color; // #444
+                border-color: .root > .first > .second > @color; // 'blue'
+            }
         }
-    }
+    }    
 }
-.sidebar {
-    #content > .small;
+.root:hover a {
+    display: block;
 }
+
+// Standard CSS properties and shorthand
+body {
+    font-size: 10px;
+    font-family: "Lucida Grande", 'Helvetica', Verdana, sans-serif;
+    margin: -5px 0 5px 10px;
+    border: solid 1px #000;
+    text-shadow: #333 -1px 1px 2px;
+    -moz-border-radius: 3px; /* CSS3 for older Firefox */
+    .theme;
+    .extra > .light-borders;
+}
+
+// Operations
+.operations {
+    @ten: 10;
+    @dark: #111;
+    border-width: .borders > @thick * 5 - 4px; // 16px
+    font-size: 10 - 4 + 6 * @ten; // 66
+    line-height: @ten - .operations > @ten + .root > .first > @size - 1; // 7px
+    color: #fff - #111; // #eeeeee
+    colorb: #111 + #222222; // #333333
+    colorc: @dark + #222 * 3; // #777777 
+}
+
+td, tr, table {
+    border-width: .borders > @thick;   
+}
+
+// More complex CSS selectors
+ul li:first-child {
+    border-top: none;
+}
+ul li:first-child, ul li:last-child {
+    background-color: #333;
+}
+.p:first-letter { 
+    color: red; 
+}
+q:lang(no) { 
+    quotes: "~" "~"; 
+}
+/*input[type="text"] { 
+    background-color: blue; 
+}*/
+.transparent_box {
+    background-color:#FFF;
+    filter:alpha(opacity=60); /* for IE */
+    opacity:0.6; /* CSS3 standard */
+}
+
+// Spacing
+.space    
+{    color:  purple ;font-color:yellow;   }  
