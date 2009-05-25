@@ -1,12 +1,17 @@
 module Less  
   class Engine < String
-    REGEXP = {
+    REGEX = {
       :path     => /([#.][->#.\w ]+)?( ?> ?)?@([-\w]+)/,     # #header > .title > @var
-      :selector => /[-\w #.>*:]/,                            # .cow .milk > a
+      :selector => /[-\w #.,>*:\(\)]/,                       # .cow .milk > a
       :variable => /@([-\w]+)/,                              # @milk-white
-      :property => /@[-\w]+|[-a-z]+/                         # font-size
+      :property => /@[-\w]+|[-a-z]+/,                        # font-size
+      :color    => /#([a-zA-Z0-9]{3,6})\b/,                  # #f0f0f0
+      :number   => /\d+(?>\.\d+)?/,                          # 24.8
+      :unit     => /px|em|pt|cm|mm|%/                        # em
     }
-
+    REGEX[:numeric] = /#{REGEX[:number]}(#{REGEX[:unit]})?/
+    REGEX[:operand] = /#{REGEX[:color]}|#{REGEX[:numeric]}/
+    
     def initialize s
       super
       @tree = Tree.new self.hashify
@@ -23,7 +28,7 @@ module Less
       # can then be deleted.
       #
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        matched = if match = key.match( REGEXP[:variable] )          
+        matched = if match = key.match( REGEX[:variable] )          
           node[:variables] ||= Tree.new
           node[:variables][ match.captures.first ] = value
         elsif value == :mixin
@@ -60,25 +65,25 @@ module Less
       # Evaluate operations (2+2)
       #
       # Units are: 1px, 1em, 1%, #111
-      @tree = @tree.traverse :leaf do |key, value, path, node|
-        if value =~ /(\s?)[-+\/*](\1)/
-          if (unit = value.scan(/(%)|\d+(px)|\d+(em)|(#)/i).flatten.compact.uniq).size <= 1
+      @tree = @tree.traverse :leaf do |key, value, path, node| 
+        node[ key ] = value.gsub /(#{REGEX[:operand]}(\s?)[-+\/*](\4))+(#{REGEX[:operand]})/ do |operation|
+          if (unit = operation.scan(/#{REGEX[:numeric]}|(#)/i).flatten.compact.uniq).size <= 1
             unit = unit.join            
-            value = if unit == '#'
+            operation = if unit == '#'
               evaluate = lambda do |v| 
                 result = eval v
                 unit + ( result.zero?? '000' : result.to_s(16) )
               end
-              value.gsub(/#([a-z0-9]+)/i) do
+              operation.gsub REGEX[:color] do
                 hex = $1 * ( $1.size < 6 ? 6 / $1.size : 1 )
                 hex.to_i(16)
               end.delete unit
             else
               evaluate = lambda {|v| eval( v ).to_s + unit }
-              value.gsub(/px|em|%/, '')
+              operation.gsub REGEX[:unit], ''
             end.to_s                
-            next if value.match /[a-z]/i
-            node[ key ] = evaluate.call value
+            next if operation.match /[a-z]/i
+            evaluate.call operation
           else
             raise MixedUnitsError
           end
@@ -92,7 +97,7 @@ module Less
     #
     def evaluate key, value, node               
       if value.is_a? String and value.include? '@'       # There's a var to evaluate    
-        value.scan REGEXP[:path] do |p|
+        value.scan REGEX[:path] do |p|
           p = p.join.delete ' '
           var = if p.include? '>'
             @tree.find :var, p.split('>')                # Try finding it in a specific namespace
@@ -101,7 +106,7 @@ module Less
           end
 
           if var
-            node[ key ] = value.gsub REGEXP[:path], var  # Substitute variable with value
+            node[ key ] = value.gsub REGEX[:path], var   # Substitute variable with value
           else
             node.delete key                              # Discard the declaration if the variable wasn't found
           end
@@ -121,13 +126,13 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/\/\/.*\n/, '').                                                   # Comments //
-                  gsub(/\/\*.*?\//m, '').                                                 # Comments /*
+      hash = self.gsub(/\/\/.*/, '').                                                     # Comments //
+                  gsub(/\/\*.*?\*\//m, '').                                               # Comments /*
                   gsub(/"/, "'").                                                         # " => '
                   gsub(/("|')(.+?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
-                  gsub(/(#{REGEXP[:property]}):[ \t]*(.+?);/, '"\\1" => "\\2",').         # Declarations
+                  gsub(/(#{REGEX[:property]}):[ \t]*(.+?);/, '"\\1" => "\\2",').          # Declarations
                   gsub(/\}/, "},").                                                       # Closing }
-                  gsub(/([ \t]*)(#{REGEXP[:selector]}+?)[ \t\n]*\{/m, '\\1"\\2" => {').   # Selectors
+                  gsub(/([ \t]*)(#{REGEX[:selector]}+?)[ \t\n]*\{/m, '\\1"\\2" => {').    # Selectors
                   gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                           # Mixins
       eval "{" + hash + "}"                                                               # Return {hash}
     end
