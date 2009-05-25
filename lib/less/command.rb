@@ -7,6 +7,7 @@ module Less
     
     def watch?()    @options[:watch]    end
     def compress?() @options[:compress] end
+    def debug?()    @options[:debug]    end
     
     # little function which allows us to 
     # Ctrl-C exit inside the passed block
@@ -56,7 +57,9 @@ module Less
       rescue Errno::ENOENT => e
         abort "#{e}"
       rescue SyntaxError
-        error = $!.message.split("\n")[1..-1].collect {|e| e.gsub(/\(eval\)\:\d+\:\s/, '') } * "\n"
+        error = debug?? $! : $!.message.split("\n")[1..-1].collect {|e| 
+          e.gsub(/\(eval\)\:(\d+)\:\s/, 'line \1: ') 
+        } * "\n"
         log " !! errors were found in the .less file! \n#{error}\n"
       rescue MixedUnitsError
         log "!! You're  mixing units together! what do you expect?\n"

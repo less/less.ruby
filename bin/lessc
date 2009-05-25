@@ -10,7 +10,8 @@ CSS = '.css'
 # Argument defaults
 options = {
   :watch => false,
-  :compress => false
+  :compress => false,
+  :debug => false
 }
 
 # Get arguments
@@ -35,6 +36,10 @@ opts = OptionParser.new do |o|
   o.on_tail("-h", "--help", "show this message") do
     puts opts
     exit
+  end
+  
+  o.on_tail("-d", "--debug", "show full error messages") do
+    options[:debug] = true
   end
 
   # Version
