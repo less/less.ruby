@@ -94,9 +94,17 @@ ul li:first-child, ul li:last-child {
 .p:first-letter { 
     color: red; 
 }
+:focus {
+    outline: 0;
+    content: "*}#f~ ";
+}
 q:lang(no) { 
     quotes: "~" "~"; 
 }
+blockquote:before {
+  color: red;
+}
+
 /*input[type="text"] { 
     background-color: blue; 
 }*/
@@ -108,4 +116,7 @@ q:lang(no) {
 
 // Spacing
 .space    
-{    color:  purple ;font-color:yellow;   }  
+{    color:  purple ;font-color:yellow;   }
+
+// No semi-column
+.no-semi-column { color: orange }
