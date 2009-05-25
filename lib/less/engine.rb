@@ -126,13 +126,15 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/\/\/.*/, '').                                                     # Comments //
+      hash = self.gsub(/\t/, ' ').                                                        # Tabs
+                  gsub(/\r\n/, "\n").                                                     # m$
+                  gsub(/\/\/.*/, '').                                                     # Comments //
                   gsub(/\/\*.*?\*\//m, '').                                               # Comments /*
                   gsub(/"/, "'").                                                         # " => '
                   gsub(/("|')(.+?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
-                  gsub(/(#{REGEX[:property]}):[ \t]*(.+?);/, '"\\1" => "\\2",').          # Declarations
+                  gsub(/(#{REGEX[:property]}):\s*(.+?)\s*(;|(?=\}))/,'"\1"=>"\2",').      # Rules
                   gsub(/\}/, "},").                                                       # Closing }
-                  gsub(/([ \t]*)(#{REGEX[:selector]}+?)[ \t\n]*\{/m, '\\1"\\2" => {').    # Selectors
+                  gsub(/( *)(#{REGEX[:selector]}+?)[ \n]*(?=\{)/m, '\1"\2"=>').           # Selectors
                   gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                           # Mixins
       eval "{" + hash + "}"                                                               # Return {hash}
     end
