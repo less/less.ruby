@@ -52,13 +52,13 @@ module Less
       # Call `evaluate` on variables, such as '@dark: @light / 2'
       @tree = @tree.traverse :branch do |path, node|
         node.vars.each do |key, value|
-          evaluate key, value, node.vars
+          evaluate key, value, path, node.vars
         end if node.vars?
       end
       
       # Call `evaluate` on css properties, such as 'font-size: @big'
       @tree = @tree.traverse :leaf do |key, value, path, node|
-        evaluate key, value, node
+        evaluate key, value, path, node
       end
       
       #
@@ -95,14 +95,14 @@ module Less
     #
     # Evaluate variables
     #
-    def evaluate key, value, node               
-      if value.is_a? String and value.include? '@'       # There's a var to evaluate    
-        value.scan REGEX[:path] do |p|
-          p = p.join.delete ' '
-          var = if p.include? '>'
-            @tree.find :var, p.split('>')                # Try finding it in a specific namespace
-          else
-            node.var( p ) || @tree.var( p )              # Try local first, then global
+    def evaluate key, value, path, node               
+      if value.is_a? String and value.include? '@'      # There's a var to evaluate    
+        value.scan REGEX[:path] do |var|
+          var = var.join.delete ' '
+          var = if var.include? '>'
+            @tree.find :var, var.split('>')             # Try finding it in a specific namespace
+          else            
+           node.var( var ) or @tree.nearest var, path   # Try local first, then nearest scope            
           end
 
           if var
