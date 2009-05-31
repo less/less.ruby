@@ -46,7 +46,9 @@
         .second {
             @color: blue;
             .third {
-                color: @main-color; // #444
+                background-color: @color; // blue
+                font-size: @size; // 8px
+                color: @main-color; // red
                 border-color: .root > .first > .second > @color; // 'blue'
             }
         }
