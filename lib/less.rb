@@ -4,7 +4,7 @@ require 'less/command'
 require 'less/engine'
 require 'less/tree'
 
-module Less
+module Less  
   class MixedUnitsError < Exception 
   end
   

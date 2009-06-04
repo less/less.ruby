@@ -11,7 +11,8 @@ CSS = '.css'
 options = {
   :watch => false,
   :compress => false,
-  :debug => false
+  :debug => false,
+  :inheritance => :desc
 }
 
 # Get arguments
@@ -24,9 +25,14 @@ opts = OptionParser.new do |o|
     options[:watch] = true
   end
   
+  # Child-type inheritance
+  o.on("-c", "--child", "nesting uses child-type inheritance") do
+    options[:chain] = :child
+  end
+  
   # Compression needs a proper algorithm
   #
-  #  o.on("-c", "--compress", "compress css file") do
+  #  o.on("-x", "--compress", "compress css file") do
   #    options[:compress] = true
   #  end
   

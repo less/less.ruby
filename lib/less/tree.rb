@@ -56,7 +56,7 @@ module Less
           self[ key ] = value.to_tree.                 # Make sure any change is saved to the main tree
                         traverse by, path, &blk        # Recurse, with the current node becoming `self`                       
           yield path, self[ key ] if by == :branch     # The node is a branch, yield it to the block
-          path.pop                                     # We're returning from a branch, pop the last element
+          path.pop                                     # We're returning from a branch, pop the last path element
         elsif by == :leaf and key.is_a? String
           yield key, value, path, self                 # The node is a leaf, yield it to the block
         else
@@ -69,12 +69,12 @@ module Less
     #
     # Convert the tree to css, using full paths
     #
-    def to_css css = []
+    def to_css chain = :desc, css = []
       self.traverse :branch do |path, node|
         properties = node.inject("") do |s, (k, v)|          
-          v.is_a?(String) ? (s + "#{k}: #{CGI.unescape(v)}; ") : s   # Add the property to the list
+          v.is_a?(String) ? (s + "#{k}: #{CGI.unescape(v)}; ") : s                # Add the property to the list
         end
-        css << path * ' > ' + " { " + properties + "}"               # Add the rule-set to the CSS
+        css << path * ( chain == :desc ? ' ' : ' > ') + " { " + properties + "}"  # Add the rule-set to the CSS
       end
       css.join "\n"
     end

@@ -114,8 +114,8 @@ module Less
       end
     end
     
-    def to_css
-      self.compile.to_css
+    def to_css chain
+      self.compile.to_css chain
     end
     
     def hashify

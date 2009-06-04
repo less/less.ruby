@@ -47,7 +47,7 @@ module Less
     def compile
       begin
         # Create a new Less object with the contents of a file
-        css = Less::Engine.new( File.read( @source ) ).to_css
+        css = Less::Engine.new( File.read( @source ) ).to_css @options[:inheritance]
         css = css.delete " \n" if compress?
         
         File.open( @destination, "w" ) do |file|
