@@ -126,7 +126,7 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/\t/, ' ').                                                        # Tabs
+      hash = self.gsub(/\t+/, ' ').                                                       # Tabs
                   gsub(/\r\n/, "\n").                                                     # m$
                   gsub(/\/\/.*/, '').                                                     # Comments //
                   gsub(/\/\*.*?\*\//m, '').                                               # Comments /*
