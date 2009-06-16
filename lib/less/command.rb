@@ -21,6 +21,8 @@ module Less
     end
 
     def run!
+      compile(true) unless File.exist? @destination
+      
       if watch?
         log "Watching for changes in #@source ...Ctrl-C to abort.\n"
   
@@ -44,7 +46,7 @@ module Less
       end
     end
     
-    def compile
+    def compile new = false
       begin
         # Create a new Less object with the contents of a file
         css = Less::Engine.new( File.read( @source ) ).to_css @options[:inheritance]
