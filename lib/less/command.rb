@@ -55,16 +55,18 @@ module Less
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        puts " [Updated] #{@destination.split('/').last}" if watch?
+        puts "#{new ? '* [Created]' : ' [Updated]'} #{@destination.split('/').last}" if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
       rescue SyntaxError
         error = debug?? $! : $!.message.split("\n")[1..-1].collect {|e| 
           e.gsub(/\(eval\)\:(\d+)\:\s/, 'line \1: ') 
         } * "\n"
-        log " !! errors were found in the .less file! \n#{error}\n"
-      rescue MixedUnitsError
-        log "!! You're  mixing units together! what do you expect?\n"
+        err "errors were found in the .less file! \n#{error}\n"
+      rescue MixedUnitsError => e
+        err "`#{e}` you're  mixing units together! What do you expect?\n"
+      rescue PathError => e
+        err "`#{e}` was not found.\n"
       else
         true
       end
@@ -72,7 +74,11 @@ module Less
     
     # Just a logging function to avoid typing '}'
     def log s = ''
-      print '} ' + s.to_s
+      print '* ' + s.to_s
+    end
+    
+    def err s = ''
+      print "!! #{s}"
     end
   end
 end

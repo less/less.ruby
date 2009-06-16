@@ -24,7 +24,7 @@ module Less
         if what == :var && k == path.last
           branch[:variables][ k ]
         else
-          branch = branch[ k ]
+          branch = branch[ k ] or raise PathError, path.join(' > ')
         end
       end
     end

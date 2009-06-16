@@ -85,7 +85,7 @@ module Less
             next if operation.match /[a-z]/i
             evaluate.call operation
           else
-            raise MixedUnitsError
+            raise MixedUnitsError, value
           end
         end
       end

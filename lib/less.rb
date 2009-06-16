@@ -4,9 +4,9 @@ require 'less/command'
 require 'less/engine'
 require 'less/tree'
 
-module Less  
-  class MixedUnitsError < Exception 
-  end
+module Less    
+  MixedUnitsError = Class.new(Exception)
+  PathError = Class.new(Exception)
   
   def self.version
     File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') )
