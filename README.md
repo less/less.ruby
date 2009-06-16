@@ -27,4 +27,4 @@ LESS allows you to write CSS the way (I think) it was meant to, that is: with *v
 If you have CSS nightmares, just 
 	$ lessc style.less
 
-For more information, see you at lesscss.org:http://lesscss.org
+For more information, see you at http://lesscss.org
