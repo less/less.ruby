@@ -106,9 +106,9 @@ module Less
           end
 
           if var
-            node[ key ] = value.gsub REGEX[:path], var   # Substitute variable with value
+            node[ key ] = value.gsub REGEX[:path], var  # Substitute variable with value
           else
-            node.delete key                              # Discard the declaration if the variable wasn't found
+            node.delete key                             # Discard the declaration if the variable wasn't found
           end
         end    
       end
