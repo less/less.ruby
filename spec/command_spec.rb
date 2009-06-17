@@ -75,10 +75,6 @@ describe Less::Command do
           @command.stub!(:watch?).and_return(false)
         end
 
-        it "should attempt to compile to a new file" do
-          @command.should_receive(:compile).with(true).once
-        end
-
         it "should verify if we need to watch the file or not" do
           @command.should_receive(:watch?).and_return(false)
         end
