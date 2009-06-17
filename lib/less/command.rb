@@ -6,7 +6,7 @@ module Less
 
     def initialize options
       @source = options[:source]
-      @destination = (options[:destination] || options[:source]).gsub(/\.(less|lss)/, CSS)
+      @destination = (options[:destination] || options[:source]).gsub /\.(less|lss)/, CSS
       @options = options
     end
 

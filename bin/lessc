@@ -68,6 +68,5 @@ case ARGV.size
     puts opts
     exit
 end
-options[:destination] = (options[:destination] || options[:source]).gsub /\.(less|lss)/, CSS
 
 Less::Command.new( options ).run!
