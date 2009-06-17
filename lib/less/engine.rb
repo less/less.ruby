@@ -65,8 +65,9 @@ module Less
       # Evaluate operations (2+2)
       #
       # Units are: 1px, 1em, 1%, #111
-      @tree = @tree.traverse :leaf do |key, value, path, node| 
+      @tree = @tree.traverse :leaf do |key, value, path, node|
         node[ key ] = value.gsub /(#{REGEX[:operand]}(\s?)[-+\/*](\4))+(#{REGEX[:operand]})/ do |operation|
+          raise CompoundOperationError, "#{key}: #{value}" if COMPOUND.include? key # Disallow operations on compound declarations
           if (unit = operation.scan(/#{REGEX[:numeric]}|(#)/i).flatten.compact.uniq).size <= 1
             unit = unit.join            
             operation = if unit == '#'

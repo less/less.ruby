@@ -71,6 +71,8 @@ module Less
         err "errors were found in the .less file! \n#{error}\n"
       rescue MixedUnitsError => e
         err "`#{e}` you're  mixing units together! What do you expect?\n"
+      rescue CompoundOperationError => e
+        err "`#{e}` operations in compound declarations aren't allowed, sorry!\n"
       rescue PathError => e
         err "`#{e}` was not found.\n"
       else

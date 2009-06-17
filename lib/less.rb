@@ -9,6 +9,7 @@ require 'less/tree'
 module Less
   MixedUnitsError = Class.new(Exception)
   PathError = Class.new(Exception)
+  CompoundOperationError = Class.new(Exception)
 
   def self.version
     File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') )
