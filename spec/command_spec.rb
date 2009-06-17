@@ -61,23 +61,50 @@ describe Less::Command do
     end
   end
 
-  describe "run! (" do
+  describe "executing run!" do
     before(:each) do
       @command = Less::Command.new(required_options)
     end
+    after(:each) do
+      @command.run!
+    end
 
-    describe "without a destination file already exiting" do
-      before(:each) do
-        @command.stub!(:watch?).and_return(false)
+    describe "when not watching" do
+      describe "and the destination file doesn't exist" do
+        before(:each) do
+          @command.stub!(:watch?).and_return(false)
+        end
+
+        it "should attempt to compile to a new file" do
+          @command.should_receive(:compile).with(true).once
+        end
+
+        it "should verify if we need to watch the file or not" do
+          @command.should_receive(:watch?).and_return(false)
+        end
+
+        it "should attempt to re-compile" do
+          @command.should_receive(:compile).with().once
+        end
       end
 
-      it "should attempt to compile a new file" do
-        @command.should_receive(:compile).with(true).once
-        @command.run!
+      describe "and the destination file does exist" do
+        it "should not attempt to create a new file"
+        it "should attempt to re-compile"
       end
     end
 
-    describe "with a destination file already existing" do
+    describe "when watching" do
+      describe "and the destination file doesn't exist" do
+        it "should attempt to compile to a new file"
+        it "should begin to watch the file"
+      end
+
+      describe "and the destination file does exist" do
+        it "should not attempt to compile to a new file"
+        it "should begin to watch the existing file"
+        it "should re-compile when the existing file changes"
+      end
     end
   end
 end
