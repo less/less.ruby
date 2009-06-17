@@ -120,7 +120,7 @@ module Less
       end
     end
     
-    def to_css chain
+    def to_css chain = :desc
       self.compile.to_css chain
     end
     

@@ -69,7 +69,7 @@ module Less
     #
     # Convert the tree to css, using full paths
     #
-    def to_css chain = :desc, css = []
+    def to_css chain, css = []
       self.traverse :branch do |path, node|
         properties = node.inject("") do |s, (k, v)|          
           v.is_a?(String) ? (s + "#{k}: #{CGI.unescape(v)}; ") : s                # Add the property to the list
