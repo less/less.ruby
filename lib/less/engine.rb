@@ -1,7 +1,9 @@
 module Less  
   class Engine < String
+    # Compound properties, such as `border: 1px solid black`
+    COMPOUND = ['font', 'background', 'border']
     REGEX = {
-      :path     => /([#.][->#.\w ]+)?( ?> ?)?@([-\w]+)/,     # #header > .title > @var
+      :path     => /([#.][->#.\w ]+)?( ?> ?)?/,              # #header > .title
       :selector => /[-\w #.,>*:\(\)]/,                       # .cow .milk > a
       :variable => /@([-\w]+)/,                              # @milk-white
       :property => /@[-\w]+|[-a-z]+/,                        # font-size
@@ -96,18 +98,21 @@ module Less
     #
     # Evaluate variables
     #
-    def evaluate key, value, path, node               
-      if value.is_a? String and value.include? '@'      # There's a var to evaluate    
-        value.scan REGEX[:path] do |var|
+    def evaluate key, expression, path, node               
+      if expression.is_a? String and expression.include? '@' # There's a var to evaluate  
+        expression.scan /#{REGEX[:path]}#{REGEX[:variable]}/ do |var|
+          name = var.last
           var = var.join.delete ' '
-          var = if var.include? '>'
-            @tree.find :var, var.split('>')             # Try finding it in a specific namespace
+          
+          value = if var.include? '>'
+            @tree.find :var, var.split('>')                  # Try finding it in a specific namespace
           else            
            node.var(var) or @tree.nearest var, path          # Try local first, then nearest scope            
           end
-
-          if var
-            node[ key ] = value.gsub REGEX[:path], var  # Substitute variable with value
+          
+          if value
+            # Substitute variable with value
+            node[ key ] = node[ key ].gsub /#{REGEX[:path]}@#{name}/, value
           else
             node.delete key                                  # Discard the declaration if the variable wasn't found
           end
