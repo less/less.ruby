@@ -1,7 +1,7 @@
 module Less  
   class Engine < String
     # Compound properties, such as `border: 1px solid black`
-    COMPOUND = ['font', 'background', 'border']
+    COMPOUND = {'font' => true, 'background' => false, 'border' => false }
     REGEX = {
       :path     => /([#.][->#.\w ]+)?( ?> ?)?/,              # #header > .title
       :selector => /[-\w #.,>*:\(\)]/,                       # .cow .milk > a
@@ -69,7 +69,13 @@ module Less
       # Units are: 1px, 1em, 1%, #111
       @tree = @tree.traverse :leaf do |key, value, path, node|
         node[ key ] = value.gsub /(#{REGEX[:operand]}(\s?)[-+\/*](\4))+(#{REGEX[:operand]})/ do |operation|
-          raise CompoundOperationError, "#{key}: #{value}" if COMPOUND.include? key # Disallow operations on compound declarations
+          # Disallow operations certain compound declarations
+          if COMPOUND[key]
+            next value
+          else
+            raise CompoundOperationError, "#{key}: #{value}"
+          end if COMPOUND.include? key
+
           if (unit = operation.scan(/#{REGEX[:numeric]}|(#)/i).flatten.compact.uniq).size <= 1
             unit = unit.join            
             operation = if unit == '#'

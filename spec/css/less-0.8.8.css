@@ -19,7 +19,7 @@ ul li:first-child, ul li:last-child { background-color: #333; }
 .borders { }
 .root:hover a { display: block; }
 .operations div { width: 80px; }
-.operations { colorb: #333333; font-size: 66; colorc: #777777; line-height: 7px; border-width: 16px; color: #eeeeee; width: 110px; }
+.operations { colorb: #333333; font-size: 66; colorc: #777777; line-height: 7px; border-width: 16px; color: #eeeeee; font: 12px/16px; width: 110px; }
 :focus { outline: 0; content: '*}#f~ '; }
 .theme { background-color: #aaa; color: #ccc; }
 .transparent_box { opacity: 0.6; background-color: #FFF; filter: alpha(opacity=60); }
