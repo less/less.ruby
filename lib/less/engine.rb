@@ -103,13 +103,13 @@ module Less
           var = if var.include? '>'
             @tree.find :var, var.split('>')             # Try finding it in a specific namespace
           else            
-           node.var( var ) or @tree.nearest var, path   # Try local first, then nearest scope            
+           node.var(var) or @tree.nearest var, path          # Try local first, then nearest scope            
           end
 
           if var
             node[ key ] = value.gsub REGEX[:path], var  # Substitute variable with value
           else
-            node.delete key                             # Discard the declaration if the variable wasn't found
+            node.delete key                                  # Discard the declaration if the variable wasn't found
           end
         end    
       end

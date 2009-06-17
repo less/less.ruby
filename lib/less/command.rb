@@ -10,7 +10,6 @@ module Less
       @options = options
     end
 
-
     def watch?()    @options[:watch]    end
     def compress?() @options[:compress] end
     def debug?()    @options[:debug]    end
