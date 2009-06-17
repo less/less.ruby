@@ -45,7 +45,7 @@ begin
 
   Spec::Rake::SpecTask.new("spec") do |t|
     t.spec_files = FileList['spec/**/*_spec.rb']
-    t.spec_opts = ['--color']
+    t.spec_opts = ['--color', '--format=specdoc']
   end
 
   task :test do
