@@ -74,6 +74,10 @@ body {
 .operations {
     @ten: 10;
     @dark: #111;
+    @box: 100px; 
+    @border_width: 10px;
+    width: @box + @border_width; // 110px
+    div { width: @box - 2 * @border_width; } // 80px
     border-width: .borders > @thick * 5 - 4px; // 16px
     font-size: 10 - 4 + 6 * @ten; // 66
     line-height: @ten - .operations > @ten + .root > .first > @size - 1; // 7px
