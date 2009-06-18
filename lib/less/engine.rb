@@ -39,7 +39,7 @@ module Less
         end
         node.delete key if matched # Delete the property if it's LESS-specific
       end
-      
+
       #
       # Evaluate mixins
       #
@@ -69,8 +69,8 @@ module Less
       # Units are: 1px, 1em, 1%, #111
       @tree = @tree.traverse :leaf do |key, value, path, node|
         node[ key ] = value.gsub /(#{REGEX[:operand]}(\s?)[-+\/*](\4))+(#{REGEX[:operand]})/ do |operation|
-          # Disallow operations certain compound declarations
-          if COMPOUND[key]
+          # Disallow operations on certain compound declarations
+          if COMPOUND[ key ]
             next value
           else
             raise CompoundOperationError, "#{key}: #{value}"
