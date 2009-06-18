@@ -92,6 +92,14 @@ td, tr, table {
 }
 
 // More complex CSS selectors
+blockquote:before, blockquote:after, q:before, q:after { content: ""; }
+a:link, 
+a:hover {
+  color:brown;
+}
+div > a, a span {
+  color: grey;
+}
 ul li:first-child {
     border-top: none;
 }
@@ -110,6 +118,22 @@ q:lang(no) {
 }
 blockquote:before {
   color: red;
+}
+
+// Duplicates
+div {
+  width: 9px;
+}
+div { 
+  color: purple;
+}
+.duplicate {
+  width: 9px;
+  height: 11px;
+}
+.duplicate {
+  width: 11px;
+  color: blue;
 }
 
 /*input[type="text"] { 
