@@ -4,7 +4,7 @@ module Less
     COMPOUND = {'font' => true, 'background' => false, 'border' => false }
     REGEX = {
       :path     => /([#.][->#.\w ]+)?( ?> ?)?/,              # #header > .title
-      :selector => /[-\w #.,>*:\(\)]/,                       # .cow .milk > a
+      :selector => /[-\w #.,*>:\(\)]/,                       # .cow .milk > a
       :variable => /@([-\w]+)/,                              # @milk-white
       :property => /@[-\w]+|[-a-z]+/,                        # font-size
       :color    => /#([a-zA-Z0-9]{3,6})\b/,                  # #f0f0f0
@@ -138,17 +138,17 @@ module Less
       #   less:     color: black;
       #   hashify: "color" => "black"
       #
-      hash = self.gsub(/\t+/, ' ').                                                       # Tabs
-                  gsub(/\r\n/, "\n").                                                     # m$
-                  gsub(/\/\/.*/, '').                                                     # Comments //
+      hash = self.gsub(/\r\n/, "\n").                                                     # m$
+                  gsub(/\/\/.*\n/, '').                                                   # Comments //
                   gsub(/\/\*.*?\*\//m, '').                                               # Comments /*
-                  gsub(/"/, "'").                                                         # " => '
-                  gsub(/("|')(.+?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
-                  gsub(/(#{REGEX[:property]}):\s*(.+?)\s*(;|(?=\}))/,'"\1"=>"\2",').      # Rules
+                  gsub(/\s+/, ' ').                                                       # Replace \t\n
+                  gsub(/"/, "'").                                                         # " to '
+                  gsub(/("|')(.*?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
+                  gsub(/(#{REGEX[:property]}): *([^\{\}]+?) *(;|(?=\}))/,'"\1"=>"\2",').  # Rules
                   gsub(/\}/, "},").                                                       # Closing }
-                  gsub(/( *)(#{REGEX[:selector]}+?)[ \n]*(?=\{)/m, '\1"\2"=>').           # Selectors
+                  gsub(/([, ]*)(#{REGEX[:selector]}+?)[ \n]*(?=\{)/, '\1"\2"=>').         # Selectors
                   gsub(/([.#][->\w .#]+);/, '"\\1" => :mixin,')                           # Mixins
-      eval "{" + hash + "}"                                                               # Return {hash}
+      eval "{#{ hash }}"                                                                  # Return {hash}
     end
   end
 end
