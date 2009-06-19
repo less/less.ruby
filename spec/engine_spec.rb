@@ -29,6 +29,10 @@ describe Less::Engine do
     it "should handle instances of double-quotes" do
       lessify("blockquote:before, blockquote:after, q:before, q:after {\n content: \"\"; }").should == "blockquote:before, blockquote:after, q:before, q:after { content: ''; }"
     end
+    
+    it "should parse tag attributes" do
+      lessify("input[type=text] { color: red; }").should == "input[type=text] { color: red; }"
+    end
   end
 end
 

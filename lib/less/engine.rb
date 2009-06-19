@@ -4,7 +4,7 @@ module Less
     COMPOUND = {'font' => true, 'background' => false, 'border' => false }
     REGEX = {
       :path     => /([#.][->#.\w ]+)?( ?> ?)?/,              # #header > .title
-      :selector => /[-\w #.,*>:\(\)]/,                       # .cow .milk > a
+      :selector => /[-\w #.,>*:\(\)\=\[\]']/,                 # .cow .milk > a
       :variable => /@([-\w]+)/,                              # @milk-white
       :property => /@[-\w]+|[-a-z]+/,                        # font-size
       :color    => /#([a-zA-Z0-9]{3,6})\b/,                  # #f0f0f0
