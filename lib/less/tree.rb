@@ -74,7 +74,7 @@ module Less
         properties = node.inject("") do |s, (k, v)|          
           v.is_a?(String) ? (s + "#{k}: #{CGI.unescape(v)}; ") : s                # Add the property to the list
         end
-        css << path * ( chain == :desc ? ' ' : ' > ') + " { " + properties + "}"  # Add the rule-set to the CSS
+        css << path * ( chain == :desc ? ' ' : ' > ') + " { " + properties + "}" unless properties.empty? # Add the rule-set to the CSS
       end
       css.join "\n"
     end
