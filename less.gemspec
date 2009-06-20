@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "0.8.10"
+  s.version = "0.8.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
@@ -28,11 +28,12 @@ Gem::Specification.new do |s|
      "lib/less/engine.rb",
      "lib/less/tree.rb",
      "spec/command_spec.rb",
+     "spec/css/less-0.8.10.css",
+     "spec/css/less-0.8.11.css",
      "spec/css/less-0.8.5.css",
      "spec/css/less-0.8.6.css",
      "spec/css/less-0.8.7.css",
      "spec/css/less-0.8.8.css",
-     "spec/css/less-0.9.0.css",
      "spec/engine_spec.rb",
      "spec/spec.css",
      "spec/spec.less",
