@@ -53,9 +53,9 @@ module Less
       self.each do |key, value|                        # `self` is the current node, starting with the trunk
         if value.is_a? Hash and key != :variables      # If the node is a branch, we can go deeper
           path << key                                  # Add the current branch to the path
+          yield path, self[ key ] if by == :branch     # The node is a branch, yield it to the block  
           self[ key ] = value.to_tree.                 # Make sure any change is saved to the main tree
                         traverse by, path, &blk        # Recurse, with the current node becoming `self`                       
-          yield path, self[ key ] if by == :branch     # The node is a branch, yield it to the block
           path.pop                                     # We're returning from a branch, pop the last path element
         elsif by == :leaf and key.is_a? String
           yield key, value, path, self                 # The node is a leaf, yield it to the block
