@@ -10,8 +10,8 @@ describe Less::Engine do
   include LessEngineSpecHelper
 
   describe "to_css" do
-    it "should return p {} for p {}" do
-      lessify('p {}').should == 'p { }'
+    it "should return an empty string for p {}" do
+      lessify('p {}').should == ''
     end
 
     it "should return css with variable usage" do
@@ -19,7 +19,7 @@ describe Less::Engine do
     end
 
     it "should return css as shown on home page" do
-      lessify("#header { \n  color: red;\n  a {\n    font-weight: bold;\n    text-decoration: none;\n  }\n}").should == "#header a { font-weight: bold; text-decoration: none; }\n#header { color: red; }"
+      lessify("#header { \n  color: red;\n  a {\n    font-weight: bold;\n    text-decoration: none;\n  }\n}").should == "#header { color: red; }\n#header a { font-weight: bold; text-decoration: none; }"
     end
 
     it "should handle :hover" do
