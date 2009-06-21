@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "0.8.11"
+  s.version = "0.8.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-06-18}
+  s.date = %q{2009-06-21}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{alexis@cloudhead.net}
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
      "spec/command_spec.rb",
      "spec/css/less-0.8.10.css",
      "spec/css/less-0.8.11.css",
+     "spec/css/less-0.8.12.css",
      "spec/css/less-0.8.5.css",
      "spec/css/less-0.8.6.css",
      "spec/css/less-0.8.7.css",
