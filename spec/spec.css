@@ -22,6 +22,7 @@ q:lang(no) { quotes: '~' '~'; }
 blockquote:before { color: red; }
 div { color: purple; }
 .duplicate { width: 11px; color: blue; }
+.loading { background: 'http://'; }
 input[type='text'] { background-color: blue; }
 .transparent_box { background-color: #FFF; filter: alpha(opacity=60); opacity: 0.6; }
 .space { color: purple; font-color: yellow; }
