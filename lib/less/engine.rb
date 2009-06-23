@@ -4,9 +4,9 @@ module Less
     COMPOUND = {'font' => true, 'background' => false, 'border' => false }
     REGEX = {
       :path     => /([#.][->#.\w ]+)?( ?> ?)?/,              # #header > .title
-      :selector => /[-\w #.,>*:\(\)\=\[\]']/,                 # .cow .milk > a
+      :selector => /[-\w #.,>*+:\(\)\=\[\]']/,               # .cow .milk > a
       :variable => /@([-\w]+)/,                              # @milk-white
-      :property => /@[-\w]+|[-a-z]+/,                        # font-size
+      :property => /@[-\w]+|[-a-z*0-9_]+/,                   # font-size
       :color    => /#([a-zA-Z0-9]{3,6})\b/,                  # #f0f0f0
       :number   => /\d+(?>\.\d+)?/,                          # 24.8
       :unit     => /px|em|pt|cm|mm|%/                        # em
@@ -139,11 +139,11 @@ module Less
       #   hashify: "color" => "black"
       #
       hash = self.gsub(/\r\n/, "\n").                                                     # m$
+                  gsub(/"/, "'").                                                         # " to '
+                  gsub(/'(.*?)'/) { "'" + CGI.escape( $1 ) + "'" }.                       # Escape string values
                   gsub(/\/\/.*\n/, '').                                                   # Comments //
                   gsub(/\/\*.*?\*\//m, '').                                               # Comments /*
                   gsub(/\s+/, ' ').                                                       # Replace \t\n
-                  gsub(/"/, "'").                                                         # " to '
-                  gsub(/("|')(.*?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }.                  # Escape string values
                   gsub(/(#{REGEX[:property]}): *([^\{\}]+?) *(;|(?=\}))/,'"\1"=>"\2",').  # Rules
                   gsub(/\}/, "},").                                                       # Closing }
                   gsub(/([, ]*)(#{REGEX[:selector]}+?)[ \n]*(?=\{)/, '\1"\2"=>').         # Selectors
