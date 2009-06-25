@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 module LessEngineSpecHelper
   def lessify(string)
-    return Less::Engine.new(string).to_css(:desc)
+    return Less::Engine.new(string).to_css
   end
 end
 

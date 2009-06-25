@@ -1,9 +1,13 @@
 $:.unshift File.dirname(__FILE__)
 
 require 'cgi'
+require 'treetop'
 
 require 'less/command'
 require 'less/engine'
+require 'less/engine/build_handler'
+require 'less/engine/rule'
+require 'less/less_grammar'
 require 'less/tree'
 
 module Less
