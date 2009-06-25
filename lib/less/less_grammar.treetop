@@ -40,9 +40,9 @@ grammar LessGrammar
   end
   
   rule rule_block
-    "{" rule_block_content "}" {
+    "{" content:(rule_block_content / nothing) "}" {
       def build(engine)
-        rule_block_content.build(engine)
+        content.build(engine)
       end
     }
   end
@@ -104,5 +104,13 @@ grammar LessGrammar
   
   rule whitespace
     [ ]*
+  end
+  
+  rule nothing
+    "" {
+      def build(engine)
+        # Do absolutely nothing!
+      end
+    }
   end
 end
