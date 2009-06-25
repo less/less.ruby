@@ -48,7 +48,7 @@ grammar LessGrammar
   end
   
   rule rule_block_content
-    (css_rule / declaration / [ ]+)+ {
+    (css_rule / declaration / " ")+ {
       def build(engine)
         if elements # Skipping empty rules (p { })
           engine.rules << Less::Engine::Rule.new(parent.selectors.text_value)
