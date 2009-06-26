@@ -1,0 +1,14 @@
+tr, td, a {
+  .foo {
+    color: blue;
+  }
+}
+
+body div p {
+  height: 100%;
+}
+
+#test {
+  height: body > div > p['height'];
+  color: td > .foo['color'];
+}

@@ -1,4 +1,4 @@
-grammar LessGrammar
+grammar Less
   rule primary
     (css_rule / variable_declaration)+ {
       def build(engine)
@@ -72,30 +72,6 @@ grammar LessGrammar
   
   rule declaration_key
     [a-z\-]+
-  end
-  
-  rule operand
-    addition / subtraction / multiplication / divition
-  end
-  
-  rule addition
-    "*"
-  end
-  
-  rule subtraction
-    "-"
-  end
-  
-  rule multiplication
-    "*"
-  end
-  
-  rule divition
-    "/"
-  end
-  
-  rule number
-    [0-9]+
   end
   
   rule declaration_value

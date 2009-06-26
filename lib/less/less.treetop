@@ -1,0 +1,111 @@
+grammar Less
+  rule ruleset
+    (ws selectors ws "{" ruleset "}" ws) <Descend> { 
+      def build(env)
+        puts text_value
+        elements.each {|e| e.build if e.respond_to? :build }
+      end
+    } / 
+    declarations <Descend> {
+      def build(env) super env, 1 end
+    }
+  end
+  
+  #
+  # div, .class, body > p
+  #
+  rule selectors
+    selector ',' selectors <Descend>
+    /
+    selector {
+      def build env
+        log text_value, env
+        elements.each {|e| e.build env if e.respond_to? :build}
+      end
+    }
+  end
+  
+  #
+  # div > p a
+  #
+  rule selector
+    element select selector <Descend>
+    / 
+    element <Descend> {
+      def build env
+        log text_value, env
+      end
+    }
+  end
+  
+  #
+  # div | .class | #id | *
+  #
+  rule element
+    ([#.]? [-a-zA-Z0-9_\[\]|~=']+ / '*') {
+      def build env
+        log text_value, env
+      end
+    }
+  end
+  
+  rule select
+    (' ' / '>') {
+      def build env
+        env[:depth] += 1
+        #log text_value, env
+      end
+    }
+  end
+  
+  #
+  # @my-var: 12px;
+  # height: 100%;
+  #
+  rule declaration
+    ws name:(property / variable) s ':' s value s ';' ws {
+      def build env
+        log "#{name.text_value}: #{value.text_value}", env
+      end
+    }
+  end
+  
+  rule declarations
+      declaration* <Descend>
+  end
+  
+  rule value
+    [^\n;]+
+  end
+  
+  rule property
+    [-a-z0-9_]+
+  end
+  
+  rule variable
+    '@' property {
+      def build env
+        #puts "* #{property.text_value}"
+      end
+    }
+  end
+  
+  rule mixin
+    selectors ';'
+  end
+  
+  # Space
+  rule s
+    [ ]*
+  end
+  
+  # Whitespace
+  rule ws
+    [\n ]*
+  end
+  
+  # Non-whitespace
+  rule ns
+    ![\n ] .
+  end
+end

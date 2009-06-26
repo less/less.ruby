@@ -7,8 +7,11 @@ require 'less/command'
 require 'less/engine'
 require 'less/engine/build_handler'
 require 'less/engine/rule'
-require 'less/less_grammar'
+#require 'less/less'
 require 'less/tree'
+require 'less/engine/node'
+
+Treetop.load 'lib/less/less'
 
 module Less
   MixedUnitsError = Class.new(Exception)

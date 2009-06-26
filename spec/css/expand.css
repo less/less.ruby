@@ -1,0 +1,5 @@
+#test { height: 100%; color: blue; }
+tr .foo { color: blue; }
+td .foo { color: blue; }
+a .foo { color: blue; }
+body div p { height: 100%; }
