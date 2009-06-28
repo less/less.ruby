@@ -5,11 +5,9 @@ require 'treetop'
 
 require 'less/command'
 require 'less/engine'
-require 'less/engine/build_handler'
-require 'less/engine/rule'
-#require 'less/less'
+require 'less/engine/element'
 require 'less/tree'
-require 'less/engine/node'
+require 'less/engine/builder'
 
 Treetop.load 'lib/less/less'
 
@@ -19,7 +17,11 @@ module Less
   CompoundOperationError = Class.new(Exception)
 
   def self.version
-    File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') )
+    File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') ).strip
+  end
+  
+  def self.parse less
+    Engine.new(less).to_css
   end
 end
 

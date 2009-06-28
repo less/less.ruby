@@ -1,61 +1,49 @@
 grammar Less
-  rule ruleset
-    (ws selectors ws "{" ruleset "}" ws) <Descend> { 
+  rule primary
+    (declaration / ruleset)+ <Builder> { 
       def build(env)
-        puts text_value
-        elements.each {|e| e.build if e.respond_to? :build }
+        super
       end
-    } / 
-    declarations <Descend> {
-      def build(env) super env, 1 end
-    }
+    } / declaration+ <Builder>
   end
   
   #
   # div, .class, body > p
   #
-  rule selectors
-    selector ',' selectors <Descend>
-    /
-    selector {
-      def build env
-        log text_value, env
-        elements.each {|e| e.build env if e.respond_to? :build}
-      end
-    }
+  rule ruleset
+    ws (selector s ',' ws ruleset <Builder> / selector) ws <Builder>
   end
   
   #
-  # div > p a
+  # div > p a {...}
   #
   rule selector
-    element select selector <Descend>
-    / 
-    element <Descend> {
+    select element s selector <Builder> {
       def build env
-        log text_value, env
+        env.rules << Less::Element.new(element.text_value, select.text_value)
+        super env.elements.last
       end
-    }
+    } / select element ws "{" primary "}" ws <Builder> {
+      def build env        
+        env.rules << Less::Element.new(element.text_value, select.text_value)
+        super env.elements.last
+      end
+    } / select element s ';' {
+      def build env
+        env << Less::Mixin.new(element.text_value)
+      end      
+    } / select element
   end
   
   #
   # div | .class | #id | *
   #
   rule element
-    ([#.]? [-a-zA-Z0-9_\[\]|~=']+ / '*') {
-      def build env
-        log text_value, env
-      end
-    }
+    ([#.]? [-a-zA-Z0-9_\[\]|~="']+ / '*')
   end
   
   rule select
-    (' ' / '>') {
-      def build env
-        env[:depth] += 1
-        #log text_value, env
-      end
-    }
+    (s [:+>] s / [ ]+)?
   end
   
   #
@@ -65,17 +53,13 @@ grammar Less
   rule declaration
     ws name:(property / variable) s ':' s value s ';' ws {
       def build env
-        log "#{name.text_value}: #{value.text_value}", env
+        env << { name.text_value => value.text_value }
       end
     }
   end
   
-  rule declarations
-      declaration* <Descend>
-  end
-  
   rule value
-    [^\n;]+
+    [^\n\{\};]+
   end
   
   rule property
@@ -83,15 +67,7 @@ grammar Less
   end
   
   rule variable
-    '@' property {
-      def build env
-        #puts "* #{property.text_value}"
-      end
-    }
-  end
-  
-  rule mixin
-    selectors ';'
+    '@' property
   end
   
   # Space
@@ -102,10 +78,5 @@ grammar Less
   # Whitespace
   rule ws
     [\n ]*
-  end
-  
-  # Non-whitespace
-  rule ns
-    ![\n ] .
   end
 end
