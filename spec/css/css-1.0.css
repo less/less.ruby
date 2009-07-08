@@ -11,6 +11,10 @@ div#id { color: green; }
 .one.two.three { color: grey; }
 @media print { font-size: 3em; }
 @media screen { font-size: 10px; }
+@font-face {
+  font-family: 'Garamond Pro';
+  src: url("/fonts/garamond-pro.ttf");
+}
 a:hover { color: #999999; }
 a:link { color: #999999; }
 p { text-transform: none; }
