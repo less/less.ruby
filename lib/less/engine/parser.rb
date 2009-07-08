@@ -479,15 +479,30 @@ module Less
       elements[1]
     end
 
-    def path
+    def url
       elements[2]
     end
 
+    def s
+      elements[4]
+    end
+
+    def ws
+      elements[6]
+    end
   end
 
   module Import1
     def build env
-      Less::Engine.new(File.read(path.text_value)).to_tree
+      path = File.join(env.root.file, url.value)
+      path += '.less' unless path =~ /\.less$/
+      if File.exist? path
+        log "\nimporting #{path}"
+        imported = Less::Engine.new(File.new path).to_tree
+        env.rules += imported.rules
+      else
+        raise ImportError, path
+      end
     end
   end
 
@@ -534,6 +549,24 @@ module Less
             r6 = instantiate_node(SyntaxNode,input, index...index)
           end
           s0 << r6
+          if r6
+            r8 = _nt_s
+            s0 << r8
+            if r8
+              if has_terminal?(';', false, index)
+                r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(';')
+                r9 = nil
+              end
+              s0 << r9
+              if r9
+                r10 = _nt_ws
+                s0 << r10
+              end
+            end
+          end
         end
       end
     end
@@ -559,8 +592,12 @@ module Less
   end
 
   module Url1
-    def build env
+    def build env = nil
       Node::String.new(CGI.unescape path.text_value)
+    end
+    
+    def value
+      build
     end
   end
 
@@ -2657,12 +2694,32 @@ module Less
   end
 
   module String1
+    def content
+      elements[1]
+    end
+
   end
 
   module String2
+    def value
+      content.text_value
+    end
   end
 
   module String3
+  end
+
+  module String4
+    def content
+      elements[1]
+    end
+
+  end
+
+  module String5
+    def value
+      content.text_value
+    end
   end
 
   def _nt_string
@@ -2741,6 +2798,7 @@ module Less
     if s1.last
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(String1)
+      r1.extend(String2)
     else
       @index = i1
       r1 = nil
@@ -2786,7 +2844,7 @@ module Less
           end
           if s12.last
             r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
-            r12.extend(String2)
+            r12.extend(String3)
           else
             @index = i12
             r12 = nil
@@ -2811,7 +2869,8 @@ module Less
       end
       if s9.last
         r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
-        r9.extend(String3)
+        r9.extend(String4)
+        r9.extend(String5)
       else
         @index = i9
         r9 = nil
