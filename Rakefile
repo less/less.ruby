@@ -59,3 +59,12 @@ begin
     t.rcov_opts = ['--exclude', '^spec,/gems/']
   end
 end
+
+begin
+  require 'lib/less'
+  
+  task :compile do
+    puts "compiling #{Less::GRAMMAR}..."
+    File.open(Less::PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(Less::GRAMMAR) }
+  end
+end

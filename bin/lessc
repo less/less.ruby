@@ -5,14 +5,11 @@ $:.unshift File.dirname(__FILE__) + "/../lib"
 require 'optparse'
 require 'less'
 
-CSS = '.css'
-
 # Argument defaults
 options = {
   :watch => false,
   :compress => false,
   :debug => false,
-  :inheritance => :desc
 }
 
 # Get arguments
@@ -23,11 +20,6 @@ opts = OptionParser.new do |o|
   # Watch mode
   o.on("-w", "--watch", "watch for changes") do
     options[:watch] = true
-  end
-  
-  # Child-type inheritance
-  o.on("-c", "--child", "nesting uses child-type inheritance") do
-    options[:chain] = :child
   end
   
   # Compression needs a proper algorithm

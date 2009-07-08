@@ -6,7 +6,7 @@ module LessCommandSpecHelper
   end
 
   def valid_options
-    {:destination => File.dirname(__FILE__) + '/spec.css', :watch => true, :chain => true, :debug => false}.merge(required_options)
+    {:destination => File.dirname(__FILE__) + '/spec.css', :watch => true, :debug => false}.merge(required_options)
   end
 end
 
@@ -48,10 +48,6 @@ describe Less::Command do
       @command.options[:watch].should == valid_options[:watch]
     end
 
-    it "should set the chain" do
-      @command.options[:chain].should == valid_options[:chain]
-    end
-
     it "should set the debug" do
       @command.options[:debug].should == valid_options[:debug]
     end
@@ -80,7 +76,7 @@ describe Less::Command do
         end
 
         it "should attempt to re-compile" do
-          @command.should_receive(:compile).with().once
+          @command.should_receive(:parse).with().once
         end
       end
 

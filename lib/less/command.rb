@@ -1,12 +1,11 @@
 module Less
   class Command
-    CSS = '.css'
-
     attr_accessor :source, :destination, :options
 
     def initialize options
+      $verbose = options[:debug]
       @source = options[:source]
-      @destination = (options[:destination] || options[:source]).gsub /\.(less|lss)/, CSS
+      @destination = (options[:destination] || options[:source]).gsub /\.(less|lss)/, '.css'
       @options = options
     end
 
@@ -16,9 +15,9 @@ module Less
 
     # little function which allows us to
     # Ctrl-C exit inside the passed block
-    def watch &block
+    def watch
       begin
-        block.call
+        yield
       rescue Interrupt
         puts
         exit 0
@@ -26,10 +25,10 @@ module Less
     end
 
     def run!
-      compile(true) unless File.exist? @destination
+      parse(true) unless File.exist? @destination
 
       if watch?
-        log "Watching for changes in #@source ...Ctrl-C to abort.\n"
+        log "Watching for changes in #@source... Ctrl-C to abort.\n: "
 
         # Main watch loop
         loop do
@@ -37,55 +36,55 @@ module Less
 
           # File has changed
           if File.stat( @source ).mtime > File.stat( @destination ).mtime
-            log "Change detected... "
+            print "Change detected... "
 
             # Loop until error is fixed
-            until compile
-              log "Press [enter] to continue..."
+            until parse
+              log "Press [return] to continue..."
               watch { $stdin.gets }
             end
           end
         end
       else
-        compile
+        parse
       end
     end
 
-    def compile new = false
+    def parse new = false
       begin
         # Create a new Less object with the contents of a file
-        css = Less::Engine.new( File.read( @source ) ).to_css
+        css = Less::Engine.new(File.new @source).to_css
         css = css.delete " \n" if compress?
 
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        puts "#{new ? '* [Created]' : ' [Updated]'} #{@destination.split('/').last}" if watch?
+        print "#{new ? '* [Created]' : '* [Updated]'} #{@destination.split('/').last}\n: " if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
-      rescue SyntaxError
-        error = debug?? $! : $!.message.split("\n")[1..-1].collect {|e|
-          e.gsub(/\(eval\)\:(\d+)\:\s/, 'line \1: ')
-        } * "\n"
-        err "errors were found in the .less file! \n#{error}\n"
+      rescue SyntaxError => e
+        err "#{e}\n", "Parse"
       rescue MixedUnitsError => e
         err "`#{e}` you're  mixing units together! What do you expect?\n"
-      rescue CompoundOperationError => e
-        err "`#{e}` operations in compound declarations aren't allowed, sorry!\n"
       rescue PathError => e
-        err "`#{e}` was not found.\n"
+        err "`#{e}` was not found.\n", "Path"
+      rescue VariableNameError => e
+        err "`#{e}` is undefined.\n", "Name"
+      rescue MixinNameError => e
+        err "`#{e}` is undefined.\n", "Name"
       else
         true
       end
     end
 
-    # Just a logging function to avoid typing '}'
+    # Just a logging function to avoid typing '*'
     def log s = ''
       print '* ' + s.to_s
     end
 
-    def err s = ''
-      print "!! #{s}"
+    def err s = '', type = ''
+      type = type.strip + ' ' unless type.empty?
+      print "! [#{type}Error] #{s}"
     end
   end
 end

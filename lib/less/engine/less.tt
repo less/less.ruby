@@ -1,0 +1,362 @@
+grammar Less
+  rule primary
+    (declaration / ruleset / import / comment)+ <Builder> / declaration* <Builder> / import* <Builder> / comment*
+  end
+  
+  rule comment
+    ws '/*' (!'*/' . )* '*/' ws / ws '//' (!"\n" .)* "\n" ws
+  end
+  
+  #
+  # div, .class, body > p {...}
+  #
+  rule ruleset
+    selectors "{" ws primary ws "}" ws {
+      def build env
+        # Build the ruleset for each selector
+        selectors.build(env, :tree).each do |sel|
+          primary.build sel
+        end
+      end
+    } / ws selectors ';' ws {
+      def build env
+        log "[mixin]: #{selectors.text_value}"
+        selectors.build(env, :path).each do |path|
+                    
+          rules = path.inject(env.root) do |current, node|
+            current.descend(node.selector, node) or raise MixinNameError, path.join
+          end.rules
+                    
+          env.rules += rules
+        end
+      end
+    }
+  end
+  
+  rule import
+    "@import" S path:(string / url) medias? {
+      def build env
+        Less::Engine.new(File.read(path.text_value)).to_tree
+      end
+    }
+  end
+  
+  rule url
+    'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
+      def build env
+        Node::String.new(CGI.unescape path.text_value)
+      end
+    }
+  end
+  
+  rule medias
+    [-a-z]+ (s ',' s [a-z]+)*
+  end
+  
+  rule selectors
+    ws selector tail:(s ',' ws selector)* ws {
+      def build env, method 
+        all.map do |e|
+          e.send(method, env) if e.respond_to? method
+        end.compact
+      end
+      
+      def all
+        [selector] + tail.elements.map {|e| e.selector }
+      end
+    }
+  end
+  
+  #
+  # div > p a {...}
+  #
+  rule selector
+    (s select element s)+ {
+      def tree env
+        log "\n% element: #{text_value}\n"
+        elements.inject(env) do |node, e|
+          node << Node::Element.new(e.element.text_value, e.select.text_value)
+          node.last
+        end
+      end
+      
+      def path env
+        elements.map do |e|
+          Node::Element.new(e.element.text_value, e.select.text_value)
+        end
+      end
+    }
+  end
+  
+  #
+  # @my-var: 12px;
+  # height: 100%;
+  #
+  rule declaration
+    ws name:(ident / variable) s ':' s expression s (';'/ ws &'}') ws {
+      def build env
+        env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value)
+        expression.build env
+      end
+    }
+  end
+  
+  #
+  # An operation or compound value
+  #
+  rule expression
+    entity (operator / S) expression <Builder> / entity
+  end
+  
+  #
+  # Entity: Any whitespace delimited token
+  #
+  rule entity
+    function / fonts / keyword / (class_id / tag) accessor / variable / literal / important / empty
+  end
+  
+  rule fonts
+    font family:(s ',' s font)+ {
+      def build env
+        fonts = ([font] + family.elements.map {|f| f.font }).map do |font|
+          font.build env
+        end
+        env.identifiers.last << Node::FontFamily.new(fonts)
+      end
+    }
+  end
+  
+  rule font
+    [a-zA-Z] [-a-zA-Z0-9]* {
+      def build env
+        Node::Keyword.new(text_value)
+      end
+    } / string {
+      def build env
+        Node::String.new(text_value)
+      end
+    }
+  end
+  
+  #
+  # An identifier
+  #
+  rule ident
+    '-'? [-a-z0-9_]+
+  end
+  
+  rule variable
+    '@' name:[-a-zA-Z0-9_]+  {
+      def build env
+        
+        
+       
+        
+        env.identifiers.last << (env.nearest name.text_value)
+      end
+    }
+  end
+  
+  #
+  # div / .class / #id / input[type="text"] / lang(fr)
+  #
+  rule element
+    (class_id / tag) attribute* ('(' ident ')')? / '@media'
+  end
+  
+  rule class_id
+    tag? class+ / tag? id
+  end
+  
+  #
+  # [type="text"]
+  #
+  rule attribute
+    '[' [a-z]+ ([|~]? '=')? (tag / string) ']'
+  end
+  
+  rule class
+    '.' [_a-z] [-a-zA-Z0-9_]*
+  end
+  
+  rule id
+    '#' [_a-z] [-a-zA-Z0-9_]*
+  end
+  
+  rule tag
+    [a-zA-Z] [-a-zA-Z]* [0-9]? / '*'
+  end
+  
+  rule select
+    (s [:+>] s / S)?
+  end
+  
+  # TODO: Merge this with attribute rule
+  rule accessor
+    '[' attr:(string / variable) ']' {
+      def build env
+        attr.text_value
+      end
+    }
+  end
+  
+  rule operator
+    S op:([-+*/]) S {
+      def build env
+        env.identifiers.last << Node::Operator.new(op.text_value)
+      end
+    } / [-+*/] {
+      def build env
+        env.identifiers.last << Node::Operator.new(text_value)
+      end
+    }
+  end
+  
+  #
+  # Tokens which don't need to be evaluated
+  #
+  rule literal
+    color / (dimension / [-a-z]+) '/' dimension {
+      def build env
+        env.identifiers.last << Node::Literal.new(text_value)
+      end
+    } / number unit {
+      def build env
+        env.identifiers.last << Node::Number.new(number.text_value, unit.text_value)
+      end
+    } / string {
+      def build env
+        env.identifiers.last << Node::String.new(text_value)
+      end
+    }
+  end
+  
+  # !important
+  rule important
+    '!important' {
+      def build env
+        env.identifiers.last << Node::Keyword.new(text_value)
+      end
+    }
+  end
+  
+  rule empty
+    "" <Empty>
+  end
+  
+  #
+  # `blue`, `small`, `normal` etc.
+  #
+  rule keyword
+    [a-zA-Z] [-a-zA-Z]* !ns {
+      def build env
+        env.identifiers.last << Node::Keyword.new(text_value)
+      end
+    }
+  end
+    
+  #
+  # 'hello world' / "hello world"
+  #
+  rule string
+    "'" (!"'" . )* "'" / ["] (!["] . )* ["]
+  end
+  
+  #
+  # Numbers & Units
+  #
+  rule dimension
+    number unit
+  end
+  
+  rule number
+    '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+
+  end
+  
+  rule unit
+    ('px'/'em'/'pc'/'%'/'pt'/'cm'/'mm')?
+  end
+
+  
+  #
+  # Color
+  #
+  rule color
+    '#' hex {
+      def build env
+        env.identifiers.last << Node::Color.new(hex.text_value)
+      end
+    } / fn:(('hsl'/'rgb') 'a'?) '(' arguments ')' {
+      def build env
+        args = arguments.build env
+        env.identifiers.last << Node::Function.new(fn.text_value, args.flatten)
+      end
+    }
+  end
+  
+  rule hex
+    [a-fA-F0-9] [a-fA-F0-9] [a-fA-F0-9]+
+  end
+  
+  #
+  # Functions and arguments
+  #
+  rule function
+    name:([-a-zA-Z_]+) '(' arguments ')' {
+      def build env
+        args = arguments.build env
+        env.identifiers.last << Node::Function.new(name.text_value, [args].flatten)
+      end
+    }
+  end
+  
+  rule arguments
+    argument s ',' s arguments {
+      def build env
+        elements.map do |e|
+          e.build env if e.respond_to? :build
+        end.compact
+      end
+    } / argument
+  end
+  
+  rule argument
+    color {
+      def build env
+        Node::Color.new text_value
+      end
+    } / number unit {
+      def build env
+        Node::Number.new number.text_value, unit.text_value
+      end
+    } / string {
+      def build env
+        Node::String.new text_value
+      end
+    } / [a-zA-Z]+ '=' dimension {
+      def build env
+        Node::Base.new text_value
+      end
+    }
+  end
+  
+  #
+  # Whitespace
+  #
+  rule s
+    [ ]*
+  end
+  
+  rule S
+    [ ]+
+  end
+  
+  rule ws
+    [\n ]*
+  end
+  
+  # Non-space char
+  rule ns
+    ![ ;] .
+  end
+end

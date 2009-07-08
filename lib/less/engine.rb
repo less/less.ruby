@@ -1,53 +1,57 @@
+$:.unshift File.dirname(__FILE__)
+
+require 'engine/builder'
+require 'engine/nodes'
+
 module Less
-  class Engine < String
-    class SyntaxError < RuntimeError; end
-    attr_reader :css
+  class Engine
+    attr_reader :css, :less
     
-    def initialize less
-      super less.dup
+    def initialize obj
+      @less = if obj.is_a? File
+        @path = File.expand_path obj.path
+        obj.read
+      elsif obj.is_a? String
+        obj.dup
+      else
+        raise ArgumentError, "argument must be an instance of File or String!"
+      end
+      
+      begin
+        require Less::PARSER
+      rescue LoadError
+        Treetop.load Less::GRAMMAR
+      end
+      
       @parser = LessParser.new
-      @tree = nil
-      self
     end
     
     def parse
-      return @css if @css # only run once
+      root = @parser.parse(self.prepare)
       
-      # Parse!
-      @root = @parser.parse(self.prepare)
-            
-      if @root
-        @tree = @root.build Element.new
+      if root
+        @tree = root.build Node::Element.new
       else
-        raise SyntaxError, [
-          @parser.failure_column, 
-          @parser.failure_line, 
-          @parser.failure_reason
-        ].join(" -- ")
+        raise SyntaxError, @parser.failure_message
       end
       
-      puts @tree.inspect
+      log @tree.inspect
             
       @tree
     end
+    alias :to_tree :parse
     
     def to_css
       "/* Generated with Less #{Less.version} */\n\n" +  
-      self.parse.to_css
-    end
-    
-    def to_tree
-      self.parse
+      (@css || @css = self.parse.to_css)
     end
     
     def prepare
-      self.gsub(/\r\n/, "\n").                                                     # m$
-           gsub(/\n+/, "\n").
-           gsub(/\t/, '  ').
-           gsub(/"/, "'").                                                         # " to '
-           gsub(/'(.*?)'/) { "'" + CGI.escape( $1 ) + "'" }.                       # Escape string values
-           gsub(/\/\/.*\n/, '').                                                   # Comments //
-           gsub(/\/\*.*?\*\//m, '')                                                # Comments /*
+      @less.gsub(/\r\n/, "\n").                                      # m$
+            gsub(/\t/, '  ')                                        # Tabs to spaces
+            #gsub(/('|")(.*?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }   # Escape string values
+           # gsub(/\/\/.*\n/, '').                                    # Comments //
+          #  gsub(/\/\*.*?\*\//m, '')                                 # Comments /*
     end
   end
 end
