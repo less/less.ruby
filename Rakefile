@@ -3,7 +3,7 @@ begin
   Jeweler::Tasks.new do |s|
     s.name        = "less"
     s.authors     = ["cloudhead"]
-    s.email       = "alexis@cloudhead.net"
+    s.email       = "self@cloudhead.net"
     s.summary     = "LESS compiler"
     s.homepage    = "http://www.lesscss.org"
     s.description = "LESS is leaner CSS"
@@ -67,4 +67,14 @@ begin
     puts "compiling #{Less::GRAMMAR}..."
     File.open(Less::PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(Less::GRAMMAR) }
   end
+  
+  task :benchmark do
+    puts "benchmarking..."
+    less = File.read("spec/less/big-1.0.less")
+    start = Time.now.to_f
+    Less::Engine.new(less).parse
+    total = Time.now.to_f - start
+    puts "total time: #{total}s"
+  end
 end
+
