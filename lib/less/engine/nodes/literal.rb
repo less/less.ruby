@@ -1,6 +1,8 @@
 module Less
   module Node
-    class Literal < Entity
+    module Literal
+      include Entity
+      
       def unit
         nil
       end
@@ -9,52 +11,60 @@ module Less
     #
     # rgb(255, 0, 0) #f0f0f0
     #
-    class Color < Literal
+    class Color < DelegateClass(Fixnum)
+      include Literal
+      attr_reader :color
+      
       def initialize color = nil, opacity = 1.0
         @color = if color.is_a? Array
           rgba color
         elsif color.is_a? ::String
           color.delete! unit
-          (color * ( color.length < 6 ? 6 / color.length : 1 ))
+          (color * ( color.length < 6 ? 6 / color.length : 1 )).to_i 16
         else
-          color <= 0 ? '0' * 6 : color.to_s(16)
+          color
         end
-        super @color
+        super @color.to_i
       end
     
       def unit
         '#'
       end
     
-      def inspect; to_s end
-      def to_css;  to_s end
+      def to_css
+        unit + (self <= 0 ? '0' * 6 : self.to_i.to_s(16))
+      end
     
       def to_ruby
-        to_i 16
+        color
       end
     
       def to_s
-        "##{super}"
+        "#{unit}#{super}"
       end
+      
+      def inspect; to_s end
     end
   
     #
     # 6 10px 125%
     #
-    class Number < Literal # inherit form Fixnum?
+    class Number < DelegateClass(Float)
+      include Literal
+      
       attr_accessor :unit
     
       def initialize value, unit = nil
-        super value
+        super value.to_f
         @unit = (unit.nil? || unit.empty?) ? nil : unit
       end
     
       def to_s
-        "#{self}#{@unit}"
+        "#{super}#@unit"
       end
     
       def to_ruby
-        self
+        self.to_f
       end
       
       def inspect
@@ -62,14 +72,16 @@ module Less
       end
     
       def to_css
-        to_s
+        "#{(self % 1).zero?? self.to_i.to_s : self.to_s}#@unit"
       end
     end
   
     #
     # "hello world"
     #
-    class String < Literal
+    class String < ::String
+      include Literal
+      
       attr_reader :quotes, :content
       
       def initialize str
@@ -86,23 +98,28 @@ module Less
       end
     end
   
-    class Font < Literal; end
+    class Font
+      include Literal
+    end
   
-    class FontFamily < Literal
+    class FontFamily < Array
+      include Literal
+      
       def initialize family = []
-        @fonts = family
-        super family.to_s
+        super family
       end
     
       def to_css
-        @fonts.map(&:to_css) * ', '
+        self.map(&:to_css) * ', '
       end
     end
   
     #
     # red small border-collapse
     #
-    class Keyword < Entity
+    class Keyword < ::String
+      include Entity
+      
       def to_css
         self
       end

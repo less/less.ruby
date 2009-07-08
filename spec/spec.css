@@ -76,7 +76,7 @@ div { color: purple; }
 .loading { background: "http://"; }
 input[type="text"] { background-color: blue; }
 .transparent_box {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   opacity: 0.6;
 }
 .space {

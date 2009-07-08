@@ -1,6 +1,8 @@
 module Less
   module Node
     class Selector < ::String
+      include Entity
+      
       Selectors = {
         :Descendant => '',
         :Child      => '>',

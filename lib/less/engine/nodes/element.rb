@@ -8,8 +8,9 @@ module Less
     # TODO: Look into making @rules its own hash-like class
     # TODO: Look into whether selector should be child by default
     #
-    class Element < Base
+    class Element < ::String
       include Enumerable
+      include Entity
   
       attr_accessor :rules, :selector, :partial
   
@@ -53,7 +54,7 @@ module Less
       # Select a child element
       # TODO: Implement full selector syntax
       def [] key
-        elements.find {|i| i == key }
+        @rules.find {|i| i.to_s == key }
       end
     
       # Same as above, except with a specific selector
@@ -73,7 +74,7 @@ module Less
       # Add an arbitrary node to this element
       #
       def << obj
-        if obj.kind_of? Node::Base
+        if obj.kind_of? Node::Entity
           obj.parent = self
           @rules << obj
         else
@@ -108,12 +109,12 @@ module Less
       #
       # Find the nearest variable in the hierarchy or raise a NameError
       #
-      def nearest var
-        var = '@' + var.delete('@')
+      def nearest ident
+        ary = ident =~ /^[.#]/ ? :elements : :variables
         path.map do |node|
-          node.variables.find {|v| v.to_s == var }
+          node.send(ary).find {|i| i.to_s == ident }
         end.compact.first.tap do |result|
-          raise VariableNameError, var unless result
+          raise VariableNameError, ident unless result
         end
       end
   

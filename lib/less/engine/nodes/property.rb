@@ -1,8 +1,10 @@
 module Less
   module Node
-    class Property < Entity  
+    class Property < ::String
+      include Entity
+      
       attr_accessor :value
-    
+      
       def initialize key, value = nil
         super key
         log "\n[new] #{self.class} `#{key}`\n"
@@ -12,7 +14,7 @@ module Less
   
       def << token
         log "[adding] to #{self.to_s}: '#{token.to_s}' <#{token.class}>\n"
-        token = Node::Base.new(*token) unless token.is_a? Node::Base
+        token = Node::Anonymous.new(*token) unless token.is_a? Entity or token.is_a? Operator
         @value << token
       end
   
@@ -20,37 +22,34 @@ module Less
       def eval?;  @eval end
 
       def inspect
-        self + (empty?? "" : ": `#{value.map(&:to_s) * ' | '}`")
+        self + (empty?? "" : ": `#{value.map {|i| i.to_s } * ' | '}`")
       end
  
       def to_s
         super
       end
-    
+      
+      # TODO: @eval and @value should be merged
       def evaluate    
         @eval || @eval = value.evaluate
       end
-    
+          
       def to_css
         "#{self}: #{evaluate.to_css};"
       end
     end
 
-    class Variable < Property
+    class Variable < Property      
       def initialize key, value = nil      
         super key.delete('@'), value
       end
   
       def inspect
-        "@#{super}"
+        to_s
       end
     
       def to_s
         "@#{super}"
-      end
-    
-      def evaluate
-        @eval || @eval = value.evaluate
       end
     
       def to_ruby
@@ -80,8 +79,9 @@ module Less
       # ex: [#111, +, #111] will evaluate to a Color node, with value #222
       #
       def evaluate
+        log "evaluating #{self}"
+        log "#{self.select{|i| i.is_a? Entity }}"
         if size > 2 && (entities.size == operators.size + 1)
-        
           # Create a sub-expression with all the variables/properties evaluated
           evaluated = Expression.new map {|e| e.respond_to?(:evaluate) ? e.evaluate : e }
         
@@ -105,9 +105,11 @@ module Less
               first
             end
           else
+            log "some elements dont respond to to_ruby: #{ruby}"
             self
           end
         elsif size == 1
+          log "not evaluating, size == 1"
           first
         else
           self

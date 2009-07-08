@@ -4,6 +4,7 @@ require 'rubygems'
 require 'cgi'
 require 'treetop'
 require 'forwardable'
+require 'delegate'
 
 require 'less/command'
 require 'less/engine'

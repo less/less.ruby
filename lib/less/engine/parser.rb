@@ -1187,12 +1187,6 @@ module Less
     return r0
   end
 
-  module Entity0
-    def accessor
-      elements[1]
-    end
-  end
-
   def _nt_entity
     start_index = index
     if node_cache[:entity].has_key?(index)
@@ -1214,50 +1208,25 @@ module Less
         if r3
           r0 = r3
         else
-          i4, s4 = index, []
-          i5 = index
-          r6 = _nt_class_id
-          if r6
-            r5 = r6
-          else
-            r7 = _nt_tag
-            if r7
-              r5 = r7
-            else
-              self.index = i5
-              r5 = nil
-            end
-          end
-          s4 << r5
-          if r5
-            r8 = _nt_accessor
-            s4 << r8
-          end
-          if s4.last
-            r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
-            r4.extend(Entity0)
-          else
-            self.index = i4
-            r4 = nil
-          end
+          r4 = _nt_accessor
           if r4
             r0 = r4
           else
-            r9 = _nt_variable
-            if r9
-              r0 = r9
+            r5 = _nt_variable
+            if r5
+              r0 = r5
             else
-              r10 = _nt_literal
-              if r10
-                r0 = r10
+              r6 = _nt_literal
+              if r6
+                r0 = r6
               else
-                r11 = _nt_important
-                if r11
-                  r0 = r11
+                r7 = _nt_important
+                if r7
+                  r0 = r7
                 else
-                  r12 = _nt_empty
-                  if r12
-                    r0 = r12
+                  r8 = _nt_empty
+                  if r8
+                    r0 = r8
                   else
                     self.index = i0
                     r0 = nil
@@ -1516,18 +1485,11 @@ module Less
   end
 
   module Variable0
-    def name
-      elements[1]
-    end
   end
 
   module Variable1
     def build env
-      
-      
-     
-      
-      env.identifiers.last << (env.nearest name.text_value)
+      env.identifiers.last << env.nearest(text_value)
     end
   end
 
@@ -2176,15 +2138,19 @@ module Less
   end
 
   module Accessor0
+    def ident
+      elements[0]
+    end
+
     def attr
-      elements[1]
+      elements[2]
     end
 
   end
 
   module Accessor1
     def build env
-      attr.text_value
+      env.identifiers.last << env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
     end
   end
 
@@ -2197,38 +2163,54 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('[', index) == index
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
-      @index += 1
+    i1 = index
+    r2 = _nt_class_id
+    if r2
+      r1 = r2
     else
-      terminal_parse_failure('[')
-      r1 = nil
+      r3 = _nt_tag
+      if r3
+        r1 = r3
+      else
+        self.index = i1
+        r1 = nil
+      end
     end
     s0 << r1
     if r1
-      i2 = index
-      r3 = _nt_string
-      if r3
-        r2 = r3
+      if input.index('[', index) == index
+        r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
       else
-        r4 = _nt_variable
-        if r4
-          r2 = r4
-        else
-          self.index = i2
-          r2 = nil
-        end
+        terminal_parse_failure('[')
+        r4 = nil
       end
-      s0 << r2
-      if r2
-        if input.index(']', index) == index
-          r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
+      s0 << r4
+      if r4
+        i5 = index
+        r6 = _nt_string
+        if r6
+          r5 = r6
         else
-          terminal_parse_failure(']')
-          r5 = nil
+          r7 = _nt_variable
+          if r7
+            r5 = r7
+          else
+            self.index = i5
+            r5 = nil
+          end
         end
         s0 << r5
+        if r5
+          if input.index(']', index) == index
+            r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure(']')
+            r8 = nil
+          end
+          s0 << r8
+        end
       end
     end
     if s0.last
@@ -2335,7 +2317,7 @@ module Less
 
   module Literal1
     def build env
-      env.identifiers.last << Node::Literal.new(text_value)
+      env.identifiers.last << Node::Anonymous.new(text_value)
     end
   end
 
@@ -3478,7 +3460,7 @@ module Less
 
   module Argument5
     def build env
-      Node::Base.new text_value
+      Node::Anonymous.new text_value
     end
   end
 

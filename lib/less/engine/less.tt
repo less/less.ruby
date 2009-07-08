@@ -112,7 +112,7 @@ grammar Less
   # Entity: Any whitespace delimited token
   #
   rule entity
-    function / fonts / keyword / (class_id / tag) accessor / variable / literal / important / empty
+    function / fonts / keyword / accessor / variable / literal / important / empty
   end
   
   rule fonts
@@ -146,13 +146,9 @@ grammar Less
   end
   
   rule variable
-    '@' name:[-a-zA-Z0-9_]+  {
+    '@' [-a-zA-Z0-9_]+  {
       def build env
-        
-        
-       
-        
-        env.identifiers.last << (env.nearest name.text_value)
+        env.identifiers.last << env.nearest(text_value)
       end
     }
   end
@@ -193,9 +189,9 @@ grammar Less
   
   # TODO: Merge this with attribute rule
   rule accessor
-    '[' attr:(string / variable) ']' {
+    ident:(class_id / tag) '[' attr:(string / variable) ']' {
       def build env
-        attr.text_value
+        env.identifiers.last << env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
       end
     }
   end
@@ -218,7 +214,7 @@ grammar Less
   rule literal
     color / (dimension / [-a-z]+) '/' dimension {
       def build env
-        env.identifiers.last << Node::Literal.new(text_value)
+        env.identifiers.last << Node::Anonymous.new(text_value)
       end
     } / number unit {
       def build env
@@ -335,7 +331,7 @@ grammar Less
       end
     } / [a-zA-Z]+ '=' dimension {
       def build env
-        Node::Base.new text_value
+        Node::Anonymous.new text_value
       end
     }
   end

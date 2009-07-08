@@ -1,12 +1,12 @@
 module Less
   #
-  # Node::Base
+  # Node::Entity
   #
   # TODO: Use delegate class -> @rules
   #
   # Class hierarchy
   #
-  # - Base
+  # - Entity
   #   - Element
   #   - Entity
   #     - Function
@@ -20,11 +20,11 @@ module Less
   #     - Variable
   #
   module Node
-    class Base < ::String
+    module Entity
       attr_accessor :parent
     
-      def initialize s, parent = nil
-        super s.to_s
+      def initialize value, parent = nil
+        super value
         @parent = parent
       end
 
@@ -45,13 +45,15 @@ module Less
       def to_css;   to_s  end
       def to_s;     super end
     end
-  
-    class Operator < Base
+    
+    class Anonymous < ::String
+      include Entity
+    end
+    
+    class Operator < ::String
       def to_ruby
         self
       end
     end
-  
-    Entity = Class.new(Base)
   end
 end

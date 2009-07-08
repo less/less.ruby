@@ -36,8 +36,9 @@ module Less
   end
   
   module Node
-    class Function < Entity
+    class Function < ::String
       include Functions
+      include Entity
     
       def initialize name, *args
         @args = args.flatten
@@ -53,7 +54,7 @@ module Less
       end
     
       def method_missing meth, *args
-        Node::Base.new("#{meth}(#{args.map(&:to_css) * ', '})")
+        Node::Anonymous.new("#{meth}(#{args.map(&:to_css) * ', '})")
       end
     end
   end
