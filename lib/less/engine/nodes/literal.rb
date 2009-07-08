@@ -86,7 +86,7 @@ module Less
       
       def initialize str
         @quotes, @content = unless str.nil? or str.empty?
-          str.match(/('|")(.*?)(\1)/).captures
+          str.match(/('|")(.*?)(\1)/).captures rescue [nil, str]
         else
           [nil, ""]
         end

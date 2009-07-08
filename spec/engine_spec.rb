@@ -2,10 +2,10 @@ require 'spec/spec_helper'
 
 module LessEngineSpecHelper
   def lessify arg
-    if arg.is_a? String
+    if arg.is_a? String or arg.is_a? File
       return Less::Engine.new(arg).to_css
     else
-      lessify File.read("spec/less/#{arg}-1.0.less")
+      lessify File.new("spec/less/#{arg}-1.0.less")
     end
   end
   
@@ -75,7 +75,10 @@ describe Less::Engine do
       lessify(:functions).should == css(:functions)
     end
     
-    it "should work with import"
+    it "should work with import" do
+      lessify(:import).should == css(:import)
+    end
+    
     it "should parse a big file"
     it "should handle complex color operations"
   end

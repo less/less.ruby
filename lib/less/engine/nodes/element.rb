@@ -12,7 +12,7 @@ module Less
       include Enumerable
       include Entity
   
-      attr_accessor :rules, :selector, :partial
+      attr_accessor :rules, :selector, :partial, :file
   
       def initialize name = "", selector = ''
         super name
@@ -21,7 +21,7 @@ module Less
         @rules = [] # Holds all the nodes under this element's hierarchy
         @selector = Selector[selector.strip].new  # descendant | child | adjacent
       end
-  
+    
       def class?;     self =~ /^\./ end
       def id?;        self =~ /^#/  end
       def universal?; self == '*'   end

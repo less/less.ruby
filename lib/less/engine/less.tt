@@ -19,7 +19,7 @@ grammar Less
         end
       end
     } / ws selectors ';' ws {
-      def build env
+      def build env        
         log "[mixin]: #{selectors.text_value}"
         selectors.build(env, :path).each do |path|
                     
@@ -34,17 +34,29 @@ grammar Less
   end
   
   rule import
-    "@import" S path:(string / url) medias? {
+    "@import" S url:(string / url) medias? s ';' ws {
       def build env
-        Less::Engine.new(File.read(path.text_value)).to_tree
+        path = File.join(env.root.file, url.value)
+        path += '.less' unless path =~ /\.less$/
+        if File.exist? path
+          log "\nimporting #{path}"
+          imported = Less::Engine.new(File.new path).to_tree
+          env.rules += imported.rules
+        else
+          raise ImportError, path
+        end
       end
     }
   end
   
   rule url
     'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
-      def build env
+      def build env = nil
         Node::String.new(CGI.unescape path.text_value)
+      end
+      
+      def value
+        build
       end
     }
   end
@@ -256,7 +268,15 @@ grammar Less
   # 'hello world' / "hello world"
   #
   rule string
-    "'" (!"'" . )* "'" / ["] (!["] . )* ["]
+    "'" content:(!"'" . )* "'" {
+      def value
+        content.text_value
+      end
+    } / ["] content:(!["] . )* ["] {
+      def value
+        content.text_value
+      end
+    }
   end
   
   #

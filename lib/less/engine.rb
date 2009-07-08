@@ -9,7 +9,7 @@ module Less
     
     def initialize obj
       @less = if obj.is_a? File
-        @path = File.expand_path obj.path
+        @path = File.dirname(File.expand_path obj.path)
         obj.read
       elsif obj.is_a? String
         obj.dup
@@ -22,15 +22,15 @@ module Less
       rescue LoadError
         Treetop.load Less::GRAMMAR
       end
-      
+            
       @parser = LessParser.new
     end
     
-    def parse
+    def parse env = Node::Element.new
       root = @parser.parse(self.prepare)
       
       if root
-        @tree = root.build Node::Element.new
+        @tree = root.build env.tap {|e| e.file = @path }
       else
         raise SyntaxError, @parser.failure_message
       end

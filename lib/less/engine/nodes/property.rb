@@ -45,7 +45,7 @@ module Less
       end
   
       def inspect
-        to_s
+        "@#{super}"
       end
     
       def to_s

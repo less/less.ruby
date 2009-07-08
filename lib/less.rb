@@ -17,6 +17,7 @@ module Less
   VariableNameError = Class.new(NameError)
   MixinNameError    = Class.new(NameError)
   SyntaxError       = Class.new(RuntimeError)
+  ImportError       = Class.new(Exception)
   
   $verbose = false
 
