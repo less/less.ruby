@@ -32,10 +32,8 @@ For more information, see you at [http://lesscss.org]
 People without whom this wouldn't have happened a.k.a *Credits*
 ---------------------------------------------------------------
 
-- *Dmitry Fadeyev*, for pushing me to do this, and designing our awesome website
-- *August Lilleaas*, for initiating the work on the treetop grammar, as well as writing the rails plugin
-- *Nathan Sobo*, for creating treetop
-- *Jason Garber*, for his magical performance optimizations on treetop
-- And finally, the people of #ruby-lang for answering all my ruby questions. *apeiros*, *manveru* and *rue* come to mind
-
-Thanks!
+- **Dmitry Fadeyev**, for pushing me to do this, and designing our awesome website
+- **August Lilleaas**, for initiating the work on the treetop grammar, as well as writing the rails plugin
+- **Nathan Sobo**, for creating treetop
+- **Jason Garber**, for his magical performance optimizations on treetop
+- And finally, the people of #ruby-lang for answering all my ruby questions. **apeiros**, **manveru** and **rue** come to mind
