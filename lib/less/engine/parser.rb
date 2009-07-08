@@ -33,7 +33,7 @@ module Less
             if r6
               r2 = r6
             else
-              self.index = i2
+              @index = i2
               r2 = nil
             end
           end
@@ -46,7 +46,7 @@ module Less
       end
     end
     if s1.empty?
-      self.index = i1
+      @index = i1
       r1 = nil
     else
       r1 = instantiate_node(Builder,input, i1...index, s1)
@@ -93,7 +93,7 @@ module Less
           if r11
             r0 = r11
           else
-            self.index = i0
+            @index = i0
             r0 = nil
           end
         end
@@ -102,7 +102,7 @@ module Less
 
     node_cache[:primary][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Comment0
@@ -144,7 +144,7 @@ module Less
     r2 = _nt_ws
     s1 << r2
     if r2
-      if input.index('/*', index) == index
+      if has_terminal?('/*', false, index)
         r3 = instantiate_node(SyntaxNode,input, index...(index + 2))
         @index += 2
       else
@@ -157,7 +157,7 @@ module Less
         loop do
           i5, s5 = index, []
           i6 = index
-          if input.index('*/', index) == index
+          if has_terminal?('*/', false, index)
             r7 = instantiate_node(SyntaxNode,input, index...(index + 2))
             @index += 2
           else
@@ -167,7 +167,7 @@ module Less
           if r7
             r6 = nil
           else
-            self.index = i6
+            @index = i6
             r6 = instantiate_node(SyntaxNode,input, index...index)
           end
           s5 << r6
@@ -185,7 +185,7 @@ module Less
             r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
             r5.extend(Comment0)
           else
-            self.index = i5
+            @index = i5
             r5 = nil
           end
           if r5
@@ -197,7 +197,7 @@ module Less
         r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
         s1 << r4
         if r4
-          if input.index('*/', index) == index
+          if has_terminal?('*/', false, index)
             r9 = instantiate_node(SyntaxNode,input, index...(index + 2))
             @index += 2
           else
@@ -216,7 +216,7 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(Comment1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -226,7 +226,7 @@ module Less
       r12 = _nt_ws
       s11 << r12
       if r12
-        if input.index('//', index) == index
+        if has_terminal?('//', false, index)
           r13 = instantiate_node(SyntaxNode,input, index...(index + 2))
           @index += 2
         else
@@ -239,7 +239,7 @@ module Less
           loop do
             i15, s15 = index, []
             i16 = index
-            if input.index("\n", index) == index
+            if has_terminal?("\n", false, index)
               r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -249,7 +249,7 @@ module Less
             if r17
               r16 = nil
             else
-              self.index = i16
+              @index = i16
               r16 = instantiate_node(SyntaxNode,input, index...index)
             end
             s15 << r16
@@ -267,7 +267,7 @@ module Less
               r15 = instantiate_node(SyntaxNode,input, i15...index, s15)
               r15.extend(Comment2)
             else
-              self.index = i15
+              @index = i15
               r15 = nil
             end
             if r15
@@ -279,7 +279,7 @@ module Less
           r14 = instantiate_node(SyntaxNode,input, i14...index, s14)
           s11 << r14
           if r14
-            if input.index("\n", index) == index
+            if has_terminal?("\n", false, index)
               r19 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -298,20 +298,20 @@ module Less
         r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
         r11.extend(Comment3)
       else
-        self.index = i11
+        @index = i11
         r11 = nil
       end
       if r11
         r0 = r11
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:comment][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Ruleset0
@@ -386,7 +386,7 @@ module Less
     r2 = _nt_selectors
     s1 << r2
     if r2
-      if input.index("{", index) == index
+      if has_terminal?("{", false, index)
         r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -404,7 +404,7 @@ module Less
             r6 = _nt_ws
             s1 << r6
             if r6
-              if input.index("}", index) == index
+              if has_terminal?("}", false, index)
                 r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
                 @index += 1
               else
@@ -426,7 +426,7 @@ module Less
       r1.extend(Ruleset0)
       r1.extend(Ruleset1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -439,7 +439,7 @@ module Less
         r11 = _nt_selectors
         s9 << r11
         if r11
-          if input.index(';', index) == index
+          if has_terminal?(';', false, index)
             r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -458,20 +458,20 @@ module Less
         r9.extend(Ruleset2)
         r9.extend(Ruleset3)
       else
-        self.index = i9
+        @index = i9
         r9 = nil
       end
       if r9
         r0 = r9
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:ruleset][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Import0
@@ -500,7 +500,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index("@import", index) == index
+    if has_terminal?("@import", false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 7))
       @index += 7
     else
@@ -521,7 +521,7 @@ module Less
           if r5
             r3 = r5
           else
-            self.index = i3
+            @index = i3
             r3 = nil
           end
         end
@@ -542,13 +542,13 @@ module Less
       r0.extend(Import0)
       r0.extend(Import1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:import][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Url0
@@ -573,7 +573,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('url(', index) == index
+    if has_terminal?('url(', false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 4))
       @index += 4
     else
@@ -589,7 +589,7 @@ module Less
       else
         s4, i4 = [], index
         loop do
-          if input.index(Regexp.new('[-a-zA-Z0-9_%$/.&=:;#+?]'), index) == index
+          if has_terminal?('[-a-zA-Z0-9_%$/.&=:;#+?]', true, index)
             r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -602,7 +602,7 @@ module Less
           end
         end
         if s4.empty?
-          self.index = i4
+          @index = i4
           r4 = nil
         else
           r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
@@ -610,13 +610,13 @@ module Less
         if r4
           r2 = r4
         else
-          self.index = i2
+          @index = i2
           r2 = nil
         end
       end
       s0 << r2
       if r2
-        if input.index(')', index) == index
+        if has_terminal?(')', false, index)
           r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -631,13 +631,13 @@ module Less
       r0.extend(Url0)
       r0.extend(Url1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:url][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Medias0
@@ -665,7 +665,7 @@ module Less
     i0, s0 = index, []
     s1, i1 = [], index
     loop do
-      if input.index(Regexp.new('[-a-z]'), index) == index
+      if has_terminal?('[-a-z]', true, index)
         r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -678,7 +678,7 @@ module Less
       end
     end
     if s1.empty?
-      self.index = i1
+      @index = i1
       r1 = nil
     else
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
@@ -691,7 +691,7 @@ module Less
         r5 = _nt_s
         s4 << r5
         if r5
-          if input.index(',', index) == index
+          if has_terminal?(',', false, index)
             r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -705,7 +705,7 @@ module Less
             if r7
               s8, i8 = [], index
               loop do
-                if input.index(Regexp.new('[a-z]'), index) == index
+                if has_terminal?('[a-z]', true, index)
                   r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
                   @index += 1
                 else
@@ -718,7 +718,7 @@ module Less
                 end
               end
               if s8.empty?
-                self.index = i8
+                @index = i8
                 r8 = nil
               else
                 r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
@@ -731,7 +731,7 @@ module Less
           r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
           r4.extend(Medias0)
         else
-          self.index = i4
+          @index = i4
           r4 = nil
         end
         if r4
@@ -747,13 +747,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Medias1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:medias][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Selectors0
@@ -821,7 +821,7 @@ module Less
           r5 = _nt_s
           s4 << r5
           if r5
-            if input.index(',', index) == index
+            if has_terminal?(',', false, index)
               r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -842,7 +842,7 @@ module Less
             r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
             r4.extend(Selectors0)
           else
-            self.index = i4
+            @index = i4
             r4 = nil
           end
           if r4
@@ -864,13 +864,13 @@ module Less
       r0.extend(Selectors1)
       r0.extend(Selectors2)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:selectors][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Selector0
@@ -936,7 +936,7 @@ module Less
         r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
         r1.extend(Selector0)
       else
-        self.index = i1
+        @index = i1
         r1 = nil
       end
       if r1
@@ -946,7 +946,7 @@ module Less
       end
     end
     if s0.empty?
-      self.index = i0
+      @index = i0
       r0 = nil
     else
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -955,7 +955,7 @@ module Less
 
     node_cache[:selector][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Declaration0
@@ -1000,6 +1000,29 @@ module Less
       env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value)
       expression.build env
     end
+  # Empty rule
+  end
+
+  module Declaration3
+    def ws
+      elements[0]
+    end
+
+    def ident
+      elements[1]
+    end
+
+    def s
+      elements[2]
+    end
+
+    def s
+      elements[4]
+    end
+
+    def ws
+      elements[6]
+    end
   end
 
   def _nt_declaration
@@ -1010,95 +1033,96 @@ module Less
       return cached
     end
 
-    i0, s0 = index, []
-    r1 = _nt_ws
-    s0 << r1
-    if r1
-      i2 = index
-      r3 = _nt_ident
-      if r3
-        r2 = r3
+    i0 = index
+    i1, s1 = index, []
+    r2 = _nt_ws
+    s1 << r2
+    if r2
+      i3 = index
+      r4 = _nt_ident
+      if r4
+        r3 = r4
       else
-        r4 = _nt_variable
-        if r4
-          r2 = r4
+        r5 = _nt_variable
+        if r5
+          r3 = r5
         else
-          self.index = i2
-          r2 = nil
+          @index = i3
+          r3 = nil
         end
       end
-      s0 << r2
-      if r2
-        r5 = _nt_s
-        s0 << r5
-        if r5
-          if input.index(':', index) == index
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      s1 << r3
+      if r3
+        r6 = _nt_s
+        s1 << r6
+        if r6
+          if has_terminal?(':', false, index)
+            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure(':')
-            r6 = nil
+            r7 = nil
           end
-          s0 << r6
-          if r6
-            r7 = _nt_s
-            s0 << r7
-            if r7
-              r8 = _nt_expression
-              s0 << r8
-              if r8
-                r9 = _nt_s
-                s0 << r9
-                if r9
-                  i10 = index
-                  if input.index(';', index) == index
-                    r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          s1 << r7
+          if r7
+            r8 = _nt_s
+            s1 << r8
+            if r8
+              r9 = _nt_expression
+              s1 << r9
+              if r9
+                r10 = _nt_s
+                s1 << r10
+                if r10
+                  i11 = index
+                  if has_terminal?(';', false, index)
+                    r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
                     @index += 1
                   else
                     terminal_parse_failure(';')
-                    r11 = nil
+                    r12 = nil
                   end
-                  if r11
-                    r10 = r11
+                  if r12
+                    r11 = r12
                   else
-                    i12, s12 = index, []
-                    r13 = _nt_ws
-                    s12 << r13
-                    if r13
-                      i14 = index
-                      if input.index('}', index) == index
-                        r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                    i13, s13 = index, []
+                    r14 = _nt_ws
+                    s13 << r14
+                    if r14
+                      i15 = index
+                      if has_terminal?('}', false, index)
+                        r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
                         @index += 1
                       else
                         terminal_parse_failure('}')
+                        r16 = nil
+                      end
+                      if r16
+                        @index = i15
+                        r15 = instantiate_node(SyntaxNode,input, index...index)
+                      else
                         r15 = nil
                       end
-                      if r15
-                        self.index = i14
-                        r14 = instantiate_node(SyntaxNode,input, index...index)
-                      else
-                        r14 = nil
-                      end
-                      s12 << r14
+                      s13 << r15
                     end
-                    if s12.last
-                      r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
-                      r12.extend(Declaration0)
+                    if s13.last
+                      r13 = instantiate_node(SyntaxNode,input, i13...index, s13)
+                      r13.extend(Declaration0)
                     else
-                      self.index = i12
-                      r12 = nil
+                      @index = i13
+                      r13 = nil
                     end
-                    if r12
-                      r10 = r12
+                    if r13
+                      r11 = r13
                     else
-                      self.index = i10
-                      r10 = nil
+                      @index = i11
+                      r11 = nil
                     end
                   end
-                  s0 << r10
-                  if r10
-                    r16 = _nt_ws
-                    s0 << r16
+                  s1 << r11
+                  if r11
+                    r17 = _nt_ws
+                    s1 << r17
                   end
                 end
               end
@@ -1107,18 +1131,74 @@ module Less
         end
       end
     end
-    if s0.last
-      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(Declaration1)
-      r0.extend(Declaration2)
+    if s1.last
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
+      r1.extend(Declaration1)
+      r1.extend(Declaration2)
     else
-      self.index = i0
-      r0 = nil
+      @index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      i18, s18 = index, []
+      r19 = _nt_ws
+      s18 << r19
+      if r19
+        r20 = _nt_ident
+        s18 << r20
+        if r20
+          r21 = _nt_s
+          s18 << r21
+          if r21
+            if has_terminal?(':', false, index)
+              r22 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              @index += 1
+            else
+              terminal_parse_failure(':')
+              r22 = nil
+            end
+            s18 << r22
+            if r22
+              r23 = _nt_s
+              s18 << r23
+              if r23
+                if has_terminal?(';', false, index)
+                  r24 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                  @index += 1
+                else
+                  terminal_parse_failure(';')
+                  r24 = nil
+                end
+                s18 << r24
+                if r24
+                  r25 = _nt_ws
+                  s18 << r25
+                end
+              end
+            end
+          end
+        end
+      end
+      if s18.last
+        r18 = instantiate_node(SyntaxNode,input, i18...index, s18)
+        r18.extend(Declaration3)
+      else
+        @index = i18
+        r18 = nil
+      end
+      if r18
+        r0 = r18
+      else
+        @index = i0
+        r0 = nil
+      end
     end
 
     node_cache[:declaration][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Expression0
@@ -1153,7 +1233,7 @@ module Less
         if r5
           r3 = r5
         else
-          self.index = i3
+          @index = i3
           r3 = nil
         end
       end
@@ -1167,7 +1247,7 @@ module Less
       r1 = instantiate_node(Builder,input, i1...index, s1)
       r1.extend(Expression0)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -1177,14 +1257,14 @@ module Less
       if r7
         r0 = r7
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:expression][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_entity
@@ -1224,13 +1304,8 @@ module Less
                 if r7
                   r0 = r7
                 else
-                  r8 = _nt_empty
-                  if r8
-                    r0 = r8
-                  else
-                    self.index = i0
-                    r0 = nil
-                  end
+                  @index = i0
+                  r0 = nil
                 end
               end
             end
@@ -1241,7 +1316,7 @@ module Less
 
     node_cache[:entity][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Fonts0
@@ -1295,7 +1370,7 @@ module Less
         r4 = _nt_s
         s3 << r4
         if r4
-          if input.index(',', index) == index
+          if has_terminal?(',', false, index)
             r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -1316,7 +1391,7 @@ module Less
           r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
           r3.extend(Fonts0)
         else
-          self.index = i3
+          @index = i3
           r3 = nil
         end
         if r3
@@ -1326,7 +1401,7 @@ module Less
         end
       end
       if s2.empty?
-        self.index = i2
+        @index = i2
         r2 = nil
       else
         r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
@@ -1338,13 +1413,13 @@ module Less
       r0.extend(Fonts1)
       r0.extend(Fonts2)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:fonts][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Font0
@@ -1372,7 +1447,7 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    if input.index(Regexp.new('[a-zA-Z]'), index) == index
+    if has_terminal?('[a-zA-Z]', true, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1382,7 +1457,7 @@ module Less
     if r2
       s3, i3 = [], index
       loop do
-        if input.index(Regexp.new('[-a-zA-Z0-9]'), index) == index
+        if has_terminal?('[-a-zA-Z0-9]', true, index)
           r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1402,7 +1477,7 @@ module Less
       r1.extend(Font0)
       r1.extend(Font1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -1413,14 +1488,14 @@ module Less
       if r5
         r0 = r5
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:font][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Ident0
@@ -1435,7 +1510,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('-', index) == index
+    if has_terminal?('-', false, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1451,7 +1526,7 @@ module Less
     if r1
       s3, i3 = [], index
       loop do
-        if input.index(Regexp.new('[-a-z0-9_]'), index) == index
+        if has_terminal?('[-a-z0-9_]', true, index)
           r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1464,7 +1539,7 @@ module Less
         end
       end
       if s3.empty?
-        self.index = i3
+        @index = i3
         r3 = nil
       else
         r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
@@ -1475,13 +1550,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Ident0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:ident][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Variable0
@@ -1502,7 +1577,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('@', index) == index
+    if has_terminal?('@', false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1513,7 +1588,7 @@ module Less
     if r1
       s2, i2 = [], index
       loop do
-        if input.index(Regexp.new('[-a-zA-Z0-9_]'), index) == index
+        if has_terminal?('[-a-zA-Z0-9_]', true, index)
           r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1526,7 +1601,7 @@ module Less
         end
       end
       if s2.empty?
-        self.index = i2
+        @index = i2
         r2 = nil
       else
         r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
@@ -1538,13 +1613,13 @@ module Less
       r0.extend(Variable0)
       r0.extend(Variable1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:variable][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Element0
@@ -1576,7 +1651,7 @@ module Less
       if r4
         r2 = r4
       else
-        self.index = i2
+        @index = i2
         r2 = nil
       end
     end
@@ -1595,7 +1670,7 @@ module Less
       s1 << r5
       if r5
         i8, s8 = index, []
-        if input.index('(', index) == index
+        if has_terminal?('(', false, index)
           r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1607,7 +1682,7 @@ module Less
           r10 = _nt_ident
           s8 << r10
           if r10
-            if input.index(')', index) == index
+            if has_terminal?(')', false, index)
               r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -1621,7 +1696,7 @@ module Less
           r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
           r8.extend(Element0)
         else
-          self.index = i8
+          @index = i8
           r8 = nil
         end
         if r8
@@ -1636,13 +1711,13 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(Element1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
       r0 = r1
     else
-      if input.index('@media', index) == index
+      if has_terminal?('@media', false, index)
         r12 = instantiate_node(SyntaxNode,input, index...(index + 6))
         @index += 6
       else
@@ -1652,14 +1727,25 @@ module Less
       if r12
         r0 = r12
       else
-        self.index = i0
-        r0 = nil
+        if has_terminal?('@font-face', false, index)
+          r13 = instantiate_node(SyntaxNode,input, index...(index + 10))
+          @index += 10
+        else
+          terminal_parse_failure('@font-face')
+          r13 = nil
+        end
+        if r13
+          r0 = r13
+        else
+          @index = i0
+          r0 = nil
+        end
       end
     end
 
     node_cache[:element][start_index] = r0
 
-    return r0
+    r0
   end
 
   module ClassId0
@@ -1699,7 +1785,7 @@ module Less
         end
       end
       if s4.empty?
-        self.index = i4
+        @index = i4
         r4 = nil
       else
         r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
@@ -1710,7 +1796,7 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(ClassId0)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -1732,20 +1818,20 @@ module Less
         r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
         r6.extend(ClassId1)
       else
-        self.index = i6
+        @index = i6
         r6 = nil
       end
       if r6
         r0 = r6
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:class_id][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Attribute0
@@ -1763,7 +1849,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('[', index) == index
+    if has_terminal?('[', false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1774,7 +1860,7 @@ module Less
     if r1
       s2, i2 = [], index
       loop do
-        if input.index(Regexp.new('[a-z]'), index) == index
+        if has_terminal?('[a-z]', true, index)
           r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1787,7 +1873,7 @@ module Less
         end
       end
       if s2.empty?
-        self.index = i2
+        @index = i2
         r2 = nil
       else
         r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
@@ -1795,7 +1881,7 @@ module Less
       s0 << r2
       if r2
         i5, s5 = index, []
-        if input.index(Regexp.new('[|~]'), index) == index
+        if has_terminal?('[|~]', true, index)
           r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -1808,7 +1894,7 @@ module Less
         end
         s5 << r6
         if r6
-          if input.index('=', index) == index
+          if has_terminal?('=', false, index)
             r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -1821,7 +1907,7 @@ module Less
           r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
           r5.extend(Attribute0)
         else
-          self.index = i5
+          @index = i5
           r5 = nil
         end
         if r5
@@ -1840,13 +1926,13 @@ module Less
             if r11
               r9 = r11
             else
-              self.index = i9
+              @index = i9
               r9 = nil
             end
           end
           s0 << r9
           if r9
-            if input.index(']', index) == index
+            if has_terminal?(']', false, index)
               r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -1862,13 +1948,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Attribute1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:attribute][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Class0
@@ -1883,7 +1969,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('.', index) == index
+    if has_terminal?('.', false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1892,7 +1978,7 @@ module Less
     end
     s0 << r1
     if r1
-      if input.index(Regexp.new('[_a-z]'), index) == index
+      if has_terminal?('[_a-z]', true, index)
         r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -1902,7 +1988,7 @@ module Less
       if r2
         s3, i3 = [], index
         loop do
-          if input.index(Regexp.new('[-a-zA-Z0-9_]'), index) == index
+          if has_terminal?('[-a-zA-Z0-9_]', true, index)
             r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -1922,13 +2008,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Class0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:class][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Id0
@@ -1943,7 +2029,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index('#', index) == index
+    if has_terminal?('#', false, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -1952,7 +2038,7 @@ module Less
     end
     s0 << r1
     if r1
-      if input.index(Regexp.new('[_a-z]'), index) == index
+      if has_terminal?('[_a-z]', true, index)
         r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -1962,7 +2048,7 @@ module Less
       if r2
         s3, i3 = [], index
         loop do
-          if input.index(Regexp.new('[-a-zA-Z0-9_]'), index) == index
+          if has_terminal?('[-a-zA-Z0-9_]', true, index)
             r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -1982,13 +2068,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Id0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:id][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Tag0
@@ -2004,7 +2090,7 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    if input.index(Regexp.new('[a-zA-Z]'), index) == index
+    if has_terminal?('[a-zA-Z]', true, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -2014,7 +2100,7 @@ module Less
     if r2
       s3, i3 = [], index
       loop do
-        if input.index(Regexp.new('[-a-zA-Z]'), index) == index
+        if has_terminal?('[-a-zA-Z]', true, index)
           r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2029,7 +2115,7 @@ module Less
       r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
       s1 << r3
       if r3
-        if input.index(Regexp.new('[0-9]'), index) == index
+        if has_terminal?('[0-9]', true, index)
           r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2047,13 +2133,13 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(Tag0)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
       r0 = r1
     else
-      if input.index('*', index) == index
+      if has_terminal?('*', false, index)
         r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2063,14 +2149,14 @@ module Less
       if r7
         r0 = r7
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:tag][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Select0
@@ -2096,7 +2182,7 @@ module Less
     r3 = _nt_s
     s2 << r3
     if r3
-      if input.index(Regexp.new('[:+>]'), index) == index
+      if has_terminal?('[:+>]', true, index)
         r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2112,7 +2198,7 @@ module Less
       r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
       r2.extend(Select0)
     else
-      self.index = i2
+      @index = i2
       r2 = nil
     end
     if r2
@@ -2122,7 +2208,7 @@ module Less
       if r6
         r1 = r6
       else
-        self.index = i1
+        @index = i1
         r1 = nil
       end
     end
@@ -2134,7 +2220,7 @@ module Less
 
     node_cache[:select][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Accessor0
@@ -2172,13 +2258,13 @@ module Less
       if r3
         r1 = r3
       else
-        self.index = i1
+        @index = i1
         r1 = nil
       end
     end
     s0 << r1
     if r1
-      if input.index('[', index) == index
+      if has_terminal?('[', false, index)
         r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2196,13 +2282,13 @@ module Less
           if r7
             r5 = r7
           else
-            self.index = i5
+            @index = i5
             r5 = nil
           end
         end
         s0 << r5
         if r5
-          if input.index(']', index) == index
+          if has_terminal?(']', false, index)
             r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2218,13 +2304,13 @@ module Less
       r0.extend(Accessor0)
       r0.extend(Accessor1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:accessor][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Operator0
@@ -2266,7 +2352,7 @@ module Less
     r2 = _nt_S
     s1 << r2
     if r2
-      if input.index(Regexp.new('[-+*/]'), index) == index
+      if has_terminal?('[-+*/]', true, index)
         r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2283,13 +2369,13 @@ module Less
       r1.extend(Operator0)
       r1.extend(Operator1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
       r0 = r1
     else
-      if input.index(Regexp.new('[-+*/]'), index) == index
+      if has_terminal?('[-+*/]', true, index)
         r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
         r5.extend(Operator2)
         @index += 1
@@ -2299,14 +2385,14 @@ module Less
       if r5
         r0 = r5
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:operator][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Literal0
@@ -2364,7 +2450,7 @@ module Less
       else
         s5, i5 = [], index
         loop do
-          if input.index(Regexp.new('[-a-z]'), index) == index
+          if has_terminal?('[-a-z]', true, index)
             r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2377,7 +2463,7 @@ module Less
           end
         end
         if s5.empty?
-          self.index = i5
+          @index = i5
           r5 = nil
         else
           r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
@@ -2385,13 +2471,13 @@ module Less
         if r5
           r3 = r5
         else
-          self.index = i3
+          @index = i3
           r3 = nil
         end
       end
       s2 << r3
       if r3
-        if input.index('/', index) == index
+        if has_terminal?('/', false, index)
           r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2409,7 +2495,7 @@ module Less
         r2.extend(Literal0)
         r2.extend(Literal1)
       else
-        self.index = i2
+        @index = i2
         r2 = nil
       end
       if r2
@@ -2427,7 +2513,7 @@ module Less
           r9.extend(Literal2)
           r9.extend(Literal3)
         else
-          self.index = i9
+          @index = i9
           r9 = nil
         end
         if r9
@@ -2438,7 +2524,7 @@ module Less
           if r12
             r0 = r12
           else
-            self.index = i0
+            @index = i0
             r0 = nil
           end
         end
@@ -2447,7 +2533,7 @@ module Less
 
     node_cache[:literal][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Important0
@@ -2464,7 +2550,7 @@ module Less
       return cached
     end
 
-    if input.index('!important', index) == index
+    if has_terminal?('!important', false, index)
       r0 = instantiate_node(SyntaxNode,input, index...(index + 10))
       r0.extend(Important0)
       @index += 10
@@ -2475,7 +2561,7 @@ module Less
 
     node_cache[:important][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_empty
@@ -2486,7 +2572,7 @@ module Less
       return cached
     end
 
-    if input.index("", index) == index
+    if has_terminal?("", false, index)
       r0 = instantiate_node(Empty,input, index...(index + 0))
       @index += 0
     else
@@ -2496,7 +2582,7 @@ module Less
 
     node_cache[:empty][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Keyword0
@@ -2517,7 +2603,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index(Regexp.new('[a-zA-Z]'), index) == index
+    if has_terminal?('[a-zA-Z]', true, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -2527,7 +2613,7 @@ module Less
     if r1
       s2, i2 = [], index
       loop do
-        if input.index(Regexp.new('[-a-zA-Z]'), index) == index
+        if has_terminal?('[-a-zA-Z]', true, index)
           r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2547,7 +2633,7 @@ module Less
         if r5
           r4 = nil
         else
-          self.index = i4
+          @index = i4
           r4 = instantiate_node(SyntaxNode,input, index...index)
         end
         s0 << r4
@@ -2558,13 +2644,13 @@ module Less
       r0.extend(Keyword0)
       r0.extend(Keyword1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:keyword][start_index] = r0
 
-    return r0
+    r0
   end
 
   module String0
@@ -2589,7 +2675,7 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    if input.index("'", index) == index
+    if has_terminal?("'", false, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -2602,7 +2688,7 @@ module Less
       loop do
         i4, s4 = index, []
         i5 = index
-        if input.index("'", index) == index
+        if has_terminal?("'", false, index)
           r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2612,7 +2698,7 @@ module Less
         if r6
           r5 = nil
         else
-          self.index = i5
+          @index = i5
           r5 = instantiate_node(SyntaxNode,input, index...index)
         end
         s4 << r5
@@ -2630,7 +2716,7 @@ module Less
           r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
           r4.extend(String0)
         else
-          self.index = i4
+          @index = i4
           r4 = nil
         end
         if r4
@@ -2642,7 +2728,7 @@ module Less
       r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
       s1 << r3
       if r3
-        if input.index("'", index) == index
+        if has_terminal?("'", false, index)
           r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2656,14 +2742,14 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(String1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
       r0 = r1
     else
       i9, s9 = index, []
-      if input.index(Regexp.new('["]'), index) == index
+      if has_terminal?('["]', true, index)
         r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2675,7 +2761,7 @@ module Less
         loop do
           i12, s12 = index, []
           i13 = index
-          if input.index(Regexp.new('["]'), index) == index
+          if has_terminal?('["]', true, index)
             r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2684,7 +2770,7 @@ module Less
           if r14
             r13 = nil
           else
-            self.index = i13
+            @index = i13
             r13 = instantiate_node(SyntaxNode,input, index...index)
           end
           s12 << r13
@@ -2702,7 +2788,7 @@ module Less
             r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
             r12.extend(String2)
           else
-            self.index = i12
+            @index = i12
             r12 = nil
           end
           if r12
@@ -2714,7 +2800,7 @@ module Less
         r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
         s9 << r11
         if r11
-          if input.index(Regexp.new('["]'), index) == index
+          if has_terminal?('["]', true, index)
             r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2727,20 +2813,20 @@ module Less
         r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
         r9.extend(String3)
       else
-        self.index = i9
+        @index = i9
         r9 = nil
       end
       if r9
         r0 = r9
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:string][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Dimension0
@@ -2772,13 +2858,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Dimension0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:dimension][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Number0
@@ -2797,7 +2883,7 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    if input.index('-', index) == index
+    if has_terminal?('-', false, index)
       r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -2813,7 +2899,7 @@ module Less
     if r2
       s4, i4 = [], index
       loop do
-        if input.index(Regexp.new('[0-9]'), index) == index
+        if has_terminal?('[0-9]', true, index)
           r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2828,7 +2914,7 @@ module Less
       r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
       s1 << r4
       if r4
-        if input.index('.', index) == index
+        if has_terminal?('.', false, index)
           r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -2839,7 +2925,7 @@ module Less
         if r6
           s7, i7 = [], index
           loop do
-            if input.index(Regexp.new('[0-9]'), index) == index
+            if has_terminal?('[0-9]', true, index)
               r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -2852,7 +2938,7 @@ module Less
             end
           end
           if s7.empty?
-            self.index = i7
+            @index = i7
             r7 = nil
           else
             r7 = instantiate_node(SyntaxNode,input, i7...index, s7)
@@ -2865,14 +2951,14 @@ module Less
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(Number0)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
       r0 = r1
     else
       i9, s9 = index, []
-      if input.index('-', index) == index
+      if has_terminal?('-', false, index)
         r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -2888,7 +2974,7 @@ module Less
       if r10
         s12, i12 = [], index
         loop do
-          if input.index(Regexp.new('[0-9]'), index) == index
+          if has_terminal?('[0-9]', true, index)
             r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2901,7 +2987,7 @@ module Less
           end
         end
         if s12.empty?
-          self.index = i12
+          @index = i12
           r12 = nil
         else
           r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
@@ -2912,20 +2998,20 @@ module Less
         r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
         r9.extend(Number1)
       else
-        self.index = i9
+        @index = i9
         r9 = nil
       end
       if r9
         r0 = r9
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:number][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_unit
@@ -2937,7 +3023,7 @@ module Less
     end
 
     i1 = index
-    if input.index('px', index) == index
+    if has_terminal?('px', false, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 2))
       @index += 2
     else
@@ -2947,7 +3033,7 @@ module Less
     if r2
       r1 = r2
     else
-      if input.index('em', index) == index
+      if has_terminal?('em', false, index)
         r3 = instantiate_node(SyntaxNode,input, index...(index + 2))
         @index += 2
       else
@@ -2957,7 +3043,7 @@ module Less
       if r3
         r1 = r3
       else
-        if input.index('pc', index) == index
+        if has_terminal?('pc', false, index)
           r4 = instantiate_node(SyntaxNode,input, index...(index + 2))
           @index += 2
         else
@@ -2967,7 +3053,7 @@ module Less
         if r4
           r1 = r4
         else
-          if input.index('%', index) == index
+          if has_terminal?('%', false, index)
             r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -2977,7 +3063,7 @@ module Less
           if r5
             r1 = r5
           else
-            if input.index('pt', index) == index
+            if has_terminal?('pt', false, index)
               r6 = instantiate_node(SyntaxNode,input, index...(index + 2))
               @index += 2
             else
@@ -2987,7 +3073,7 @@ module Less
             if r6
               r1 = r6
             else
-              if input.index('cm', index) == index
+              if has_terminal?('cm', false, index)
                 r7 = instantiate_node(SyntaxNode,input, index...(index + 2))
                 @index += 2
               else
@@ -2997,7 +3083,7 @@ module Less
               if r7
                 r1 = r7
               else
-                if input.index('mm', index) == index
+                if has_terminal?('mm', false, index)
                   r8 = instantiate_node(SyntaxNode,input, index...(index + 2))
                   @index += 2
                 else
@@ -3007,7 +3093,7 @@ module Less
                 if r8
                   r1 = r8
                 else
-                  self.index = i1
+                  @index = i1
                   r1 = nil
                 end
               end
@@ -3024,7 +3110,7 @@ module Less
 
     node_cache[:unit][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Color0
@@ -3070,7 +3156,7 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    if input.index('#', index) == index
+    if has_terminal?('#', false, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -3087,7 +3173,7 @@ module Less
       r1.extend(Color0)
       r1.extend(Color1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -3096,7 +3182,7 @@ module Less
       i4, s4 = index, []
       i5, s5 = index, []
       i6 = index
-      if input.index('hsl', index) == index
+      if has_terminal?('hsl', false, index)
         r7 = instantiate_node(SyntaxNode,input, index...(index + 3))
         @index += 3
       else
@@ -3106,7 +3192,7 @@ module Less
       if r7
         r6 = r7
       else
-        if input.index('rgb', index) == index
+        if has_terminal?('rgb', false, index)
           r8 = instantiate_node(SyntaxNode,input, index...(index + 3))
           @index += 3
         else
@@ -3116,13 +3202,13 @@ module Less
         if r8
           r6 = r8
         else
-          self.index = i6
+          @index = i6
           r6 = nil
         end
       end
       s5 << r6
       if r6
-        if input.index('a', index) == index
+        if has_terminal?('a', false, index)
           r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -3140,12 +3226,12 @@ module Less
         r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
         r5.extend(Color2)
       else
-        self.index = i5
+        @index = i5
         r5 = nil
       end
       s4 << r5
       if r5
-        if input.index('(', index) == index
+        if has_terminal?('(', false, index)
           r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -3157,7 +3243,7 @@ module Less
           r12 = _nt_arguments
           s4 << r12
           if r12
-            if input.index(')', index) == index
+            if has_terminal?(')', false, index)
               r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -3173,20 +3259,20 @@ module Less
         r4.extend(Color3)
         r4.extend(Color4)
       else
-        self.index = i4
+        @index = i4
         r4 = nil
       end
       if r4
         r0 = r4
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:color][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Hex0
@@ -3201,7 +3287,7 @@ module Less
     end
 
     i0, s0 = index, []
-    if input.index(Regexp.new('[a-fA-F0-9]'), index) == index
+    if has_terminal?('[a-fA-F0-9]', true, index)
       r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -3209,7 +3295,7 @@ module Less
     end
     s0 << r1
     if r1
-      if input.index(Regexp.new('[a-fA-F0-9]'), index) == index
+      if has_terminal?('[a-fA-F0-9]', true, index)
         r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3219,7 +3305,7 @@ module Less
       if r2
         s3, i3 = [], index
         loop do
-          if input.index(Regexp.new('[a-fA-F0-9]'), index) == index
+          if has_terminal?('[a-fA-F0-9]', true, index)
             r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -3232,7 +3318,7 @@ module Less
           end
         end
         if s3.empty?
-          self.index = i3
+          @index = i3
           r3 = nil
         else
           r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
@@ -3244,13 +3330,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Hex0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:hex][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Function0
@@ -3282,7 +3368,7 @@ module Less
     i0, s0 = index, []
     s1, i1 = [], index
     loop do
-      if input.index(Regexp.new('[-a-zA-Z_]'), index) == index
+      if has_terminal?('[-a-zA-Z_]', true, index)
         r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3295,14 +3381,14 @@ module Less
       end
     end
     if s1.empty?
-      self.index = i1
+      @index = i1
       r1 = nil
     else
       r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
     end
     s0 << r1
     if r1
-      if input.index('(', index) == index
+      if has_terminal?('(', false, index)
         r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3314,7 +3400,7 @@ module Less
         r4 = _nt_arguments
         s0 << r4
         if r4
-          if input.index(')', index) == index
+          if has_terminal?(')', false, index)
             r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
@@ -3330,13 +3416,13 @@ module Less
       r0.extend(Function0)
       r0.extend(Function1)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:function][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Arguments0
@@ -3381,7 +3467,7 @@ module Less
       r3 = _nt_s
       s1 << r3
       if r3
-        if input.index(',', index) == index
+        if has_terminal?(',', false, index)
           r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
@@ -3404,7 +3490,7 @@ module Less
       r1.extend(Arguments0)
       r1.extend(Arguments1)
     else
-      self.index = i1
+      @index = i1
       r1 = nil
     end
     if r1
@@ -3414,14 +3500,14 @@ module Less
       if r7
         r0 = r7
       else
-        self.index = i0
+        @index = i0
         r0 = nil
       end
     end
 
     node_cache[:arguments][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Argument0
@@ -3490,7 +3576,7 @@ module Less
         r2.extend(Argument1)
         r2.extend(Argument2)
       else
-        self.index = i2
+        @index = i2
         r2 = nil
       end
       if r2
@@ -3504,7 +3590,7 @@ module Less
           i6, s6 = index, []
           s7, i7 = [], index
           loop do
-            if input.index(Regexp.new('[a-zA-Z]'), index) == index
+            if has_terminal?('[a-zA-Z]', true, index)
               r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -3517,14 +3603,14 @@ module Less
             end
           end
           if s7.empty?
-            self.index = i7
+            @index = i7
             r7 = nil
           else
             r7 = instantiate_node(SyntaxNode,input, i7...index, s7)
           end
           s6 << r7
           if r7
-            if input.index('=', index) == index
+            if has_terminal?('=', false, index)
               r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
@@ -3542,13 +3628,13 @@ module Less
             r6.extend(Argument4)
             r6.extend(Argument5)
           else
-            self.index = i6
+            @index = i6
             r6 = nil
           end
           if r6
             r0 = r6
           else
-            self.index = i0
+            @index = i0
             r0 = nil
           end
         end
@@ -3557,7 +3643,7 @@ module Less
 
     node_cache[:argument][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_s
@@ -3570,7 +3656,7 @@ module Less
 
     s0, i0 = [], index
     loop do
-      if input.index(Regexp.new('[ ]'), index) == index
+      if has_terminal?('[ ]', true, index)
         r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3586,7 +3672,7 @@ module Less
 
     node_cache[:s][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_S
@@ -3599,7 +3685,7 @@ module Less
 
     s0, i0 = [], index
     loop do
-      if input.index(Regexp.new('[ ]'), index) == index
+      if has_terminal?('[ ]', true, index)
         r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3612,7 +3698,7 @@ module Less
       end
     end
     if s0.empty?
-      self.index = i0
+      @index = i0
       r0 = nil
     else
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -3620,7 +3706,7 @@ module Less
 
     node_cache[:S][start_index] = r0
 
-    return r0
+    r0
   end
 
   def _nt_ws
@@ -3633,7 +3719,7 @@ module Less
 
     s0, i0 = [], index
     loop do
-      if input.index(Regexp.new('[\\n ]'), index) == index
+      if has_terminal?('[\\n ]', true, index)
         r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
         @index += 1
       else
@@ -3649,7 +3735,7 @@ module Less
 
     node_cache[:ws][start_index] = r0
 
-    return r0
+    r0
   end
 
   module Ns0
@@ -3665,7 +3751,7 @@ module Less
 
     i0, s0 = index, []
     i1 = index
-    if input.index(Regexp.new('[ ;]'), index) == index
+    if has_terminal?('[ ;]', true, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
@@ -3674,7 +3760,7 @@ module Less
     if r2
       r1 = nil
     else
-      self.index = i1
+      @index = i1
       r1 = instantiate_node(SyntaxNode,input, index...index)
     end
     s0 << r1
@@ -3692,13 +3778,13 @@ module Less
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Ns0)
     else
-      self.index = i0
+      @index = i0
       r0 = nil
     end
 
     node_cache[:ns][start_index] = r0
 
-    return r0
+    r0
   end
 
 end

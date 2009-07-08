@@ -98,7 +98,8 @@ grammar Less
         env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value)
         expression.build env
       end
-    }
+    # Empty rule
+    } / ws ident s ':' s ';' ws
   end
   
   #
@@ -112,7 +113,7 @@ grammar Less
   # Entity: Any whitespace delimited token
   #
   rule entity
-    function / fonts / keyword / accessor / variable / literal / important / empty
+    function / fonts / keyword / accessor / variable / literal / important
   end
   
   rule fonts
@@ -157,7 +158,7 @@ grammar Less
   # div / .class / #id / input[type="text"] / lang(fr)
   #
   rule element
-    (class_id / tag) attribute* ('(' ident ')')? / '@media'
+    (class_id / tag) attribute* ('(' ident ')')? / '@media' / '@font-face'
   end
   
   rule class_id

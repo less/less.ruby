@@ -1,10 +1,9 @@
-$:.unshift File.dirname(__FILE__)
+$:.unshift File.dirname(__FILE__), File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib')
 
 require 'rubygems'
 require 'cgi'
-require 'treetop'
-require 'forwardable'
 require 'delegate'
+require 'treetop'
 
 require 'less/command'
 require 'less/engine'
