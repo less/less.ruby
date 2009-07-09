@@ -1,4 +1,5 @@
-$:.unshift File.dirname(__FILE__), File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib')
+$:.unshift File.dirname(__FILE__), 
+  File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib')
 
 require 'rubygems'
 require 'cgi'
@@ -9,8 +10,9 @@ require 'less/command'
 require 'less/engine'
 
 module Less
-  PARSER = 'lib/less/engine/parser.rb'
-  GRAMMAR = 'lib/less/engine/less.tt'
+  ROOT = File.expand_path(File.dirname(__FILE__))
+  PARSER = File.join(ROOT, 'less', 'engine', 'parser.rb')
+  GRAMMAR = File.join(ROOT, 'less', 'engine', 'less.tt')
   
   MixedUnitsError   = Class.new(Exception)
   PathError         = Class.new(Exception)

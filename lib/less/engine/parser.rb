@@ -627,7 +627,7 @@ module Less
         s4, i4 = [], index
         loop do
           if has_terminal?('[-a-zA-Z0-9_%$/.&=:;#+?]', true, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r5 = true
             @index += 1
           else
             r5 = nil
@@ -703,7 +703,7 @@ module Less
     s1, i1 = [], index
     loop do
       if has_terminal?('[-a-z]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r2 = true
         @index += 1
       else
         r2 = nil
@@ -743,7 +743,7 @@ module Less
               s8, i8 = [], index
               loop do
                 if has_terminal?('[a-z]', true, index)
-                  r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                  r9 = true
                   @index += 1
                 else
                   r9 = nil
@@ -1485,7 +1485,7 @@ module Less
     i0 = index
     i1, s1 = index, []
     if has_terminal?('[a-zA-Z]', true, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r2 = true
       @index += 1
     else
       r2 = nil
@@ -1495,7 +1495,7 @@ module Less
       s3, i3 = [], index
       loop do
         if has_terminal?('[-a-zA-Z0-9]', true, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r4 = true
           @index += 1
         else
           r4 = nil
@@ -1564,7 +1564,7 @@ module Less
       s3, i3 = [], index
       loop do
         if has_terminal?('[-a-z0-9_]', true, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r4 = true
           @index += 1
         else
           r4 = nil
@@ -1626,7 +1626,7 @@ module Less
       s2, i2 = [], index
       loop do
         if has_terminal?('[-a-zA-Z0-9_]', true, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r3 = true
           @index += 1
         else
           r3 = nil
@@ -1898,7 +1898,7 @@ module Less
       s2, i2 = [], index
       loop do
         if has_terminal?('[a-z]', true, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r3 = true
           @index += 1
         else
           r3 = nil
@@ -1919,7 +1919,7 @@ module Less
       if r2
         i5, s5 = index, []
         if has_terminal?('[|~]', true, index)
-          r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r7 = true
           @index += 1
         else
           r7 = nil
@@ -2016,7 +2016,7 @@ module Less
     s0 << r1
     if r1
       if has_terminal?('[_a-z]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r2 = true
         @index += 1
       else
         r2 = nil
@@ -2026,7 +2026,7 @@ module Less
         s3, i3 = [], index
         loop do
           if has_terminal?('[-a-zA-Z0-9_]', true, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r4 = true
             @index += 1
           else
             r4 = nil
@@ -2076,7 +2076,7 @@ module Less
     s0 << r1
     if r1
       if has_terminal?('[_a-z]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r2 = true
         @index += 1
       else
         r2 = nil
@@ -2086,7 +2086,7 @@ module Less
         s3, i3 = [], index
         loop do
           if has_terminal?('[-a-zA-Z0-9_]', true, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r4 = true
             @index += 1
           else
             r4 = nil
@@ -2128,7 +2128,7 @@ module Less
     i0 = index
     i1, s1 = index, []
     if has_terminal?('[a-zA-Z]', true, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r2 = true
       @index += 1
     else
       r2 = nil
@@ -2138,7 +2138,7 @@ module Less
       s3, i3 = [], index
       loop do
         if has_terminal?('[-a-zA-Z]', true, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r4 = true
           @index += 1
         else
           r4 = nil
@@ -2153,7 +2153,7 @@ module Less
       s1 << r3
       if r3
         if has_terminal?('[0-9]', true, index)
-          r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r6 = true
           @index += 1
         else
           r6 = nil
@@ -2220,7 +2220,7 @@ module Less
     s2 << r3
     if r3
       if has_terminal?('[:+>]', true, index)
-        r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r4 = true
         @index += 1
       else
         r4 = nil
@@ -2355,10 +2355,6 @@ module Less
       elements[0]
     end
 
-    def op
-      elements[1]
-    end
-
     def S
       elements[2]
     end
@@ -2366,7 +2362,7 @@ module Less
 
   module Operator1
     def build env
-      env.identifiers.last << Node::Operator.new(op.text_value)
+      env.identifiers.last << Node::Operator.new(text_value.strip)
     end
   end
 
@@ -2390,7 +2386,7 @@ module Less
     s1 << r2
     if r2
       if has_terminal?('[-+*/]', true, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r3 = true
         @index += 1
       else
         r3 = nil
@@ -2488,7 +2484,7 @@ module Less
         s5, i5 = [], index
         loop do
           if has_terminal?('[-a-z]', true, index)
-            r6 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r6 = true
             @index += 1
           else
             r6 = nil
@@ -2641,7 +2637,7 @@ module Less
 
     i0, s0 = index, []
     if has_terminal?('[a-zA-Z]', true, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r1 = true
       @index += 1
     else
       r1 = nil
@@ -2651,7 +2647,7 @@ module Less
       s2, i2 = [], index
       loop do
         if has_terminal?('[-a-zA-Z]', true, index)
-          r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r3 = true
           @index += 1
         else
           r3 = nil
@@ -2702,7 +2698,7 @@ module Less
 
   module String2
     def value
-      content.text_value
+      text_value[1...-1]
     end
   end
 
@@ -2718,7 +2714,7 @@ module Less
 
   module String5
     def value
-      content.text_value
+      text_value[1...-1]
     end
   end
 
@@ -2808,7 +2804,7 @@ module Less
     else
       i9, s9 = index, []
       if has_terminal?('["]', true, index)
-        r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r10 = true
         @index += 1
       else
         r10 = nil
@@ -2820,7 +2816,7 @@ module Less
           i12, s12 = index, []
           i13 = index
           if has_terminal?('["]', true, index)
-            r14 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r14 = true
             @index += 1
           else
             r14 = nil
@@ -2859,7 +2855,7 @@ module Less
         s9 << r11
         if r11
           if has_terminal?('["]', true, index)
-            r16 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r16 = true
             @index += 1
           else
             r16 = nil
@@ -2959,7 +2955,7 @@ module Less
       s4, i4 = [], index
       loop do
         if has_terminal?('[0-9]', true, index)
-          r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r5 = true
           @index += 1
         else
           r5 = nil
@@ -2985,7 +2981,7 @@ module Less
           s7, i7 = [], index
           loop do
             if has_terminal?('[0-9]', true, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              r8 = true
               @index += 1
             else
               r8 = nil
@@ -3034,7 +3030,7 @@ module Less
         s12, i12 = [], index
         loop do
           if has_terminal?('[0-9]', true, index)
-            r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r13 = true
             @index += 1
           else
             r13 = nil
@@ -3347,7 +3343,7 @@ module Less
 
     i0, s0 = index, []
     if has_terminal?('[a-fA-F0-9]', true, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r1 = true
       @index += 1
     else
       r1 = nil
@@ -3355,7 +3351,7 @@ module Less
     s0 << r1
     if r1
       if has_terminal?('[a-fA-F0-9]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r2 = true
         @index += 1
       else
         r2 = nil
@@ -3365,7 +3361,7 @@ module Less
         s3, i3 = [], index
         loop do
           if has_terminal?('[a-fA-F0-9]', true, index)
-            r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r4 = true
             @index += 1
           else
             r4 = nil
@@ -3428,7 +3424,7 @@ module Less
     s1, i1 = [], index
     loop do
       if has_terminal?('[-a-zA-Z_]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r2 = true
         @index += 1
       else
         r2 = nil
@@ -3650,7 +3646,7 @@ module Less
           s7, i7 = [], index
           loop do
             if has_terminal?('[a-zA-Z]', true, index)
-              r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              r8 = true
               @index += 1
             else
               r8 = nil
@@ -3716,7 +3712,7 @@ module Less
     s0, i0 = [], index
     loop do
       if has_terminal?('[ ]', true, index)
-        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r1 = true
         @index += 1
       else
         r1 = nil
@@ -3745,7 +3741,7 @@ module Less
     s0, i0 = [], index
     loop do
       if has_terminal?('[ ]', true, index)
-        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r1 = true
         @index += 1
       else
         r1 = nil
@@ -3779,7 +3775,7 @@ module Less
     s0, i0 = [], index
     loop do
       if has_terminal?('[\\n ]', true, index)
-        r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        r1 = true
         @index += 1
       else
         r1 = nil
@@ -3811,7 +3807,7 @@ module Less
     i0, s0 = index, []
     i1 = index
     if has_terminal?('[ ;]', true, index)
-      r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r2 = true
       @index += 1
     else
       r2 = nil

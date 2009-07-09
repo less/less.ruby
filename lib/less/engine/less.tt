@@ -270,11 +270,11 @@ grammar Less
   rule string
     "'" content:(!"'" . )* "'" {
       def value
-        content.text_value
+        text_value[1...-1]
       end
     } / ["] content:(!["] . )* ["] {
       def value
-        content.text_value
+        text_value[1...-1]
       end
     }
   end
