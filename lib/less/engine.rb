@@ -42,8 +42,7 @@ module Less
     alias :to_tree :parse
     
     def to_css
-      "/* Generated with Less #{Less.version} */\n\n" +  
-      (@css || @css = self.parse.to_css)
+      @css || @css = self.parse.to_css
     end
     
     def prepare

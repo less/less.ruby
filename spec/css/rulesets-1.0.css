@@ -1,5 +1,3 @@
-/* Generated with Less 1.0.0 */
-
 #first > .one { font-size: 2em; }
 #first > .one > #second .two > #deux { width: 50%; }
 #first > .one > #second .two > #deux #third { height: 100%; }

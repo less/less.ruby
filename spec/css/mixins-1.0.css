@@ -1,5 +1,3 @@
-/* Generated with Less 1.0.0 */
-
 .mixin { border: 1px solid black; }
 .mixout { border-color: orange; }
 .borders { border-style: dashed; }
