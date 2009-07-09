@@ -63,7 +63,7 @@ class Object
   def log(s = '')  puts "* #{s}" if $verbose end
   def log!(s = '') puts "* #{s}" end
   def error(s) $stderr.puts s end
-  def error!(s) raise CradleError, s end
+  def error!(s) raise Exception, s end
 end
 
 class Class

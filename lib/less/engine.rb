@@ -18,7 +18,7 @@ module Less
       end
       
       begin
-        require Less::PARSER
+        require 'engine/parser'
       rescue LoadError
         Treetop.load Less::GRAMMAR
       end

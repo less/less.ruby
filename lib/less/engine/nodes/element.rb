@@ -85,8 +85,10 @@ module Less
       def last;  elements.last  end
       def first; elements.first end
       def to_s; super end
-    
+      
+      #
       # Entry point for the css conversion
+      #
       def to_css path = []
         path << @selector.to_css << self unless root?
 

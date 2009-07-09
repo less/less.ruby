@@ -210,9 +210,9 @@ grammar Less
   end
   
   rule operator
-    S op:([-+*/]) S {
+    S [-+*/] S {
       def build env
-        env.identifiers.last << Node::Operator.new(op.text_value)
+        env.identifiers.last << Node::Operator.new(text_value.strip)
       end
     } / [-+*/] {
       def build env

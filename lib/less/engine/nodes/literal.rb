@@ -84,6 +84,7 @@ module Less
       
       attr_reader :quotes, :content
       
+      # Strip quotes if necessary, and save them in @quotes
       def initialize str
         @quotes, @content = unless str.nil? or str.empty?
           str.match(/('|")(.*?)(\1)/).captures rescue [nil, str]
@@ -115,7 +116,9 @@ module Less
     end
   
     #
-    # red small border-collapse
+    # Any un-quoted word
+    #   
+    #   ex: red, small, border-collapse
     #
     class Keyword < ::String
       include Entity

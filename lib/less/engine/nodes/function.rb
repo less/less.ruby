@@ -1,4 +1,7 @@
 module Less
+  #
+  # Functions useable from within the style-sheet go here
+  #
   module Functions
     def rgb *rgb
       rgba rgb, 1.0
@@ -8,6 +11,9 @@ module Less
       hsla args, 1.0
     end
 
+    #
+    # RGBA to Node::Color
+    #
     def rgba *rgba
       r, g, b, a = rgba.flatten
       hex = [r, g, b].inject("") do |str, c|
@@ -17,7 +23,10 @@ module Less
       end
       Node::Color.new hex, a
     end
-
+    
+    #
+    # HSLA to RGBA
+    #
     def hsla h, s, l, a = 1.0
       m2 = ( l <= 0.5 ) ? l * ( s + 1 ) : l + s - l * s
       m1 = l * 2 - m2;
@@ -36,6 +45,11 @@ module Less
   end
   
   module Node
+    #
+    # A CSS function, like rgb() or url()
+    #
+    #   it calls functions from the Functions module
+    #
     class Function < ::String
       include Functions
       include Entity
@@ -48,11 +62,18 @@ module Less
       def to_css
         self.evaluate.to_css
       end
-    
+      
+      #
+      # Call the function
+      #
       def evaluate
         send self.to_sym, *@args
       end
-    
+      
+      #
+      # If the function isn't found, we just print it out,
+      # this is the case for url(), for example,
+      #
       def method_missing meth, *args
         Node::Anonymous.new("#{meth}(#{args.map(&:to_css) * ', '})")
       end
