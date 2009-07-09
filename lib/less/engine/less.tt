@@ -354,6 +354,10 @@ grammar Less
       def build env
         Node::Anonymous.new text_value
       end
+    } / [-a-zA-Z0-9_%$/.&=:;#+?]+ {
+      def build env
+        Node::String.new text_value
+      end
     }
   end
   

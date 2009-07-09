@@ -3605,6 +3605,12 @@ module Less
     end
   end
 
+  module Argument6
+    def build env
+      Node::String.new text_value
+    end
+  end
+
   def _nt_argument
     start_index = index
     if node_cache[:argument].has_key?(index)
@@ -3689,8 +3695,33 @@ module Less
           if r6
             r0 = r6
           else
-            @index = i0
-            r0 = nil
+            s11, i11 = [], index
+            loop do
+              if has_terminal?('[-a-zA-Z0-9_%$/.&=:;#+?]', true, index)
+                r12 = true
+                @index += 1
+              else
+                r12 = nil
+              end
+              if r12
+                s11 << r12
+              else
+                break
+              end
+            end
+            if s11.empty?
+              @index = i11
+              r11 = nil
+            else
+              r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+              r11.extend(Argument6)
+            end
+            if r11
+              r0 = r11
+            else
+              @index = i0
+              r0 = nil
+            end
           end
         end
       end

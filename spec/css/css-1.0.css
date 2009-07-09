@@ -35,4 +35,5 @@ input[type="text"] { font-weight: normal; }
 .misc {
   -moz-border-radius: 2px;
   color: red !important;
+  background-image: url(image.jpg);
 }
