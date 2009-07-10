@@ -72,7 +72,7 @@ module Less
       end
     
       def to_css
-        "#{(self % 1).zero?? self.to_i.to_s : self.to_s}#@unit"
+        "#{(self % 1).zero?? "#{self.to_i}#@unit" : self}"
       end
     end
   

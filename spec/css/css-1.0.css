@@ -18,7 +18,7 @@ a:link { color: #999999; }
 p { text-transform: none; }
 p:first-child { text-transform: none; }
 q:lang(no) { quotes: none; }
-p + h1 { font-size: 2em; }
+p + h1 { font-size: 2.2em; }
 input[type="text"] { font-weight: normal; }
 #shorthands {
   border: 1px solid #000000;
@@ -34,6 +34,7 @@ input[type="text"] { font-weight: normal; }
 }
 .misc {
   -moz-border-radius: 2px;
+  width: 0.1em;
   color: red !important;
   background-image: url(images/image.jpg);
 }
