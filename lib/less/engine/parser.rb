@@ -361,13 +361,10 @@ module Less
 
   module Ruleset3
     def build env        
-      log "[mixin]: #{selectors.text_value}"
       selectors.build(env, :path).each do |path|
-                  
         rules = path.inject(env.root) do |current, node|
           current.descend(node.selector, node) or raise MixinNameError, path.join
         end.rules
-                  
         env.rules += rules
       end
     end
@@ -497,7 +494,6 @@ module Less
       path = File.join(env.root.file, url.value)
       path += '.less' unless path =~ /\.less$/
       if File.exist? path
-        log "\nimporting #{path}"
         imported = Less::Engine.new(File.new path).to_tree
         env.rules += imported.rules
       else
@@ -930,7 +926,6 @@ module Less
 
   module Selector1
     def tree env
-      log "\n% element: #{text_value}\n"
       elements.inject(env) do |node, e|
         node << Node::Element.new(e.element.text_value, e.select.text_value)
         node.last

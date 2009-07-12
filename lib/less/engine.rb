@@ -34,9 +34,7 @@ module Less
       else
         raise SyntaxError, @parser.failure_message
       end
-      
-      log @tree.inspect
-            
+                  
       @tree
     end
     alias :to_tree :parse

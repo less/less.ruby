@@ -7,13 +7,11 @@ module Less
       
       def initialize key, value = nil
         super key
-        log "\n[new] #{self.class} `#{key}`\n"
         @value = Expression.new(value ? [value] : [])
         @eval = false # Store the first evaluation in here
       end
   
       def << token
-        log "[adding] to #{self.to_s}: '#{token.to_s}' <#{token.class}>\n"
         token = Node::Anonymous.new(*token) unless token.is_a? Entity or token.is_a? Operator
         @value << token
       end
@@ -79,8 +77,6 @@ module Less
       # ex: [#111, +, #111] will evaluate to a Color node, with value #222
       #
       def evaluate
-        log "evaluating #{self}"
-        log "#{self.select{|i| i.is_a? Entity }}"
         if size > 2 && (entities.size == operators.size + 1)
           # Create a sub-expression with all the variables/properties evaluated
           evaluated = Expression.new map {|e| e.respond_to?(:evaluate) ? e.evaluate : e }
@@ -95,21 +91,15 @@ module Less
           ruby = map {|e| e.to_ruby if e.respond_to? :to_ruby }
         
           unless ruby.include? nil
-            log "ruby(#{unit}): " + ruby.join(' ') + "\n"
-      
             if entity
-              log "\n# => #{eval(ruby.join)} <#{entity.class}>\n"
               entity.class.new(eval(ruby.join), *(unit if entity.class == Node::Number))
             else
-              log "\n# => not evaluated"
               first
             end
           else
-            log "some elements dont respond to to_ruby: #{ruby}"
             self
           end
         elsif size == 1
-          log "not evaluating, size == 1"
           first
         else
           self
