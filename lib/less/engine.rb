@@ -3,6 +3,12 @@ $:.unshift File.dirname(__FILE__)
 require 'engine/builder'
 require 'engine/nodes'
 
+begin
+  require 'engine/parser'
+rescue LoadError
+  Treetop.load LESS_GRAMMAR
+end
+
 module Less
   class Engine
     attr_reader :css, :less
@@ -17,12 +23,6 @@ module Less
         raise ArgumentError, "argument must be an instance of File or String!"
       end
       
-      begin
-        require 'engine/parser'
-      rescue LoadError
-        Treetop.load Less::GRAMMAR
-      end
-            
       @parser = LessParser.new
     end
     
@@ -46,11 +46,7 @@ module Less
     end
     
     def prepare
-      @less.gsub(/\r\n/, "\n").                                      # m$
-            gsub(/\t/, '  ')                                        # Tabs to spaces
-            #gsub(/('|")(.*?)(\1)/) { $1 + CGI.escape( $2 ) + $1 }   # Escape string values
-           # gsub(/\/\/.*\n/, '').                                    # Comments //
-          #  gsub(/\/\*.*?\*\//m, '')                                 # Comments /*
+      @less.gsub(/\r\n/, "\n").gsub(/\t/, '  ')
     end
   end
 end

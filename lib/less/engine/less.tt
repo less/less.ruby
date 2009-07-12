@@ -249,10 +249,6 @@ grammar Less
     }
   end
   
-  rule empty
-    "" <Empty>
-  end
-  
   #
   # `blue`, `small`, `normal` etc.
   #

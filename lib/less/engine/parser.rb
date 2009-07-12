@@ -2597,27 +2597,6 @@ module Less
     r0
   end
 
-  def _nt_empty
-    start_index = index
-    if node_cache[:empty].has_key?(index)
-      cached = node_cache[:empty][index]
-      @index = cached.interval.end if cached
-      return cached
-    end
-
-    if has_terminal?("", false, index)
-      r0 = instantiate_node(Empty,input, index...(index + 0))
-      @index += 0
-    else
-      terminal_parse_failure("")
-      r0 = nil
-    end
-
-    node_cache[:empty][start_index] = r0
-
-    r0
-  end
-
   module Keyword0
   end
 

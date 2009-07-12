@@ -6,8 +6,3 @@ module Builder
     env
   end
 end
-
-module Empty
-  def build env
-  end
-end

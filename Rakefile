@@ -64,8 +64,8 @@ begin
   require 'lib/less'
   
   task :compile do
-    puts "compiling #{Less::GRAMMAR.split('/').last}..."
-    File.open(Less::PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(Less::GRAMMAR) }
+    puts "compiling #{LESS_GRAMMAR.split('/').last}..."
+    File.open(LESS_PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(LESS_GRAMMAR) }
   end
   
   task :benchmark do

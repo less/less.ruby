@@ -1,19 +1,19 @@
-$:.unshift File.dirname(__FILE__), 
-  File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib')
+$:.unshift File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib'), 
+           File.dirname(__FILE__)
 
 require 'rubygems'
 require 'cgi'
 require 'delegate'
 require 'treetop'
 
+LESS_ROOT = File.expand_path(File.dirname(__FILE__))
+LESS_PARSER = File.join(LESS_ROOT, 'less', 'engine', 'parser.rb')
+LESS_GRAMMAR = File.join(LESS_ROOT, 'less', 'engine', 'less.tt')
+
 require 'less/command'
 require 'less/engine'
 
-module Less
-  ROOT = File.expand_path(File.dirname(__FILE__))
-  PARSER = File.join(ROOT, 'less', 'engine', 'parser.rb')
-  GRAMMAR = File.join(ROOT, 'less', 'engine', 'less.tt')
-  
+module Less  
   MixedUnitsError   = Class.new(Exception)
   PathError         = Class.new(Exception)
   VariableNameError = Class.new(NameError)
