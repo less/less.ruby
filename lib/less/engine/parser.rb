@@ -1683,60 +1683,65 @@ module Less
       if r4
         r2 = r4
       else
-        @index = i2
-        r2 = nil
+        r5 = _nt_ident
+        if r5
+          r2 = r5
+        else
+          @index = i2
+          r2 = nil
+        end
       end
     end
     s1 << r2
     if r2
-      s5, i5 = [], index
+      s6, i6 = [], index
       loop do
-        r6 = _nt_attribute
-        if r6
-          s5 << r6
+        r7 = _nt_attribute
+        if r7
+          s6 << r7
         else
           break
         end
       end
-      r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
-      s1 << r5
-      if r5
-        i8, s8 = index, []
+      r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+      s1 << r6
+      if r6
+        i9, s9 = index, []
         if has_terminal?('(', false, index)
-          r9 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          r10 = instantiate_node(SyntaxNode,input, index...(index + 1))
           @index += 1
         else
           terminal_parse_failure('(')
-          r9 = nil
+          r10 = nil
         end
-        s8 << r9
-        if r9
-          r10 = _nt_ident
-          s8 << r10
-          if r10
+        s9 << r10
+        if r10
+          r11 = _nt_ident
+          s9 << r11
+          if r11
             if has_terminal?(')', false, index)
-              r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure(')')
-              r11 = nil
+              r12 = nil
             end
-            s8 << r11
+            s9 << r12
           end
         end
-        if s8.last
-          r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
-          r8.extend(Element0)
+        if s9.last
+          r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
+          r9.extend(Element0)
         else
-          @index = i8
-          r8 = nil
+          @index = i9
+          r9 = nil
         end
-        if r8
-          r7 = r8
+        if r9
+          r8 = r9
         else
-          r7 = instantiate_node(SyntaxNode,input, index...index)
+          r8 = instantiate_node(SyntaxNode,input, index...index)
         end
-        s1 << r7
+        s1 << r8
       end
     end
     if s1.last
@@ -1750,24 +1755,24 @@ module Less
       r0 = r1
     else
       if has_terminal?('@media', false, index)
-        r12 = instantiate_node(SyntaxNode,input, index...(index + 6))
+        r13 = instantiate_node(SyntaxNode,input, index...(index + 6))
         @index += 6
       else
         terminal_parse_failure('@media')
-        r12 = nil
+        r13 = nil
       end
-      if r12
-        r0 = r12
+      if r13
+        r0 = r13
       else
         if has_terminal?('@font-face', false, index)
-          r13 = instantiate_node(SyntaxNode,input, index...(index + 10))
+          r14 = instantiate_node(SyntaxNode,input, index...(index + 10))
           @index += 10
         else
           terminal_parse_failure('@font-face')
-          r13 = nil
+          r14 = nil
         end
-        if r13
-          r0 = r13
+        if r14
+          r0 = r14
         else
           @index = i0
           r0 = nil
