@@ -1,9 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib'), 
            File.dirname(__FILE__)
 
-require 'rubygems'
 require 'cgi'
-require 'delegate'
 require 'treetop'
 
 LESS_ROOT = File.expand_path(File.dirname(__FILE__))
