@@ -75,9 +75,11 @@ module Less
       #
       # Evaluates the expression and instantiates a new Literal with the result
       # ex: [#111, +, #111] will evaluate to a Color node, with value #222
-      #
+      # 
+      # TODO: refactor the conditionals
       def evaluate
         if size > 2 && (entities.size == operators.size + 1)
+          
           # Create a sub-expression with all the variables/properties evaluated
           evaluated = Expression.new map {|e| e.respond_to?(:evaluate) ? e.evaluate : e }
         

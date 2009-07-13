@@ -165,7 +165,7 @@ grammar Less
   # div / .class / #id / input[type="text"] / lang(fr)
   #
   rule element
-    (class_id / tag) attribute* ('(' ident ')')? / '@media' / '@font-face'
+    (class_id / tag / ident) attribute* ('(' ident ')')? / '@media' / '@font-face'
   end
   
   rule class_id

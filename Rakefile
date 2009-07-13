@@ -17,7 +17,6 @@ end
 begin
   require 'rake/contrib/sshpublisher'
   namespace :rubyforge do
-
     desc "Release gem and RDoc documentation to RubyForge"
     task :release => ["rubyforge:release:gem", "rubyforge:release:docs"]
 

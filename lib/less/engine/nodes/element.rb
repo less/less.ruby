@@ -52,7 +52,7 @@ module Less
       def elements;    @rules.select {|r| r.instance_of? Element  } end
   
       # Select a child element
-      # TODO: Implement full selector syntax
+      # TODO: Implement full selector syntax & merge with descend()
       def [] key
         @rules.find {|i| i.to_s == key }
       end
@@ -119,16 +119,11 @@ module Less
           raise VariableNameError, ident unless result
         end
       end
-  
+    
+      #
+      # Traverse the whole tree, returning each leaf (recursive)
+      #
       def each path = [], &blk
-      #
-      # Traverse the whole tree, returning each leaf or branch (recursive)
-      #
-      ###
-        #   Aside from the key & value, we yield the full path of the leaf,  
-        #   aswell as the branch which contains it (self).
-        #   Note that in :branch mode, we only return 'twigs', branches which contain leaves.
-        #
         elements.each do |element|                            
           path << element                         
           yield element, path if element.leaf?                
