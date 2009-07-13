@@ -3,6 +3,7 @@ $:.unshift File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib'),
 
 require 'cgi'
 require 'treetop'
+require 'delegate'
 
 LESS_ROOT = File.expand_path(File.dirname(__FILE__))
 LESS_PARSER = File.join(LESS_ROOT, 'less', 'engine', 'parser.rb')
