@@ -1788,12 +1788,6 @@ module Less
   module ClassId0
   end
 
-  module ClassId1
-    def id
-      elements[1]
-    end
-  end
-
   def _nt_class_id
     start_index = index
     if node_cache[:class_id].has_key?(index)
@@ -1802,80 +1796,50 @@ module Less
       return cached
     end
 
-    i0 = index
-    i1, s1 = index, []
-    r3 = _nt_tag
-    if r3
-      r2 = r3
-    else
-      r2 = instantiate_node(SyntaxNode,input, index...index)
-    end
-    s1 << r2
+    i0, s0 = index, []
+    r2 = _nt_tag
     if r2
-      s4, i4 = [], index
+      r1 = r2
+    else
+      r1 = instantiate_node(SyntaxNode,input, index...index)
+    end
+    s0 << r1
+    if r1
+      s3, i3 = [], index
       loop do
-        i5 = index
-        r6 = _nt_class
-        if r6
-          r5 = r6
+        i4 = index
+        r5 = _nt_class
+        if r5
+          r4 = r5
         else
-          r7 = _nt_id
-          if r7
-            r5 = r7
+          r6 = _nt_id
+          if r6
+            r4 = r6
           else
-            @index = i5
-            r5 = nil
+            @index = i4
+            r4 = nil
           end
         end
-        if r5
-          s4 << r5
+        if r4
+          s3 << r4
         else
           break
         end
       end
-      if s4.empty?
-        @index = i4
-        r4 = nil
+      if s3.empty?
+        @index = i3
+        r3 = nil
       else
-        r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
+        r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
       end
-      s1 << r4
+      s0 << r3
     end
-    if s1.last
-      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
-      r1.extend(ClassId0)
+    if s0.last
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
+      r0.extend(ClassId0)
     else
-      @index = i1
-      r1 = nil
-    end
-    if r1
-      r0 = r1
-    else
-      i8, s8 = index, []
-      r10 = _nt_tag
-      if r10
-        r9 = r10
-      else
-        r9 = instantiate_node(SyntaxNode,input, index...index)
-      end
-      s8 << r9
-      if r9
-        r11 = _nt_id
-        s8 << r11
-      end
-      if s8.last
-        r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
-        r8.extend(ClassId1)
-      else
-        @index = i8
-        r8 = nil
-      end
-      if r8
-        r0 = r8
-      else
-        @index = i0
-        r0 = nil
-      end
+      @index = i0
+      r0 = nil
     end
 
     node_cache[:class_id][start_index] = r0

@@ -32,7 +32,12 @@ module Less
       end
     
       def to_css
-        unit + (self <= 0 ? '0' * 6 : self.to_i.to_s(16))
+        unit + if self <= 0
+          '0' * 6
+        else
+          hex = self.to_i.to_s(16)
+          '0' * (6 - hex.length) + hex
+        end
       end
     
       def to_ruby
