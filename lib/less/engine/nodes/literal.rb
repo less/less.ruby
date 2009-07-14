@@ -13,9 +13,10 @@ module Less
     #
     class Color < DelegateClass(Fixnum)
       include Literal
-      attr_reader :color
+      attr_reader :color, :opacity
       
       def initialize color = nil, opacity = 1.0
+        @opacity = opacity
         @color = if color.is_a? Array
           rgba color
         elsif color.is_a? ::String
@@ -37,12 +38,17 @@ module Less
         '#'
       end
     
+      def hex
+        v = [[to_i, 0].max, 256**3].min
+        "%06x" % [v]
+      end
+    
       def to_css
-        unit + if self <= 0
-          '0' * 6
+        if opacity and opacity < 1.0
+          colors = hex.scan(/../).map{|v| v.to_i(16)}.join(", ")
+          "rgba(#{colors}, #{opacity})"
         else
-          hex = self.to_i.to_s(16)
-          '0' * (6 - hex.length) + hex
+          unit + hex
         end
       end
     
