@@ -176,7 +176,7 @@ grammar Less
   # [type="text"]
   #
   rule attribute
-    '[' [a-z]+ ([|~]? '=')? (tag / string) ']'
+    '[' tag ([|~]? '=') (tag / string) ']' / '[' (tag / string) ']'
   end
   
   rule class
@@ -192,7 +192,7 @@ grammar Less
   end
   
   rule select
-    (s [:+>] s / S)?
+    (s [+>] s / s ':' / S)?
   end
   
   # TODO: Merge this with attribute rule
@@ -369,6 +369,6 @@ grammar Less
   
   # Non-space char
   rule ns
-    ![ ;] .
+    ![ ;\n] .
   end
 end

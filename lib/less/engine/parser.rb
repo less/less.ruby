@@ -1875,6 +1875,13 @@ module Less
   end
 
   module Attribute1
+    def tag
+      elements[1]
+    end
+
+  end
+
+  module Attribute2
   end
 
   def _nt_attribute
@@ -1885,108 +1892,137 @@ module Less
       return cached
     end
 
-    i0, s0 = index, []
+    i0 = index
+    i1, s1 = index, []
     if has_terminal?('[', false, index)
-      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
       terminal_parse_failure('[')
-      r1 = nil
+      r2 = nil
     end
-    s0 << r1
-    if r1
-      s2, i2 = [], index
-      loop do
-        if has_terminal?('[a-z]', true, index)
-          r3 = true
-          @index += 1
-        else
-          r3 = nil
-        end
-        if r3
-          s2 << r3
-        else
-          break
-        end
-      end
-      if s2.empty?
-        @index = i2
-        r2 = nil
-      else
-        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
-      end
-      s0 << r2
-      if r2
-        i5, s5 = index, []
+    s1 << r2
+    if r2
+      r3 = _nt_tag
+      s1 << r3
+      if r3
+        i4, s4 = index, []
         if has_terminal?('[|~]', true, index)
-          r7 = true
+          r6 = true
           @index += 1
         else
-          r7 = nil
+          r6 = nil
         end
-        if r7
-          r6 = r7
-        else
-          r6 = instantiate_node(SyntaxNode,input, index...index)
-        end
-        s5 << r6
         if r6
+          r5 = r6
+        else
+          r5 = instantiate_node(SyntaxNode,input, index...index)
+        end
+        s4 << r5
+        if r5
           if has_terminal?('=', false, index)
-            r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
             @index += 1
           else
             terminal_parse_failure('=')
-            r8 = nil
+            r7 = nil
           end
-          s5 << r8
+          s4 << r7
         end
-        if s5.last
-          r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
-          r5.extend(Attribute0)
+        if s4.last
+          r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
+          r4.extend(Attribute0)
         else
-          @index = i5
-          r5 = nil
+          @index = i4
+          r4 = nil
         end
-        if r5
-          r4 = r5
-        else
-          r4 = instantiate_node(SyntaxNode,input, index...index)
-        end
-        s0 << r4
+        s1 << r4
         if r4
-          i9 = index
-          r10 = _nt_tag
-          if r10
-            r9 = r10
+          i8 = index
+          r9 = _nt_tag
+          if r9
+            r8 = r9
           else
-            r11 = _nt_string
-            if r11
-              r9 = r11
+            r10 = _nt_string
+            if r10
+              r8 = r10
             else
-              @index = i9
-              r9 = nil
+              @index = i8
+              r8 = nil
             end
           end
-          s0 << r9
-          if r9
+          s1 << r8
+          if r8
             if has_terminal?(']', false, index)
-              r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
+              r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
               @index += 1
             else
               terminal_parse_failure(']')
-              r12 = nil
+              r11 = nil
             end
-            s0 << r12
+            s1 << r11
           end
         end
       end
     end
-    if s0.last
-      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(Attribute1)
+    if s1.last
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
+      r1.extend(Attribute1)
     else
-      @index = i0
-      r0 = nil
+      @index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      i12, s12 = index, []
+      if has_terminal?('[', false, index)
+        r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        terminal_parse_failure('[')
+        r13 = nil
+      end
+      s12 << r13
+      if r13
+        i14 = index
+        r15 = _nt_tag
+        if r15
+          r14 = r15
+        else
+          r16 = _nt_string
+          if r16
+            r14 = r16
+          else
+            @index = i14
+            r14 = nil
+          end
+        end
+        s12 << r14
+        if r14
+          if has_terminal?(']', false, index)
+            r17 = instantiate_node(SyntaxNode,input, index...(index + 1))
+            @index += 1
+          else
+            terminal_parse_failure(']')
+            r17 = nil
+          end
+          s12 << r17
+        end
+      end
+      if s12.last
+        r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
+        r12.extend(Attribute2)
+      else
+        @index = i12
+        r12 = nil
+      end
+      if r12
+        r0 = r12
+      else
+        @index = i0
+        r0 = nil
+      end
     end
 
     node_cache[:attribute][start_index] = r0
@@ -2206,6 +2242,13 @@ module Less
     end
   end
 
+  module Select1
+    def s
+      elements[0]
+    end
+
+  end
+
   def _nt_select
     start_index = index
     if node_cache[:select].has_key?(index)
@@ -2219,7 +2262,7 @@ module Less
     r3 = _nt_s
     s2 << r3
     if r3
-      if has_terminal?('[:+>]', true, index)
+      if has_terminal?('[+>]', true, index)
         r4 = true
         @index += 1
       else
@@ -2241,12 +2284,36 @@ module Less
     if r2
       r1 = r2
     else
-      r6 = _nt_S
+      i6, s6 = index, []
+      r7 = _nt_s
+      s6 << r7
+      if r7
+        if has_terminal?(':', false, index)
+          r8 = instantiate_node(SyntaxNode,input, index...(index + 1))
+          @index += 1
+        else
+          terminal_parse_failure(':')
+          r8 = nil
+        end
+        s6 << r8
+      end
+      if s6.last
+        r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+        r6.extend(Select1)
+      else
+        @index = i6
+        r6 = nil
+      end
       if r6
         r1 = r6
       else
-        @index = i1
-        r1 = nil
+        r9 = _nt_S
+        if r9
+          r1 = r9
+        else
+          @index = i1
+          r1 = nil
+        end
       end
     end
     if r1
@@ -3816,7 +3883,7 @@ module Less
 
     i0, s0 = index, []
     i1 = index
-    if has_terminal?('[ ;]', true, index)
+    if has_terminal?('[ ;\\n]', true, index)
       r2 = true
       @index += 1
     else
