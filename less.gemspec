@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.0.6"
+  s.version = "1.0.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
@@ -129,6 +129,7 @@ Gem::Specification.new do |s|
      "spec/command_spec.rb",
      "spec/css/accessors-1.0.css",
      "spec/css/big-1.0.css",
+     "spec/css/colors-1.0.css",
      "spec/css/comments-1.0.css",
      "spec/css/css-1.0.css",
      "spec/css/functions-1.0.css",
