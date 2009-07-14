@@ -1814,7 +1814,19 @@ module Less
     if r2
       s4, i4 = [], index
       loop do
-        r5 = _nt_class
+        i5 = index
+        r6 = _nt_class
+        if r6
+          r5 = r6
+        else
+          r7 = _nt_id
+          if r7
+            r5 = r7
+          else
+            @index = i5
+            r5 = nil
+          end
+        end
         if r5
           s4 << r5
         else
@@ -1839,27 +1851,27 @@ module Less
     if r1
       r0 = r1
     else
-      i6, s6 = index, []
-      r8 = _nt_tag
+      i8, s8 = index, []
+      r10 = _nt_tag
+      if r10
+        r9 = r10
+      else
+        r9 = instantiate_node(SyntaxNode,input, index...index)
+      end
+      s8 << r9
+      if r9
+        r11 = _nt_id
+        s8 << r11
+      end
+      if s8.last
+        r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
+        r8.extend(ClassId1)
+      else
+        @index = i8
+        r8 = nil
+      end
       if r8
-        r7 = r8
-      else
-        r7 = instantiate_node(SyntaxNode,input, index...index)
-      end
-      s6 << r7
-      if r7
-        r9 = _nt_id
-        s6 << r9
-      end
-      if s6.last
-        r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
-        r6.extend(ClassId1)
-      else
-        @index = i6
-        r6 = nil
-      end
-      if r6
-        r0 = r6
+        r0 = r8
       else
         @index = i0
         r0 = nil

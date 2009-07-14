@@ -169,7 +169,7 @@ grammar Less
   end
   
   rule class_id
-    tag? class+ / tag? id
+    tag? (class / id)+
   end
   
   #

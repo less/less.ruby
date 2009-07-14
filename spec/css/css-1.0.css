@@ -6,6 +6,7 @@ h2 > a > p { color: none; }
 h3 { color: none; }
 div.class { color: blue; }
 div#id { color: green; }
+.class#id { color: purple; }
 .one.two.three { color: grey; }
 @media print { font-size: 3em; }
 @media screen { font-size: 10px; }
