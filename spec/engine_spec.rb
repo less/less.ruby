@@ -54,6 +54,11 @@ describe Less::Engine do
       lessify(:accessors).should == css(:accessors)
     end
     
+    it "should parse colors in hex" do
+      puts lessify(:colors)
+      lessify(:colors).should == css(:colors)
+    end
+    
     it "should parse mixins" do
       lessify(:mixins).should == css(:mixins)
     end

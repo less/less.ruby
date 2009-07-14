@@ -20,7 +20,13 @@ module Less
           rgba color
         elsif color.is_a? ::String
           color.delete! unit
-          (color * ( color.length < 6 ? 6 / color.length : 1 )).to_i 16
+          if color.length == 3
+            color.split(//).map{|v| v + v}.join('').to_i 16
+          elsif color.length == 6
+            color.to_i 16
+          else
+            color
+          end
         else
           color
         end
