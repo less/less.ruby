@@ -113,7 +113,7 @@ grammar Less
   # An operation or compound value
   #
   rule expression
-    entity (operator / S) expression <Builder> / entity
+    entity (operator / S / WS) expression <Builder> / entity
   end
   
   #
@@ -365,6 +365,10 @@ grammar Less
   
   rule ws
     [\n ]*
+  end
+  
+  rule WS
+    [\n ]+
   end
   
   # Non-space char

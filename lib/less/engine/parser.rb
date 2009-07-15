@@ -1265,14 +1265,19 @@ module Less
         if r5
           r3 = r5
         else
-          @index = i3
-          r3 = nil
+          r6 = _nt_WS
+          if r6
+            r3 = r6
+          else
+            @index = i3
+            r3 = nil
+          end
         end
       end
       s1 << r3
       if r3
-        r6 = _nt_expression
-        s1 << r6
+        r7 = _nt_expression
+        s1 << r7
       end
     end
     if s1.last
@@ -1285,9 +1290,9 @@ module Less
     if r1
       r0 = r1
     else
-      r7 = _nt_entity
-      if r7
-        r0 = r7
+      r8 = _nt_entity
+      if r8
+        r0 = r8
       else
         @index = i0
         r0 = nil
@@ -1754,28 +1759,47 @@ module Less
     if r1
       r0 = r1
     else
-      if has_terminal?('@media', false, index)
-        r13 = instantiate_node(SyntaxNode,input, index...(index + 6))
-        @index += 6
-      else
-        terminal_parse_failure('@media')
+      s13, i13 = [], index
+      loop do
+        r14 = _nt_attribute
+        if r14
+          s13 << r14
+        else
+          break
+        end
+      end
+      if s13.empty?
+        @index = i13
         r13 = nil
+      else
+        r13 = instantiate_node(SyntaxNode,input, i13...index, s13)
       end
       if r13
         r0 = r13
       else
-        if has_terminal?('@font-face', false, index)
-          r14 = instantiate_node(SyntaxNode,input, index...(index + 10))
-          @index += 10
+        if has_terminal?('@media', false, index)
+          r15 = instantiate_node(SyntaxNode,input, index...(index + 6))
+          @index += 6
         else
-          terminal_parse_failure('@font-face')
-          r14 = nil
+          terminal_parse_failure('@media')
+          r15 = nil
         end
-        if r14
-          r0 = r14
+        if r15
+          r0 = r15
         else
-          @index = i0
-          r0 = nil
+          if has_terminal?('@font-face', false, index)
+            r16 = instantiate_node(SyntaxNode,input, index...(index + 10))
+            @index += 10
+          else
+            terminal_parse_failure('@font-face')
+            r16 = nil
+          end
+          if r16
+            r0 = r16
+          else
+            @index = i0
+            r0 = nil
+          end
         end
       end
     end
@@ -2658,41 +2682,37 @@ module Less
     end
 
     i0, s0 = index, []
-    if has_terminal?('[a-zA-Z]', true, index)
-      r1 = true
-      @index += 1
-    else
+    s1, i1 = [], index
+    loop do
+      if has_terminal?('[-a-zA-Z]', true, index)
+        r2 = true
+        @index += 1
+      else
+        r2 = nil
+      end
+      if r2
+        s1 << r2
+      else
+        break
+      end
+    end
+    if s1.empty?
+      @index = i1
       r1 = nil
+    else
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
     end
     s0 << r1
     if r1
-      s2, i2 = [], index
-      loop do
-        if has_terminal?('[-a-zA-Z]', true, index)
-          r3 = true
-          @index += 1
-        else
-          r3 = nil
-        end
-        if r3
-          s2 << r3
-        else
-          break
-        end
+      i3 = index
+      r4 = _nt_ns
+      if r4
+        r3 = nil
+      else
+        @index = i3
+        r3 = instantiate_node(SyntaxNode,input, index...index)
       end
-      r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
-      s0 << r2
-      if r2
-        i4 = index
-        r5 = _nt_ns
-        if r5
-          r4 = nil
-        else
-          @index = i4
-          r4 = instantiate_node(SyntaxNode,input, index...index)
-        end
-        s0 << r4
-      end
+      s0 << r3
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -3842,6 +3862,40 @@ module Less
     r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
 
     node_cache[:ws][start_index] = r0
+
+    r0
+  end
+
+  def _nt_WS
+    start_index = index
+    if node_cache[:WS].has_key?(index)
+      cached = node_cache[:WS][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    s0, i0 = [], index
+    loop do
+      if has_terminal?('[\\n ]', true, index)
+        r1 = true
+        @index += 1
+      else
+        r1 = nil
+      end
+      if r1
+        s0 << r1
+      else
+        break
+      end
+    end
+    if s0.empty?
+      @index = i0
+      r0 = nil
+    else
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
+    end
+
+    node_cache[:WS][start_index] = r0
 
     r0
   end
