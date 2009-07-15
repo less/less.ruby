@@ -22,7 +22,7 @@ module Less
         elsif color.is_a? ::String
           color.delete! unit
           if color.length == 3
-            color.split(//).map{|v| v + v}.join('').to_i 16
+            color.split(//).map {|v| v + v }.join('').to_i 16
           elsif color.length == 6
             color.to_i 16
           else
@@ -39,13 +39,13 @@ module Less
       end
     
       def hex
-        v = [[to_i, 0].max, 256**3].min
+        v = [[to_i, 0].max, 256 ** 3].min
         "%06x" % [v]
       end
     
       def to_css
         if opacity and opacity < 1.0
-          colors = hex.scan(/../).map{|v| v.to_i(16)}.join(", ")
+          colors = hex.scan(/../).map {|v| v.to_i(16) }.join(", ")
           "rgba(#{colors}, #{opacity})"
         else
           unit + hex

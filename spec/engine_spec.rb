@@ -55,7 +55,6 @@ describe Less::Engine do
     end
     
     it "should parse colors in hex" do
-      puts lessify(:colors)
       lessify(:colors).should == css(:colors)
     end
     
