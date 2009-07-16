@@ -22,6 +22,10 @@ describe Less::Engine do
       lessify(:css).should == css(:css)
     end
     
+    it "should parse css 3" do
+      lessify(:css3).should == css(:css3)
+    end
+    
     it "should parse comments" do
       lessify(:comments).should == css(:comments)
     end

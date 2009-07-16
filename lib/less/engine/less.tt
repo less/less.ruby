@@ -176,7 +176,7 @@ grammar Less
   # [type="text"]
   #
   rule attribute
-    '[' tag ([|~*]? '=') (tag / string) ']' / '[' (tag / string) ']'
+    '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']'
   end
   
   rule class
@@ -192,7 +192,7 @@ grammar Less
   end
   
   rule select
-    (s [+>] s / s ':' / S)?
+    (s [+>~] s / s ':' / S)?
   end
   
   # TODO: Merge this with attribute rule

@@ -1921,7 +1921,7 @@ module Less
       s1 << r3
       if r3
         i4, s4 = index, []
-        if has_terminal?('[|~*]', true, index)
+        if has_terminal?('[|~*$^]', true, index)
           r6 = true
           @index += 1
         else
@@ -2276,7 +2276,7 @@ module Less
     r3 = _nt_s
     s2 << r3
     if r3
-      if has_terminal?('[+>]', true, index)
+      if has_terminal?('[+>~]', true, index)
         r4 = true
         @index += 1
       else
