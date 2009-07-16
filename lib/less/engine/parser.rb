@@ -1660,10 +1660,6 @@ module Less
   end
 
   module Element0
-    def ident
-      elements[1]
-    end
-
   end
 
   module Element1
@@ -1721,17 +1717,35 @@ module Less
         end
         s9 << r10
         if r10
-          r11 = _nt_ident
+          r12 = _nt_ident
+          if r12
+            r11 = r12
+          else
+            r11 = instantiate_node(SyntaxNode,input, index...index)
+          end
           s9 << r11
           if r11
-            if has_terminal?(')', false, index)
-              r12 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
-            else
-              terminal_parse_failure(')')
-              r12 = nil
+            s13, i13 = [], index
+            loop do
+              r14 = _nt_attribute
+              if r14
+                s13 << r14
+              else
+                break
+              end
             end
-            s9 << r12
+            r13 = instantiate_node(SyntaxNode,input, i13...index, s13)
+            s9 << r13
+            if r13
+              if has_terminal?(')', false, index)
+                r15 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(')')
+                r15 = nil
+              end
+              s9 << r15
+            end
           end
         end
         if s9.last
@@ -1759,43 +1773,43 @@ module Less
     if r1
       r0 = r1
     else
-      s13, i13 = [], index
+      s16, i16 = [], index
       loop do
-        r14 = _nt_attribute
-        if r14
-          s13 << r14
+        r17 = _nt_attribute
+        if r17
+          s16 << r17
         else
           break
         end
       end
-      if s13.empty?
-        @index = i13
-        r13 = nil
+      if s16.empty?
+        @index = i16
+        r16 = nil
       else
-        r13 = instantiate_node(SyntaxNode,input, i13...index, s13)
+        r16 = instantiate_node(SyntaxNode,input, i16...index, s16)
       end
-      if r13
-        r0 = r13
+      if r16
+        r0 = r16
       else
         if has_terminal?('@media', false, index)
-          r15 = instantiate_node(SyntaxNode,input, index...(index + 6))
+          r18 = instantiate_node(SyntaxNode,input, index...(index + 6))
           @index += 6
         else
           terminal_parse_failure('@media')
-          r15 = nil
+          r18 = nil
         end
-        if r15
-          r0 = r15
+        if r18
+          r0 = r18
         else
           if has_terminal?('@font-face', false, index)
-            r16 = instantiate_node(SyntaxNode,input, index...(index + 10))
+            r19 = instantiate_node(SyntaxNode,input, index...(index + 10))
             @index += 10
           else
             terminal_parse_failure('@font-face')
-            r16 = nil
+            r19 = nil
           end
-          if r16
-            r0 = r16
+          if r19
+            r0 = r19
           else
             @index = i0
             r0 = nil
@@ -1907,7 +1921,7 @@ module Less
       s1 << r3
       if r3
         i4, s4 = index, []
-        if has_terminal?('[|~]', true, index)
+        if has_terminal?('[|~*]', true, index)
           r6 = true
           @index += 1
         else
@@ -3211,14 +3225,14 @@ module Less
   end
 
   module Color0
-    def hex
+    def rgb
       elements[1]
     end
   end
 
   module Color1
     def build env
-      env.identifiers.last << Node::Color.new(hex.text_value)
+      env.identifiers.last << Node::Color.new(*rgb.build)
     end
   end
 
@@ -3262,7 +3276,7 @@ module Less
     end
     s1 << r2
     if r2
-      r3 = _nt_hex
+      r3 = _nt_rgb
       s1 << r3
     end
     if s1.last
@@ -3372,7 +3386,176 @@ module Less
     r0
   end
 
-  module Hex0
+  module Rgb0
+    def hex
+      elements[0]
+    end
+
+    def hex
+      elements[1]
+    end
+  end
+
+  module Rgb1
+    def hex
+      elements[0]
+    end
+
+    def hex
+      elements[1]
+    end
+  end
+
+  module Rgb2
+    def hex
+      elements[0]
+    end
+
+    def hex
+      elements[1]
+    end
+  end
+
+  module Rgb3
+    def r
+      elements[0]
+    end
+
+    def g
+      elements[1]
+    end
+
+    def b
+      elements[2]
+    end
+  end
+
+  module Rgb4
+    def build
+      [r.text_value, g.text_value, b.text_value]
+    end
+  end
+
+  module Rgb5
+    def r
+      elements[0]
+    end
+
+    def g
+      elements[1]
+    end
+
+    def b
+      elements[2]
+    end
+  end
+
+  module Rgb6
+    def build
+      [r.text_value, g.text_value, b.text_value].map {|c| c * 2 }
+    end
+  end
+
+  def _nt_rgb
+    start_index = index
+    if node_cache[:rgb].has_key?(index)
+      cached = node_cache[:rgb][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    i1, s1 = index, []
+    i2, s2 = index, []
+    r3 = _nt_hex
+    s2 << r3
+    if r3
+      r4 = _nt_hex
+      s2 << r4
+    end
+    if s2.last
+      r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+      r2.extend(Rgb0)
+    else
+      @index = i2
+      r2 = nil
+    end
+    s1 << r2
+    if r2
+      i5, s5 = index, []
+      r6 = _nt_hex
+      s5 << r6
+      if r6
+        r7 = _nt_hex
+        s5 << r7
+      end
+      if s5.last
+        r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
+        r5.extend(Rgb1)
+      else
+        @index = i5
+        r5 = nil
+      end
+      s1 << r5
+      if r5
+        i8, s8 = index, []
+        r9 = _nt_hex
+        s8 << r9
+        if r9
+          r10 = _nt_hex
+          s8 << r10
+        end
+        if s8.last
+          r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
+          r8.extend(Rgb2)
+        else
+          @index = i8
+          r8 = nil
+        end
+        s1 << r8
+      end
+    end
+    if s1.last
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
+      r1.extend(Rgb3)
+      r1.extend(Rgb4)
+    else
+      @index = i1
+      r1 = nil
+    end
+    if r1
+      r0 = r1
+    else
+      i11, s11 = index, []
+      r12 = _nt_hex
+      s11 << r12
+      if r12
+        r13 = _nt_hex
+        s11 << r13
+        if r13
+          r14 = _nt_hex
+          s11 << r14
+        end
+      end
+      if s11.last
+        r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+        r11.extend(Rgb5)
+        r11.extend(Rgb6)
+      else
+        @index = i11
+        r11 = nil
+      end
+      if r11
+        r0 = r11
+      else
+        @index = i0
+        r0 = nil
+      end
+    end
+
+    node_cache[:rgb][start_index] = r0
+
+    r0
   end
 
   def _nt_hex
@@ -3383,51 +3566,10 @@ module Less
       return cached
     end
 
-    i0, s0 = index, []
     if has_terminal?('[a-fA-F0-9]', true, index)
-      r1 = true
+      r0 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
-      r1 = nil
-    end
-    s0 << r1
-    if r1
-      if has_terminal?('[a-fA-F0-9]', true, index)
-        r2 = true
-        @index += 1
-      else
-        r2 = nil
-      end
-      s0 << r2
-      if r2
-        s3, i3 = [], index
-        loop do
-          if has_terminal?('[a-fA-F0-9]', true, index)
-            r4 = true
-            @index += 1
-          else
-            r4 = nil
-          end
-          if r4
-            s3 << r4
-          else
-            break
-          end
-        end
-        if s3.empty?
-          @index = i3
-          r3 = nil
-        else
-          r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
-        end
-        s0 << r3
-      end
-    end
-    if s0.last
-      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(Hex0)
-    else
-      @index = i0
       r0 = nil
     end
 
