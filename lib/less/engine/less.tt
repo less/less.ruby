@@ -290,9 +290,9 @@ grammar Less
   # Color
   #
   rule color
-    '#' hex {
+    '#' rgb {
       def build env
-        env.identifiers.last << Node::Color.new(hex.text_value)
+        env.identifiers.last << Node::Color.new(*rgb.build)
       end
     } / fn:(('hsl'/'rgb') 'a'?) '(' arguments ')' {
       def build env
@@ -302,10 +302,25 @@ grammar Less
     }
   end
   
-  rule hex
-    [a-fA-F0-9] [a-fA-F0-9] [a-fA-F0-9]+
+  #
+  # 00ffdd / 0fd
+  #
+  rule rgb
+    r:(hex hex) g:(hex hex) b:(hex hex) {
+      def build
+        [r.text_value, g.text_value, b.text_value]
+      end
+    } / r:hex g:hex b:hex {
+      def build
+        [r.text_value, g.text_value, b.text_value].map {|c| c * 2 }
+      end
+    }
   end
   
+  rule hex
+    [a-fA-F0-9]
+  end
+      
   #
   # Functions and arguments
   #

@@ -11,56 +11,79 @@ module Less
     #
     # rgb(255, 0, 0) #f0f0f0
     #
-    class Color < DelegateClass(Fixnum)
+    class Color
       include Literal
-      attr_reader :color, :opacity
+      attr_reader :r, :g, :b, :a
+
+      def initialize(r, g, b, a = 1.0)
+        r, g, b = [r, g, b].map {|c| c.is_a?(::String) ? c.to_i(16) : c }
+        @r, @g, @b, @a = normalize(r), normalize(g), normalize(b), normalize(a, 1.0)
+      end
       
-      def initialize color = nil, opacity = 1.0
-        @opacity = opacity
-        @color = if color.is_a? Array
-          rgba color
-        elsif color.is_a? ::String
-          color.delete! unit
-          if color.length == 3
-            color.split(//).map {|v| v + v }.join('').to_i 16
-          elsif color.length == 6
-            color.to_i 16
-          else
-            color
-          end
+      def alpha(v)
+        self.class.new(r,g,b,v)
+      end
+      
+      def rgb
+        [r, g, b]
+      end
+      
+      def operate op, other
+        if other.is_a? Numeric
+          self.class.new *self.rgb.map {|c| c.send(op, other) }, @a
         else
-          color
-        end
-        super @color.to_i
-      end
-    
-      def unit
-        '#'
-      end
-    
-      def hex
-        v = [[to_i, 0].max, 256 ** 3].min
-        "%06x" % [v]
-      end
-    
-      def to_css
-        if opacity and opacity < 1.0
-          colors = hex.scan(/../).map {|v| v.to_i(16) }.join(", ")
-          "rgba(#{colors}, #{opacity})"
-        else
-          unit + hex
+          self.class.new *self.rgb.zip(other.rgb).map {|a, b| a.send(op, b) }, @a
         end
       end
-    
-      def to_ruby
-        color
+      
+      def + other
+        operate :+, other
       end
-    
+
+      def - other
+        operate :-, other
+      end
+      
+      def * other
+        operate :*, other
+      end
+      
+      def / other
+        operate :/, other
+      end
+      
+      def coerce other
+        return self, other
+      end
+
       def to_s
-        "#{unit}#{super}"
+        if a < 1.0
+          "rgba(#{r.to_i}, #{g.to_i}, #{b.to_i}, #{a})"
+        else
+          "#%02x%02x%02x" % [r,g,b]
+        end
+      end
+
+      def inspect
+        if a < 1.0
+          "rgba(#{r}, #{g}, #{b}, #{a})"
+        else
+          "rgb(#{r}, #{g}, #{b})"
+        end
+      end
+
+      def to_css
+        to_s
       end
       
-      def inspect; to_s end
+      def to_ruby
+        "Color.new(#{r},#{g},#{b},#{a})"
+      end
+      
+    protected
+      def normalize(v, max = 255, min = 0)
+        [[min, v].max, max].min
+      end
     end
   
     #

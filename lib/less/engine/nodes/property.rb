@@ -94,7 +94,12 @@ module Less
         
           unless ruby.include? nil
             if entity
-              entity.class.new(eval(ruby.join), *(unit if entity.class == Node::Number))
+              result = eval(ruby.join)
+              if result.is_a? Entity
+                result
+              else
+                entity.class.new(*result, *(unit if entity.class == Node::Number))
+              end
             else
               first
             end

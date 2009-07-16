@@ -15,13 +15,7 @@ module Less
     # RGBA to Node::Color
     #
     def rgba *rgba
-      r, g, b, a = rgba.flatten
-      hex = [r, g, b].inject("") do |str, c|
-        c = c.to_i.to_s(16)
-        c = '0' + c if c.length < 2
-        str + c
-      end
-      Node::Color.new hex, a
+      Node::Color.new *rgba
     end
     
     #

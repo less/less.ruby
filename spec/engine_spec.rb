@@ -65,7 +65,7 @@ describe Less::Engine do
     it "should handle custom functions" do
       module Less::Functions
         def color arg
-          Less::Node::Color.new("#999999") if arg == "evil red"
+          Less::Node::Color.new("99", "99", "99") if arg == "evil red"
         end
         
         def increment a

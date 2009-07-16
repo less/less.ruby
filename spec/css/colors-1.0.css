@@ -4,3 +4,7 @@
 #blue #short { color: #0000ff; }
 #blue #long { color: #0000ff; }
 #blue #rgba { color: rgba(0, 0, 255, 0.1); }
+#overflow .a { color: #000000; }
+#overflow .b { color: #ffffff; }
+#overflow .c { color: #ffffff; }
+#overflow .d { color: #00ff00; }
