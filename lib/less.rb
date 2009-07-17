@@ -13,12 +13,12 @@ require 'less/command'
 require 'less/engine'
 
 module Less  
-  MixedUnitsError   = Class.new(Exception)
-  PathError         = Class.new(Exception)
+  MixedUnitsError   = Class.new(RuntimeError)
+  PathError         = Class.new(RuntimeError)
   VariableNameError = Class.new(NameError)
   MixinNameError    = Class.new(NameError)
   SyntaxError       = Class.new(RuntimeError)
-  ImportError       = Class.new(Exception)
+  ImportError       = Class.new(RuntimeError)
   
   $verbose = false
 
