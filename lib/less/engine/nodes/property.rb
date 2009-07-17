@@ -98,7 +98,7 @@ module Less
               if result.is_a? Entity
                 result
               else
-                entity.class.new(*result, *(unit if entity.class == Node::Number))
+                entity.class.new(result, *(unit if entity.class == Node::Number))
               end
             else
               first

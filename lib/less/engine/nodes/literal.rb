@@ -15,13 +15,15 @@ module Less
       include Literal
       attr_reader :r, :g, :b, :a
 
-      def initialize(r, g, b, a = 1.0)
-        r, g, b = [r, g, b].map {|c| c.is_a?(::String) ? c.to_i(16) : c }
-        @r, @g, @b, @a = normalize(r), normalize(g), normalize(b), normalize(a, 1.0)
+      def initialize r, g, b, a = 1.0
+        @r, @g, @b = [r, g, b].map do |c|
+          normalize(c.is_a?(::String) ? c.to_i(16) : c)
+        end
+        @a = normalize(a, 1.0)
       end
       
-      def alpha(v)
-        self.class.new(r,g,b,v)
+      def alpha v
+        self.class.new r, g, b, v
       end
       
       def rgb
@@ -29,28 +31,18 @@ module Less
       end
       
       def operate op, other
-        if other.is_a? Numeric
-          self.class.new *self.rgb.map {|c| c.send(op, other) }, @a
+        color = if other.is_a? Numeric
+          rgb.map {|c| c.send(op, other) }
         else
-          self.class.new *self.rgb.zip(other.rgb).map {|a, b| a.send(op, b) }, @a
+          rgb.zip(other.rgb).map {|a, b| a.send(op, b) }
         end
+        self.class.new *[color, @a].flatten # Ruby 1.8 hack
       end
       
-      def + other
-        operate :+, other
-      end
-
-      def - other
-        operate :-, other
-      end
-      
-      def * other
-        operate :*, other
-      end
-      
-      def / other
-        operate :/, other
-      end
+      def + other; operate :+, other end
+      def - other; operate :-, other end
+      def * other; operate :*, other end
+      def / other; operate :/, other end
       
       def coerce other
         return self, other
@@ -60,7 +52,7 @@ module Less
         if a < 1.0
           "rgba(#{r.to_i}, #{g.to_i}, #{b.to_i}, #{a})"
         else
-          "#%02x%02x%02x" % [r,g,b]
+          "#%02x%02x%02x" % [r, g, b]
         end
       end
 
@@ -77,7 +69,7 @@ module Less
       end
       
       def to_ruby
-        "Color.new(#{r},#{g},#{b},#{a})"
+        "#{self.class}.new(#{r},#{g},#{b},#{a})"
       end
       
     protected
