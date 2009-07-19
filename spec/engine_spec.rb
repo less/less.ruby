@@ -5,12 +5,12 @@ module LessEngineSpecHelper
     if arg.is_a? String or arg.is_a? File
       return Less::Engine.new(arg).to_css
     else
-      lessify File.new("spec/less/#{arg}-1.0.less")
+      lessify File.new("spec/less/#{arg.to_s.gsub('_', '-')}.less")
     end
   end
   
   def css file
-    File.read("spec/css/#{file}-1.0.css")
+    File.read("spec/css/#{file.to_s.gsub('_', '-')}.css")
   end
 end
 
@@ -23,7 +23,7 @@ describe Less::Engine do
     end
     
     it "should parse css 3" do
-      lessify(:css3).should == css(:css3)
+      lessify(:css_3).should == css(:css_3)
     end
     
     it "should parse comments" do
@@ -66,8 +66,12 @@ describe Less::Engine do
       lessify(:mixins).should == css(:mixins)
     end
     
+    it "should parse mixins with arguments" do
+      lessify(:mixins_args).should == css(:mixins_args)
+    end
+    
     it "should evaluate variables lazily" do
-      lessify(:lazy).should == css(:lazy)
+      lessify(:lazy_eval).should == css(:lazy_eval)
     end
 
     it "should handle custom functions" do
