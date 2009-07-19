@@ -294,9 +294,9 @@ grammar Less
       def build env
         env.identifiers.last << Node::Color.new(*rgb.build)
       end
-    } / fn:(('hsl'/'rgb') 'a'?) '(' arguments ')' {
+    } / fn:(('hsl'/'rgb') 'a'?) arguments {
       def build env
-        args = arguments.build env
+        args = arguments.build
         env.identifiers.last << Node::Function.new(fn.text_value, args.flatten)
       end
     }
@@ -325,43 +325,47 @@ grammar Less
   # Functions and arguments
   #
   rule function
-    name:([-a-zA-Z_]+) '(' arguments ')' {
+    name:([-a-zA-Z_]+) arguments {
       def build env
-        args = arguments.build env
+        args = arguments.build
         env.identifiers.last << Node::Function.new(name.text_value, [args].flatten)
       end
     }
   end
   
   rule arguments
-    argument s ',' s arguments {
-      def build env
-        elements.map do |e|
-          e.build env if e.respond_to? :build
+    '(' s argument s tail:(',' s argument s)* ')' {
+      def build
+        all.map do |e|
+          e.build if e.respond_to? :build
         end.compact
       end
-    } / argument
+    
+      def all
+        [argument] + tail.elements.map {|e| e.argument }
+      end
+    }
   end
   
   rule argument
     color {
-      def build env
+      def build
         Node::Color.new text_value
       end
     } / number unit {
-      def build env
+      def build
         Node::Number.new number.text_value, unit.text_value
       end
     } / string {
-      def build env
+      def build
         Node::String.new text_value
       end
     } / [a-zA-Z]+ '=' dimension {
-      def build env
+      def build
         Node::Anonymous.new text_value
       end
     } / [-a-zA-Z0-9_%$/.&=:;#+?]+ {
-      def build env
+      def build
         Node::String.new text_value
       end
     }
