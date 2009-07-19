@@ -31,7 +31,7 @@ module Less
   
       # Top-most node?
       def root?
-        self == '' && parent.nil?
+        parent.nil?
       end
     
       def empty?
@@ -83,7 +83,7 @@ module Less
     
       def last;  elements.last  end
       def first; elements.first end
-      def to_s; super end
+      def to_s; root?? '*' : super end
       
       #
       # Entry point for the css conversion

@@ -7,12 +7,13 @@ module Less
       
       def initialize key, value = nil
         super key
-        @value = Expression.new(value ? [value] : [])
+        @value = Expression.new(value ? [value].flatten : [])
         @eval = false # Store the first evaluation in here
       end
   
       def << token
         token = Node::Anonymous.new(*token) unless token.is_a? Entity or token.is_a? Operator
+        token.parent = self if token.respond_to? :parent
         @value << token
       end
   
@@ -27,6 +28,10 @@ module Less
         super
       end
       
+      def nearest node
+        parent.nearest node
+      end
+        
       # TODO: @eval and @value should be merged
       def evaluate    
         @eval ||= value.evaluate
