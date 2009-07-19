@@ -66,6 +66,10 @@ describe Less::Engine do
       lessify(:mixins).should == css(:mixins)
     end
     
+    it "should parse mixins with arguments" do
+      lessify(:mixins_args).should == css(:mixins_args)
+    end
+    
     it "should evaluate variables lazily" do
       lessify(:lazy_eval).should == css(:lazy_eval)
     end
