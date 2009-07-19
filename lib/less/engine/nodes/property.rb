@@ -29,7 +29,7 @@ module Less
       
       # TODO: @eval and @value should be merged
       def evaluate    
-        @eval || @eval = value.evaluate
+        @eval ||= value.evaluate
       end
           
       def to_css
@@ -37,8 +37,12 @@ module Less
       end
     end
 
-    class Variable < Property      
-      def initialize key, value = nil      
+    class Variable < Property
+      attr_reader :declaration
+        
+      def initialize key, value = nil   
+        @declaration = value ? true : false 
+        puts "new var #{key} #{@declaration}"
         super key.delete('@'), value
       end
   
@@ -50,16 +54,34 @@ module Less
         "@#{super}"
       end
     
+      def evaluate
+        puts "#{self}::"
+        if declaration
+          puts "VALUE: #{value} #{value.class}"
+          @eval ||= value.evaluate
+
+        else
+          puts "#{self}=#{value} #{value.class}"
+          
+          @eval ||= self.parent.nearest(to_s).evaluate
+          
+        end
+      end
+       
       def to_ruby
-        value.evaluate.to_ruby
+        evaluate.to_ruby
       end
     
       def to_css
-        value.evaluate.to_css
+        evaluate.to_css
       end
     end
   
     class Expression < Array
+      def initialize ary
+        super [ary].flatten
+      end
+      
       def operators; select {|i| i.is_a? Operator }   end
       def entities;  select {|i| i.kind_of? Entity }  end
       def literals;  select {|i| i.kind_of? Literal } end

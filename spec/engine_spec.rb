@@ -65,6 +65,10 @@ describe Less::Engine do
     it "should parse mixins" do
       lessify(:mixins).should == css(:mixins)
     end
+    
+    it "should evaluate variables lazily" do
+      lessify(:lazy).should == css(:lazy)
+    end
 
     it "should handle custom functions" do
       module Less::Functions

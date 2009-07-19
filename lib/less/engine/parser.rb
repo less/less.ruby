@@ -1029,7 +1029,7 @@ module Less
 
   module Declaration2
     def build env
-      env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value)
+      env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value, [])
       expression.build env
     end
   # Empty rule
@@ -1601,7 +1601,8 @@ module Less
 
   module Variable1
     def build env
-      env.identifiers.last << env.nearest(text_value)
+      #env.identifiers.last << env.nearest(text_value)
+      env.identifiers.last << Node::Variable.new(text_value)
     end
   end
 

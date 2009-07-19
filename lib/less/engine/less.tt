@@ -102,7 +102,7 @@ grammar Less
   rule declaration
     ws name:(ident / variable) s ':' s expression s (';'/ ws &'}') ws {
       def build env
-        env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value)
+        env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value, [])
         expression.build env
       end
     # Empty rule
@@ -156,7 +156,7 @@ grammar Less
   rule variable
     '@' [-a-zA-Z0-9_]+  {
       def build env
-        env.identifiers.last << env.nearest(text_value)
+        env.identifiers.last << Node::Variable.new(text_value)
       end
     }
   end
