@@ -248,7 +248,7 @@ grammar Less
   # `blue`, `small`, `normal` etc.
   #
   rule keyword
-    [a-zA-Z] [-a-zA-Z]* !ns {
+    [-a-zA-Z]+ !ns {
       def build env
         env.identifiers.last << Node::Keyword.new(text_value)
       end

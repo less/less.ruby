@@ -37,6 +37,7 @@ h2[title] { font-size: 100%; }
 }
 .misc {
   -moz-border-radius: 2px;
+  display: -moz-inline-stack;
   width: 0.1em;
   background-color: #009998;
   color: red !important;
