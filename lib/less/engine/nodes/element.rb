@@ -15,9 +15,8 @@ module Less
       attr_accessor :rules, :selector, :partial, :file
   
       def initialize name = "", selector = ''
-        super name
-      
-        @partial = false
+        super name   
+           
         @rules = [] # Holds all the nodes under this element's hierarchy
         @selector = Selector[selector.strip].new  # descendant | child | adjacent
       end
