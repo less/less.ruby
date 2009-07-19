@@ -14,13 +14,13 @@ grammar Less
     selectors "{" ws primary ws "}" ws {
       def build env
         # Build the ruleset for each selector
-        selectors.build(env, :tree).each do |sel|
+        selectors.build(env, :ruleset).each do |sel|
           primary.build sel
         end
       end
     } / ws selectors ';' ws {
       def build env        
-        selectors.build(env, :path).each do |path|
+        selectors.build(env, :mixin).each do |path|
           rules = path.inject(env.root) do |current, node|
             current.descend(node.selector, node) or raise MixinNameError, path.join
           end.rules
@@ -79,15 +79,15 @@ grammar Less
   # div > p a {...}
   #
   rule selector
-    (s select element s)+ {
-      def tree env
+    (s select element s)+ arguments? {
+      def ruleset env
         elements.inject(env) do |node, e|
           node << Node::Element.new(e.element.text_value, e.select.text_value)
           node.last
         end
       end
       
-      def path env
+      def mixin env
         elements.map do |e|
           Node::Element.new(e.element.text_value, e.select.text_value)
         end
@@ -296,8 +296,7 @@ grammar Less
       end
     } / fn:(('hsl'/'rgb') 'a'?) arguments {
       def build env
-        args = arguments.build
-        env.identifiers.last << Node::Function.new(fn.text_value, args.flatten)
+        env.identifiers.last << Node::Function.new(fn.text_value, arguments.build.flatten)
       end
     }
   end
@@ -327,8 +326,7 @@ grammar Less
   rule function
     name:([-a-zA-Z_]+) arguments {
       def build env
-        args = arguments.build
-        env.identifiers.last << Node::Function.new(name.text_value, [args].flatten)
+        env.identifiers.last << Node::Function.new(name.text_value, [arguments.build].flatten)
       end
     }
   end
