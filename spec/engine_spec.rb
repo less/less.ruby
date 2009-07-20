@@ -22,6 +22,10 @@ describe Less::Engine do
       lessify(:css).should == css(:css)
     end
     
+    it "should group selectors when it can" do
+      lessify(:selectors).should == css(:selectors)
+    end
+    
     it "should parse css 3" do
       lessify(:css_3).should == css(:css_3)
     end
