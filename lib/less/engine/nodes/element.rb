@@ -12,11 +12,12 @@ module Less
       include Enumerable
       include Entity
   
-      attr_accessor :rules, :selector, :partial, :file
+      attr_accessor :rules, :selector, :partial, :file, :set
   
       def initialize name = "", selector = ''
         super name   
-           
+        
+        @set = []
         @rules = [] # Holds all the nodes under this element's hierarchy
         @selector = Selector[selector.strip].new  # descendant | child | adjacent
       end
@@ -40,6 +41,43 @@ module Less
   
       def leaf?
         elements.empty?
+      end
+      
+      # Group similar rulesets together
+      # This is horrible, horrible code,
+      # but it'll have to do until I find
+      # a proper way to do it.
+      def group
+        matched = false
+        stack, result = elements.dup, []
+        return self unless elements.size > 1
+        
+        elements.each do
+          e = stack.first
+          result << e unless matched
+          
+          matched = stack[1..-1].each do |ee|
+            if e.rules.size == ee.rules.size and 
+               e.elements.size == 0 and
+              !e.rules.zip(ee.rules).map {|a, b| 
+                a.to_css == b.to_css
+              }.include?(false)
+              
+              # Add to set unless it's a duplicate
+              if e == ee
+                # Do something with dups
+              else
+                self[e].set << ee
+              end
+              stack.shift
+            else
+              stack.shift
+              break false
+            end
+          end if stack.size > 1
+        end
+        @rules -= (elements - result)
+        self
       end
   
       #
@@ -94,15 +132,15 @@ module Less
         content = properties.map do |i|
           ' ' * 2 + i.to_css
         end.compact.reject(&:empty?) * "\n"
-    
+        
         content = content.include?("\n") ? 
           "\n#{content}\n" : " #{content.strip} "
         ruleset = !content.strip.empty?? 
-          "#{path.reject(&:empty?).join.strip} {#{content}}\n" : ""
-    
+          "#{[path.reject(&:empty?).join.strip, *@set] * ', '} {#{content}}\n" : ""
+      
         css = ruleset + elements.map do |i|
           i.to_css(path)
-        end.reject(&:empty?).join
+        end.reject(&:empty?).join        
         path.pop; path.pop
         css
       end
@@ -131,7 +169,6 @@ module Less
         end
         self
       end
-      alias :traverse :each
   
       def inspect depth = 0
         indent = lambda {|i| '.  ' * i }

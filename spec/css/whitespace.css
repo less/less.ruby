@@ -1,11 +1,8 @@
+.whitespace, .white, .space, .mania, .no-semi-column { color: white; }
 .whitespace { color: white; }
 .whitespace { color: white; }
 .whitespace { color: white; }
 .whitespace { color: white; }
-.whitespace { color: white; }
-.white { color: white; }
-.space { color: white; }
-.mania { color: white; }
 .no-semi-column { color: white; }
 .no-semi-column {
   color: white;

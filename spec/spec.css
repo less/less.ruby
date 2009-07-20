@@ -40,9 +40,7 @@ body {
   colorc: #777777;
 }
 #operations div { width: 80px; }
-td { border-width: 88px; }
-tr { border-width: 88px; }
-table { border-width: 88px; }
+td, tr, table { border-width: 88px; }
 blockquote:before { content: ""; }
 blockquote:after { content: ""; }
 q:before { content: ""; }

@@ -47,7 +47,7 @@ module Less
         
       def initialize key, value = nil   
         @declaration = value ? true : false 
-        puts "new var #{key} #{@declaration}"
+        #puts "new var #{key} #{@declaration}"
         super key.delete('@'), value
       end
   
@@ -60,13 +60,13 @@ module Less
       end
     
       def evaluate
-        puts "#{self}::"
+        #puts "#{self}::"
         if declaration
-          puts "VALUE: #{value} #{value.class}"
+         # puts "VALUE: #{value} #{value.class}"
           @eval ||= value.evaluate
 
         else
-          puts "#{self}=#{value} #{value.class}"
+          #puts "#{self}=#{value} #{value.class}"
           
           @eval ||= self.parent.nearest(to_s).evaluate
           

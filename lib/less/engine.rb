@@ -34,13 +34,13 @@ module Less
       else
         raise SyntaxError, @parser.failure_message
       end
-                  
+
       @tree
     end
     alias :to_tree :parse
     
     def to_css
-      @css || @css = self.parse.to_css
+      @css || @css = self.parse.group.to_css
     end
     
     def prepare

@@ -1,3 +1,2 @@
 p:not([class*="lead"]) { color: black; }
-a[href^="http://"] { color: black; }
-a[href$="http://"] { color: black; }
+a[href^="http://"], a[href$="http://"] { color: black; }
