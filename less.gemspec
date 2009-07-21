@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.0.12"
+  s.version = "1.0.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
@@ -161,6 +161,7 @@ Gem::Specification.new do |s|
      "spec/less/import/import-test-a.less",
      "spec/less/import/import-test-b.less",
      "spec/less/import/import-test-c.less",
+     "spec/less/import/import-test-d.css",
      "spec/less/lazy-eval.less",
      "spec/less/mixins-args.less",
      "spec/less/mixins.less",
