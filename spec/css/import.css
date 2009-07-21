@@ -1,3 +1,4 @@
+#css { color: yellow; }
 #import { color: red; }
 .mixin {
   height: 10px;

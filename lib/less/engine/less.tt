@@ -34,7 +34,7 @@ grammar Less
     "@import" S url:(string / url) medias? s ';' ws {
       def build env
         path = File.join(env.root.file, url.value)
-        path += '.less' unless path =~ /\.less$/
+        path += '.less' unless path =~ /\.(le|c)ss$/
         if File.exist? path
           imported = Less::Engine.new(File.new path).to_tree
           env.rules += imported.rules
@@ -79,16 +79,16 @@ grammar Less
   # div > p a {...}
   #
   rule selector
-    (s select element s)+ arguments? {
+    sel:(s select element s)+ arguments? {
       def ruleset env
-        elements.inject(env) do |node, e|
+        sel.elements.inject(env) do |node, e|
           node << Node::Element.new(e.element.text_value, e.select.text_value)
           node.last
         end
       end
       
       def mixin env
-        elements.map do |e|
+        sel.elements.map do |e|
           Node::Element.new(e.element.text_value, e.select.text_value)
         end
       end

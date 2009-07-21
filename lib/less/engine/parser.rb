@@ -339,7 +339,7 @@ module Less
   module Ruleset1
     def build env
       # Build the ruleset for each selector
-      selectors.build(env, :tree).each do |sel|
+      selectors.build(env, :ruleset).each do |sel|
         primary.build sel
       end
     end
@@ -361,7 +361,7 @@ module Less
 
   module Ruleset3
     def build env        
-      selectors.build(env, :path).each do |path|
+      selectors.build(env, :mixin).each do |path|
         rules = path.inject(env.root) do |current, node|
           current.descend(node.selector, node) or raise MixinNameError, path.join
         end.rules
@@ -492,7 +492,7 @@ module Less
   module Import1
     def build env
       path = File.join(env.root.file, url.value)
-      path += '.less' unless path =~ /\.less$/
+      path += '.less' unless path =~ /\.(le|c)ss$/
       if File.exist? path
         imported = Less::Engine.new(File.new path).to_tree
         env.rules += imported.rules
@@ -925,15 +925,22 @@ module Less
   end
 
   module Selector1
-    def tree env
-      elements.inject(env) do |node, e|
+    def sel
+      elements[0]
+    end
+
+  end
+
+  module Selector2
+    def ruleset env
+      sel.elements.inject(env) do |node, e|
         node << Node::Element.new(e.element.text_value, e.select.text_value)
         node.last
       end
     end
     
-    def path env
-      elements.map do |e|
+    def mixin env
+      sel.elements.map do |e|
         Node::Element.new(e.element.text_value, e.select.text_value)
       end
     end
@@ -947,42 +954,60 @@ module Less
       return cached
     end
 
-    s0, i0 = [], index
+    i0, s0 = index, []
+    s1, i1 = [], index
     loop do
-      i1, s1 = index, []
-      r2 = _nt_s
-      s1 << r2
-      if r2
-        r3 = _nt_select
-        s1 << r3
-        if r3
-          r4 = _nt_element
-          s1 << r4
-          if r4
-            r5 = _nt_s
-            s1 << r5
+      i2, s2 = index, []
+      r3 = _nt_s
+      s2 << r3
+      if r3
+        r4 = _nt_select
+        s2 << r4
+        if r4
+          r5 = _nt_element
+          s2 << r5
+          if r5
+            r6 = _nt_s
+            s2 << r6
           end
         end
       end
-      if s1.last
-        r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
-        r1.extend(Selector0)
+      if s2.last
+        r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+        r2.extend(Selector0)
       else
-        @index = i1
-        r1 = nil
+        @index = i2
+        r2 = nil
       end
-      if r1
-        s0 << r1
+      if r2
+        s1 << r2
       else
         break
       end
     end
-    if s0.empty?
-      @index = i0
-      r0 = nil
+    if s1.empty?
+      @index = i1
+      r1 = nil
     else
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
+    end
+    s0 << r1
+    if r1
+      r8 = _nt_arguments
+      if r8
+        r7 = r8
+      else
+        r7 = instantiate_node(SyntaxNode,input, index...index)
+      end
+      s0 << r7
+    end
+    if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
       r0.extend(Selector1)
+      r0.extend(Selector2)
+    else
+      @index = i0
+      r0 = nil
     end
 
     node_cache[:selector][start_index] = r0
@@ -1601,7 +1626,6 @@ module Less
 
   module Variable1
     def build env
-      #env.identifiers.last << env.nearest(text_value)
       env.identifiers.last << Node::Variable.new(text_value)
     end
   end
@@ -3246,15 +3270,13 @@ module Less
     end
 
     def arguments
-      elements[2]
+      elements[1]
     end
-
   end
 
   module Color4
     def build env
-      args = arguments.build env
-      env.identifiers.last << Node::Function.new(fn.text_value, args.flatten)
+      env.identifiers.last << Node::Function.new(fn.text_value, arguments.build.flatten)
     end
   end
 
@@ -3343,28 +3365,8 @@ module Less
       end
       s4 << r5
       if r5
-        if has_terminal?('(', false, index)
-          r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
-        else
-          terminal_parse_failure('(')
-          r11 = nil
-        end
+        r11 = _nt_arguments
         s4 << r11
-        if r11
-          r12 = _nt_arguments
-          s4 << r12
-          if r12
-            if has_terminal?(')', false, index)
-              r13 = instantiate_node(SyntaxNode,input, index...(index + 1))
-              @index += 1
-            else
-              terminal_parse_failure(')')
-              r13 = nil
-            end
-            s4 << r13
-          end
-        end
       end
       if s4.last
         r4 = instantiate_node(SyntaxNode,input, i4...index, s4)
@@ -3585,15 +3587,13 @@ module Less
     end
 
     def arguments
-      elements[2]
+      elements[1]
     end
-
   end
 
   module Function1
     def build env
-      args = arguments.build env
-      env.identifiers.last << Node::Function.new(name.text_value, [args].flatten)
+      env.identifiers.last << Node::Function.new(name.text_value, [arguments.build].flatten)
     end
   end
 
@@ -3628,28 +3628,8 @@ module Less
     end
     s0 << r1
     if r1
-      if has_terminal?('(', false, index)
-        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
-        @index += 1
-      else
-        terminal_parse_failure('(')
-        r3 = nil
-      end
+      r3 = _nt_arguments
       s0 << r3
-      if r3
-        r4 = _nt_arguments
-        s0 << r4
-        if r4
-          if has_terminal?(')', false, index)
-            r5 = instantiate_node(SyntaxNode,input, index...(index + 1))
-            @index += 1
-          else
-            terminal_parse_failure(')')
-            r5 = nil
-          end
-          s0 << r5
-        end
-      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
@@ -3666,28 +3646,47 @@ module Less
   end
 
   module Arguments0
+    def s
+      elements[1]
+    end
+
     def argument
-      elements[0]
+      elements[2]
     end
 
     def s
+      elements[3]
+    end
+  end
+
+  module Arguments1
+    def s
       elements[1]
+    end
+
+    def argument
+      elements[2]
     end
 
     def s
       elements[3]
     end
 
-    def arguments
+    def tail
       elements[4]
     end
+
   end
 
-  module Arguments1
-    def build env
-      elements.map do |e|
-        e.build env if e.respond_to? :build
+  module Arguments2
+    def build
+      all.map do |e|
+        e.build if e.respond_to? :build
       end.compact
+    end
+  
+    def all
+      [argument] + tail.elements.map {|e| e.argument }
     end
   end
 
@@ -3699,50 +3698,84 @@ module Less
       return cached
     end
 
-    i0 = index
-    i1, s1 = index, []
-    r2 = _nt_argument
-    s1 << r2
-    if r2
-      r3 = _nt_s
-      s1 << r3
-      if r3
-        if has_terminal?(',', false, index)
-          r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
-          @index += 1
-        else
-          terminal_parse_failure(',')
-          r4 = nil
-        end
-        s1 << r4
-        if r4
-          r5 = _nt_s
-          s1 << r5
-          if r5
-            r6 = _nt_arguments
-            s1 << r6
+    i0, s0 = index, []
+    if has_terminal?('(', false, index)
+      r1 = instantiate_node(SyntaxNode,input, index...(index + 1))
+      @index += 1
+    else
+      terminal_parse_failure('(')
+      r1 = nil
+    end
+    s0 << r1
+    if r1
+      r2 = _nt_s
+      s0 << r2
+      if r2
+        r3 = _nt_argument
+        s0 << r3
+        if r3
+          r4 = _nt_s
+          s0 << r4
+          if r4
+            s5, i5 = [], index
+            loop do
+              i6, s6 = index, []
+              if has_terminal?(',', false, index)
+                r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(',')
+                r7 = nil
+              end
+              s6 << r7
+              if r7
+                r8 = _nt_s
+                s6 << r8
+                if r8
+                  r9 = _nt_argument
+                  s6 << r9
+                  if r9
+                    r10 = _nt_s
+                    s6 << r10
+                  end
+                end
+              end
+              if s6.last
+                r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+                r6.extend(Arguments0)
+              else
+                @index = i6
+                r6 = nil
+              end
+              if r6
+                s5 << r6
+              else
+                break
+              end
+            end
+            r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
+            s0 << r5
+            if r5
+              if has_terminal?(')', false, index)
+                r11 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(')')
+                r11 = nil
+              end
+              s0 << r11
+            end
           end
         end
       end
     end
-    if s1.last
-      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
-      r1.extend(Arguments0)
-      r1.extend(Arguments1)
+    if s0.last
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
+      r0.extend(Arguments1)
+      r0.extend(Arguments2)
     else
-      @index = i1
-      r1 = nil
-    end
-    if r1
-      r0 = r1
-    else
-      r7 = _nt_argument
-      if r7
-        r0 = r7
-      else
-        @index = i0
-        r0 = nil
-      end
+      @index = i0
+      r0 = nil
     end
 
     node_cache[:arguments][start_index] = r0
@@ -3751,7 +3784,7 @@ module Less
   end
 
   module Argument0
-    def build env
+    def build
       Node::Color.new text_value
     end
   end
@@ -3767,13 +3800,13 @@ module Less
   end
 
   module Argument2
-    def build env
+    def build
       Node::Number.new number.text_value, unit.text_value
     end
   end
 
   module Argument3
-    def build env
+    def build
       Node::String.new text_value
     end
   end
@@ -3785,13 +3818,13 @@ module Less
   end
 
   module Argument5
-    def build env
+    def build
       Node::Anonymous.new text_value
     end
   end
 
   module Argument6
-    def build env
+    def build
       Node::String.new text_value
     end
   end
