@@ -69,7 +69,7 @@ begin
   
   task :benchmark do
     print "benchmarking... "
-    less = File.read("spec/less/big-1.0.less")
+    less = File.read("spec/less/big.less")
     start = Time.now.to_f
     Less::Engine.new(less).parse
     total = Time.now.to_f - start
