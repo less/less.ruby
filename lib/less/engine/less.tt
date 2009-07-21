@@ -150,7 +150,7 @@ grammar Less
   # An identifier
   #
   rule ident
-    '-'? [-a-z0-9_]+
+    '*'? '-'? [-a-z0-9_]+
   end
   
   rule variable

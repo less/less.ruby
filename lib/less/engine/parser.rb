@@ -1572,11 +1572,11 @@ module Less
     end
 
     i0, s0 = index, []
-    if has_terminal?('-', false, index)
+    if has_terminal?('*', false, index)
       r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
       @index += 1
     else
-      terminal_parse_failure('-')
+      terminal_parse_failure('*')
       r2 = nil
     end
     if r2
@@ -1586,27 +1586,42 @@ module Less
     end
     s0 << r1
     if r1
-      s3, i3 = [], index
-      loop do
-        if has_terminal?('[-a-z0-9_]', true, index)
-          r4 = true
-          @index += 1
-        else
-          r4 = nil
-        end
-        if r4
-          s3 << r4
-        else
-          break
-        end
-      end
-      if s3.empty?
-        @index = i3
-        r3 = nil
+      if has_terminal?('-', false, index)
+        r4 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
       else
-        r3 = instantiate_node(SyntaxNode,input, i3...index, s3)
+        terminal_parse_failure('-')
+        r4 = nil
+      end
+      if r4
+        r3 = r4
+      else
+        r3 = instantiate_node(SyntaxNode,input, index...index)
       end
       s0 << r3
+      if r3
+        s5, i5 = [], index
+        loop do
+          if has_terminal?('[-a-z0-9_]', true, index)
+            r6 = true
+            @index += 1
+          else
+            r6 = nil
+          end
+          if r6
+            s5 << r6
+          else
+            break
+          end
+        end
+        if s5.empty?
+          @index = i5
+          r5 = nil
+        else
+          r5 = instantiate_node(SyntaxNode,input, i5...index, s5)
+        end
+        s0 << r5
+      end
     end
     if s0.last
       r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
