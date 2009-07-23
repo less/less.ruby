@@ -135,15 +135,15 @@ module Less
       include Literal
     end
   
-    class FontFamily < Array
+    class FontFamily
       include Literal
       
       def initialize family = []
-        super family
+        @family = family
       end
     
       def to_css
-        self.map(&:to_css) * ', '
+        @family.map(&:to_css) * ', '
       end
     end
   

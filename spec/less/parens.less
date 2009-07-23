@@ -1,0 +1,15 @@
+.parens {
+  @var: 1px;
+  border: (@var * 2) solid black;
+  margin: (@var * 1) (@var + 2) (4 * 4) 3;
+  width: (6 * 6);
+  padding: 2px (6px * 6px);
+}
+
+.more-parens {
+  @var: (2 * 2);
+  padding: (2 * @var) 4 4 (@var * 1px);
+  //width: (@var * @var) * 6;
+  //margin: (6 * 6)px;
+  //height: (7 * 7) + (8 * 8);
+}

@@ -54,6 +54,10 @@ describe Less::Engine do
       lessify(:scope).should == css(:scope)
     end
     
+    it "should parse parens" do
+      lessify(:parens).should == css(:parens)
+    end
+    
     it "should parse strings" do
       lessify(:strings).should == css(:strings)
     end

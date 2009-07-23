@@ -69,5 +69,11 @@ module Less
         self
       end
     end
+    
+    class Paren < ::String
+      def to_ruby
+        self
+      end
+    end
   end
 end

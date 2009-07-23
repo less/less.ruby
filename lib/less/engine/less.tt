@@ -100,20 +100,47 @@ grammar Less
   # height: 100%;
   #
   rule declaration
-    ws name:(ident / variable) s ':' s expression s (';'/ ws &'}') ws {
+    ws name:(ident / variable) s ':' s expressions s (';'/ ws &'}') ws {
       def build env
-        env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value, [])
-        expression.build env
+        env << (name.text_value =~ /^@/ ? 
+          Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
+
       end
     # Empty rule
     } / ws ident s ':' s ';' ws
+  end
+  
+  rule expressions
+    expression+ {
+      def build env
+        elements.map do |e|
+          e.build(env) if e.respond_to? :build
+        end.compact
+      end
+    }
   end
   
   #
   # An operation or compound value
   #
   rule expression
-    entity (operator / S / WS) expression <Builder> / entity
+    s '(' s expressions s ')' s {
+      def build env
+        Node::Expression.new(['('] + expressions.build(env).flatten + [')'])
+      end
+    } / entity tail:(operator entity)* ws {
+      def build env 
+        exp = all.map do |e|
+          e.method(:build).arity.zero?? 
+            e.build : e.build(env) if e.respond_to? :build
+        end.dissolve
+        exp.is_a?(Array) ? Node::Expression.new(exp) : exp
+      end
+      
+      def all
+        [entity] + tail.elements.map {|i| [i.operator, i.entity] }.flatten.compact
+      end
+    }
   end
   
   #

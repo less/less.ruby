@@ -1039,7 +1039,7 @@ module Less
       elements[4]
     end
 
-    def expression
+    def expressions
       elements[5]
     end
 
@@ -1054,8 +1054,9 @@ module Less
 
   module Declaration2
     def build env
-      env << (name.text_value =~ /^@/ ? Node::Variable : Node::Property).new(name.text_value, [])
-      expression.build env
+      env << (name.text_value =~ /^@/ ? 
+        Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
+
     end
   # Empty rule
   end
@@ -1125,7 +1126,7 @@ module Less
             r8 = _nt_s
             s1 << r8
             if r8
-              r9 = _nt_expression
+              r9 = _nt_expressions
               s1 << r9
               if r9
                 r10 = _nt_s
@@ -1258,13 +1259,107 @@ module Less
     r0
   end
 
+  module Expressions0
+    def build env
+      elements.map do |e|
+        e.build(env) if e.respond_to? :build
+      end.compact
+    end
+  end
+
+  def _nt_expressions
+    start_index = index
+    if node_cache[:expressions].has_key?(index)
+      cached = node_cache[:expressions][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    s0, i0 = [], index
+    loop do
+      r1 = _nt_expression
+      if r1
+        s0 << r1
+      else
+        break
+      end
+    end
+    if s0.empty?
+      @index = i0
+      r0 = nil
+    else
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
+      r0.extend(Expressions0)
+    end
+
+    node_cache[:expressions][start_index] = r0
+
+    r0
+  end
+
   module Expression0
+    def s
+      elements[0]
+    end
+
+    def s
+      elements[2]
+    end
+
+    def expressions
+      elements[3]
+    end
+
+    def s
+      elements[4]
+    end
+
+    def s
+      elements[6]
+    end
+  end
+
+  module Expression1
+    def build env
+      Node::Expression.new(['('] + expressions.build(env).flatten + [')'])
+    end
+  end
+
+  module Expression2
+    def operator
+      elements[0]
+    end
+
+    def entity
+      elements[1]
+    end
+  end
+
+  module Expression3
     def entity
       elements[0]
     end
 
-    def expression
+    def tail
+      elements[1]
+    end
+
+    def ws
       elements[2]
+    end
+  end
+
+  module Expression4
+    def build env 
+      exp = all.map do |e|
+        e.method(:build).arity.zero?? 
+          e.build : e.build(env) if e.respond_to? :build
+      end.dissolve
+      exp.is_a?(Array) ? Node::Expression.new(exp) : exp
+    end
+    
+    def all
+      [entity] + tail.elements.map {|i| [i.operator, i.entity] }.flatten.compact
     end
   end
 
@@ -1278,36 +1373,48 @@ module Less
 
     i0 = index
     i1, s1 = index, []
-    r2 = _nt_entity
+    r2 = _nt_s
     s1 << r2
     if r2
-      i3 = index
-      r4 = _nt_operator
-      if r4
-        r3 = r4
+      if has_terminal?('(', false, index)
+        r3 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
       else
-        r5 = _nt_S
-        if r5
-          r3 = r5
-        else
-          r6 = _nt_WS
-          if r6
-            r3 = r6
-          else
-            @index = i3
-            r3 = nil
-          end
-        end
+        terminal_parse_failure('(')
+        r3 = nil
       end
       s1 << r3
       if r3
-        r7 = _nt_expression
-        s1 << r7
+        r4 = _nt_s
+        s1 << r4
+        if r4
+          r5 = _nt_expressions
+          s1 << r5
+          if r5
+            r6 = _nt_s
+            s1 << r6
+            if r6
+              if has_terminal?(')', false, index)
+                r7 = instantiate_node(SyntaxNode,input, index...(index + 1))
+                @index += 1
+              else
+                terminal_parse_failure(')')
+                r7 = nil
+              end
+              s1 << r7
+              if r7
+                r8 = _nt_s
+                s1 << r8
+              end
+            end
+          end
+        end
       end
     end
     if s1.last
-      r1 = instantiate_node(Builder,input, i1...index, s1)
+      r1 = instantiate_node(SyntaxNode,input, i1...index, s1)
       r1.extend(Expression0)
+      r1.extend(Expression1)
     else
       @index = i1
       r1 = nil
@@ -1315,9 +1422,49 @@ module Less
     if r1
       r0 = r1
     else
-      r8 = _nt_entity
-      if r8
-        r0 = r8
+      i9, s9 = index, []
+      r10 = _nt_entity
+      s9 << r10
+      if r10
+        s11, i11 = [], index
+        loop do
+          i12, s12 = index, []
+          r13 = _nt_operator
+          s12 << r13
+          if r13
+            r14 = _nt_entity
+            s12 << r14
+          end
+          if s12.last
+            r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
+            r12.extend(Expression2)
+          else
+            @index = i12
+            r12 = nil
+          end
+          if r12
+            s11 << r12
+          else
+            break
+          end
+        end
+        r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+        s9 << r11
+        if r11
+          r15 = _nt_ws
+          s9 << r15
+        end
+      end
+      if s9.last
+        r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
+        r9.extend(Expression3)
+        r9.extend(Expression4)
+      else
+        @index = i9
+        r9 = nil
+      end
+      if r9
+        r0 = r9
       else
         @index = i0
         r0 = nil
@@ -1325,6 +1472,92 @@ module Less
     end
 
     node_cache[:expression][start_index] = r0
+
+    r0
+  end
+
+  def _nt_separator
+    start_index = index
+    if node_cache[:separator].has_key?(index)
+      cached = node_cache[:separator][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0 = index
+    r1 = _nt_operator
+    if r1
+      r0 = r1
+    else
+      r2 = _nt_S
+      if r2
+        r0 = r2
+      else
+        r3 = _nt_WS
+        if r3
+          r0 = r3
+        else
+          @index = i0
+          r0 = nil
+        end
+      end
+    end
+
+    node_cache[:separator][start_index] = r0
+
+    r0
+  end
+
+  module Paren0
+    def s
+      elements[0]
+    end
+
+    def s
+      elements[2]
+    end
+  end
+
+  module Paren1
+    def build
+      Node::Paren.new(text_value.strip)
+    end
+  end
+
+  def _nt_paren
+    start_index = index
+    if node_cache[:paren].has_key?(index)
+      cached = node_cache[:paren][index]
+      @index = cached.interval.end if cached
+      return cached
+    end
+
+    i0, s0 = index, []
+    r1 = _nt_s
+    s0 << r1
+    if r1
+      if has_terminal?('\G[()]', true, index)
+        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
+        @index += 1
+      else
+        r2 = nil
+      end
+      s0 << r2
+      if r2
+        r3 = _nt_s
+        s0 << r3
+      end
+    end
+    if s0.last
+      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
+      r0.extend(Paren0)
+      r0.extend(Paren1)
+    else
+      @index = i0
+      r0 = nil
+    end
+
+    node_cache[:paren][start_index] = r0
 
     r0
   end
@@ -1406,11 +1639,15 @@ module Less
   end
 
   module Fonts2
-    def build env
-      fonts = ([font] + family.elements.map {|f| f.font }).map do |font|
-        font.build env
+    def build
+      fonts = all.map do |font|
+        font.build
       end
-      env.identifiers.last << Node::FontFamily.new(fonts)
+      Node::FontFamily.new(all.map(&:build))
+    end
+    
+    def all
+      [font] + family.elements.map {|f| f.font }
     end
   end
 
@@ -1488,13 +1725,13 @@ module Less
   end
 
   module Font1
-    def build env
+    def build
       Node::Keyword.new(text_value)
     end
   end
 
   module Font2
-    def build env
+    def build
       Node::String.new(text_value)
     end
   end
@@ -1640,8 +1877,8 @@ module Less
   end
 
   module Variable1
-    def build env
-      env.identifiers.last << Node::Variable.new(text_value)
+    def build
+      Node::Variable.new(text_value)
     end
   end
 
@@ -2394,7 +2631,7 @@ module Less
 
   module Accessor1
     def build env
-      env.identifiers.last << env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
+      env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
     end
   end
 
@@ -2482,14 +2719,14 @@ module Less
   end
 
   module Operator1
-    def build env
-      env.identifiers.last << Node::Operator.new(text_value.strip)
+    def build
+      Node::Operator.new(text_value.strip)
     end
   end
 
   module Operator2
-    def build env
-      env.identifiers.last << Node::Operator.new(text_value)
+    def build
+      Node::Operator.new(text_value)
     end
   end
 
@@ -2556,8 +2793,8 @@ module Less
   end
 
   module Literal1
-    def build env
-      env.identifiers.last << Node::Anonymous.new(text_value)
+    def build
+      Node::Anonymous.new(text_value)
     end
   end
 
@@ -2572,14 +2809,14 @@ module Less
   end
 
   module Literal3
-    def build env
-      env.identifiers.last << Node::Number.new(number.text_value, unit.text_value)
+    def build
+      Node::Number.new(number.text_value, unit.text_value)
     end
   end
 
   module Literal4
-    def build env
-      env.identifiers.last << Node::String.new(text_value)
+    def build
+      Node::String.new(text_value)
     end
   end
 
@@ -2691,8 +2928,8 @@ module Less
   end
 
   module Important0
-    def build env
-      env.identifiers.last << Node::Keyword.new(text_value)
+    def build
+      Node::Keyword.new(text_value)
     end
   end
 
@@ -2722,8 +2959,8 @@ module Less
   end
 
   module Keyword1
-    def build env
-      env.identifiers.last << Node::Keyword.new(text_value)
+    def build
+      Node::Keyword.new(text_value)
     end
   end
 
@@ -2794,7 +3031,7 @@ module Less
 
   module String2
     def value
-      text_value[1...-1]
+      content.text_value
     end
   end
 
@@ -2810,7 +3047,7 @@ module Less
 
   module String5
     def value
-      text_value[1...-1]
+      content.text_value
     end
   end
 
@@ -3271,8 +3508,8 @@ module Less
   end
 
   module Color1
-    def build env
-      env.identifiers.last << Node::Color.new(*rgb.build)
+    def build
+      Node::Color.new(*rgb.build)
     end
   end
 
@@ -3290,8 +3527,8 @@ module Less
   end
 
   module Color4
-    def build env
-      env.identifiers.last << Node::Function.new(fn.text_value, arguments.build.flatten)
+    def build
+      Node::Function.new(fn.text_value, arguments.build.flatten)
     end
   end
 
@@ -3607,8 +3844,8 @@ module Less
   end
 
   module Function1
-    def build env
-      env.identifiers.last << Node::Function.new(name.text_value, [arguments.build].flatten)
+    def build
+      Node::Function.new(name.text_value, [arguments.build].flatten)
     end
   end
 
