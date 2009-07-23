@@ -152,22 +152,23 @@ grammar Less
   
   rule fonts
     font family:(s ',' s font)+ {
-      def build env
-        fonts = ([font] + family.elements.map {|f| f.font }).map do |font|
-          font.build env
-        end
-        env.identifiers.last << Node::FontFamily.new(fonts)
+      def build
+        Node::FontFamily.new(all.map(&:build))
+      end
+      
+      def all
+        [font] + family.elements.map {|f| f.font }
       end
     }
   end
   
   rule font
     [a-zA-Z] [-a-zA-Z0-9]* {
-      def build env
+      def build
         Node::Keyword.new(text_value)
       end
     } / string {
-      def build env
+      def build
         Node::String.new(text_value)
       end
     }
@@ -182,8 +183,8 @@ grammar Less
   
   rule variable
     '@' [-a-zA-Z0-9_]+  {
-      def build env
-        env.identifiers.last << Node::Variable.new(text_value)
+      def build
+        Node::Variable.new(text_value)
       end
     }
   end
@@ -226,19 +227,19 @@ grammar Less
   rule accessor
     ident:(class_id / tag) '[' attr:(string / variable) ']' {
       def build env
-        env.identifiers.last << env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
+        env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
       end
     }
   end
   
   rule operator
     S [-+*/] S {
-      def build env
-        env.identifiers.last << Node::Operator.new(text_value.strip)
+      def build
+        Node::Operator.new(text_value.strip)
       end
     } / [-+*/] {
-      def build env
-        env.identifiers.last << Node::Operator.new(text_value)
+      def build
+        Node::Operator.new(text_value)
       end
     }
   end
@@ -248,16 +249,16 @@ grammar Less
   #
   rule literal
     color / (dimension / [-a-z]+) '/' dimension {
-      def build env
-        env.identifiers.last << Node::Anonymous.new(text_value)
+      def build
+        Node::Anonymous.new(text_value)
       end
     } / number unit {
-      def build env
-        env.identifiers.last << Node::Number.new(number.text_value, unit.text_value)
+      def build
+        Node::Number.new(number.text_value, unit.text_value)
       end
     } / string {
-      def build env
-        env.identifiers.last << Node::String.new(text_value)
+      def build
+        Node::String.new(text_value)
       end
     }
   end
@@ -265,8 +266,8 @@ grammar Less
   # !important
   rule important
     '!important' {
-      def build env
-        env.identifiers.last << Node::Keyword.new(text_value)
+      def build
+        Node::Keyword.new(text_value)
       end
     }
   end
@@ -276,8 +277,8 @@ grammar Less
   #
   rule keyword
     [-a-zA-Z]+ !ns {
-      def build env
-        env.identifiers.last << Node::Keyword.new(text_value)
+      def build
+        Node::Keyword.new(text_value)
       end
     }
   end
@@ -288,11 +289,11 @@ grammar Less
   rule string
     "'" content:(!"'" . )* "'" {
       def value
-        text_value[1...-1]
+        content.text_value
       end
     } / ["] content:(!["] . )* ["] {
       def value
-        text_value[1...-1]
+        content.text_value
       end
     }
   end
@@ -318,12 +319,12 @@ grammar Less
   #
   rule color
     '#' rgb {
-      def build env
-        env.identifiers.last << Node::Color.new(*rgb.build)
+      def build
+        Node::Color.new(*rgb.build)
       end
     } / fn:(('hsl'/'rgb') 'a'?) arguments {
-      def build env
-        env.identifiers.last << Node::Function.new(fn.text_value, arguments.build.flatten)
+      def build
+        Node::Function.new(fn.text_value, arguments.build.flatten)
       end
     }
   end
@@ -352,8 +353,8 @@ grammar Less
   #
   rule function
     name:([-a-zA-Z_]+) arguments {
-      def build env
-        env.identifiers.last << Node::Function.new(name.text_value, [arguments.build].flatten)
+      def build
+        Node::Function.new(name.text_value, [arguments.build].flatten)
       end
     }
   end
