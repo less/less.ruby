@@ -67,6 +67,21 @@ class Object
   def error!(s) raise Exception, s end
 end
 
+class Array
+  def dissolve
+    ary = flatten.compact
+    case ary.size
+      when 0 then []
+      when 1 then first
+      else ary
+    end
+  end
+  
+  def one?
+    size == 1
+  end
+end
+
 class Class
   def to_sym
     self.to_s.to_sym
