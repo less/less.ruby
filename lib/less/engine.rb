@@ -15,7 +15,7 @@ module Less
     
     def initialize obj
       @less = if obj.is_a? File
-        @path = File.dirname(File.expand_path obj.path)
+        @path = File.dirname File.expand_path(obj.path)
         obj.read
       elsif obj.is_a? String
         obj.dup

@@ -494,7 +494,7 @@ module Less
       path = File.join(env.root.file, url.value)
       path += '.less' unless path =~ /\.(le|c)ss$/
       if File.exist? path
-        imported = Less::Engine.new(File.new path).to_tree
+        imported = Less::Engine.new(File.new(path)).to_tree
         env.rules += imported.rules
       else
         raise ImportError, path
@@ -589,7 +589,7 @@ module Less
 
   module Url1
     def build env = nil
-      Node::String.new(CGI.unescape path.text_value)
+      Node::String.new CGI.unescape(path.text_value)
     end
     
     def value
@@ -1476,92 +1476,6 @@ module Less
     r0
   end
 
-  def _nt_separator
-    start_index = index
-    if node_cache[:separator].has_key?(index)
-      cached = node_cache[:separator][index]
-      @index = cached.interval.end if cached
-      return cached
-    end
-
-    i0 = index
-    r1 = _nt_operator
-    if r1
-      r0 = r1
-    else
-      r2 = _nt_S
-      if r2
-        r0 = r2
-      else
-        r3 = _nt_WS
-        if r3
-          r0 = r3
-        else
-          @index = i0
-          r0 = nil
-        end
-      end
-    end
-
-    node_cache[:separator][start_index] = r0
-
-    r0
-  end
-
-  module Paren0
-    def s
-      elements[0]
-    end
-
-    def s
-      elements[2]
-    end
-  end
-
-  module Paren1
-    def build
-      Node::Paren.new(text_value.strip)
-    end
-  end
-
-  def _nt_paren
-    start_index = index
-    if node_cache[:paren].has_key?(index)
-      cached = node_cache[:paren][index]
-      @index = cached.interval.end if cached
-      return cached
-    end
-
-    i0, s0 = index, []
-    r1 = _nt_s
-    s0 << r1
-    if r1
-      if has_terminal?('\G[()]', true, index)
-        r2 = instantiate_node(SyntaxNode,input, index...(index + 1))
-        @index += 1
-      else
-        r2 = nil
-      end
-      s0 << r2
-      if r2
-        r3 = _nt_s
-        s0 << r3
-      end
-    end
-    if s0.last
-      r0 = instantiate_node(SyntaxNode,input, i0...index, s0)
-      r0.extend(Paren0)
-      r0.extend(Paren1)
-    else
-      @index = i0
-      r0 = nil
-    end
-
-    node_cache[:paren][start_index] = r0
-
-    r0
-  end
-
   def _nt_entity
     start_index = index
     if node_cache[:entity].has_key?(index)
@@ -1640,9 +1554,6 @@ module Less
 
   module Fonts2
     def build
-      fonts = all.map do |font|
-        font.build
-      end
       Node::FontFamily.new(all.map(&:build))
     end
     

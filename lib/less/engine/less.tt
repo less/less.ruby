@@ -36,7 +36,7 @@ grammar Less
         path = File.join(env.root.file, url.value)
         path += '.less' unless path =~ /\.(le|c)ss$/
         if File.exist? path
-          imported = Less::Engine.new(File.new path).to_tree
+          imported = Less::Engine.new(File.new(path)).to_tree
           env.rules += imported.rules
         else
           raise ImportError, path
@@ -48,7 +48,7 @@ grammar Less
   rule url
     'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
       def build env = nil
-        Node::String.new(CGI.unescape path.text_value)
+        Node::String.new CGI.unescape(path.text_value)
       end
       
       def value
@@ -313,7 +313,6 @@ grammar Less
     ('px'/'em'/'pc'/'%'/'pt'/'cm'/'mm')?
   end
 
-  
   #
   # Color
   #
