@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.0.15"
+  s.version = "1.0.16"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-07-21}
+  s.date = %q{2009-07-23}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{self@cloudhead.net}
@@ -140,6 +140,7 @@ Gem::Specification.new do |s|
      "spec/css/mixins-args.css",
      "spec/css/mixins.css",
      "spec/css/operations.css",
+     "spec/css/parens.css",
      "spec/css/rulesets.css",
      "spec/css/scope.css",
      "spec/css/selectors.css",
@@ -166,6 +167,7 @@ Gem::Specification.new do |s|
      "spec/less/mixins-args.less",
      "spec/less/mixins.less",
      "spec/less/operations.less",
+     "spec/less/parens.less",
      "spec/less/rulesets.less",
      "spec/less/scope.less",
      "spec/less/selectors.less",
