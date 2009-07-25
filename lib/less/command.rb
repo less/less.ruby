@@ -95,6 +95,7 @@ module Less
     def err s = '', type = ''
       type = type.strip + ' ' unless type.empty?
       print "#{RED["! #{type}Error"]}: #{s}"
+      @growl.title = "LESS"
       @growl.message = "#{type}Error in #@source!" if @options[:growl]
       @growl.run
       false
