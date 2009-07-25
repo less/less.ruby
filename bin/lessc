@@ -34,10 +34,10 @@ opts = OptionParser.new do |o|
   
   # Growl
   o.on("-g", "--growl", "growl notifications") do
-    if Less::GROWL && Growl.installed?
+    if Less::GROWL && (Growl.installed? rescue false)
       options[:growl] = true
     elsif Less::GROWL
-      abort "Growl wasn't found on your system."
+      abort "Growl or 'growlnotify' wasn't found on your system."
     else
       abort "Growl gem not found, please install with: " +
             "`sudo gem install visionmedia-growl -s http://gems.github.com`"
