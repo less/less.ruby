@@ -39,9 +39,9 @@ module Treetop
         "on line #{failure_line}: expected " + (
           tf.size == 1 ? 
             tf[0].expected_string : 
-            "one of #{tf.map {|f| f.expected_string }.uniq * ' '}"
+            "one of #{Less::YELLOW[tf.map {|f| f.expected_string }.uniq * ' ']}"
         ) +
-        " got `#{input[failure_index]}`" +
+        " got #{Less::YELLOW[input[failure_index]]}" +
         " after:\n\n#{input[index...failure_index]}\n"
       end
     end

@@ -1,4 +1,12 @@
 module Less
+  ESC = "\033"
+  RESET   = "#{ESC}[0m"
+  
+  GREEN  = lambda {|s| "#{ESC}[1;32m#{s}#{RESET}"}
+  RED    = lambda {|s| "#{ESC}[1;31m#{s}#{RESET}"}
+  YELLOW = lambda {|s| "#{ESC}[1;33m#{s}#{RESET}"}
+  BOLD   = lambda {|s| "#{ESC}[1m#{s}#{RESET}"}
+  
   class Command
     attr_accessor :source, :destination, :options
 
@@ -60,19 +68,20 @@ module Less
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        print "#{new ? '* [Created]' : '* [Updated]'} #{@destination.split('/').last}\n: " if watch?
+        print "#{GREEN['* ' + (new ? 'Created'  : 'Updated')]} " + 
+              "#{@destination.split('/').last}\n: " if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
       rescue SyntaxError => e
-        err "#{e}\n", "Parse"
+        err "#{e}\n", "Syntax"
       rescue MixedUnitsError => e
         err "`#{e}` you're  mixing units together! What do you expect?\n"
       rescue PathError => e
         err "`#{e}` was not found.\n", "Path"
       rescue VariableNameError => e
-        err "`#{e}` is undefined.\n", "Name"
+        err "#{YELLOW[e]} is undefined.\n", "Name"
       rescue MixinNameError => e
-        err "`#{e}` is undefined.\n", "Name"
+        err "#{YELLOW[e]} is undefined.\n", "Name"
       else
         true
       end
