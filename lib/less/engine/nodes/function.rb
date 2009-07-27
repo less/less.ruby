@@ -36,6 +36,10 @@ module Less
 
       rgba hue[ h + 1/3 ], hue[ h ], hue[ h - 1/3 ], a
     end
+    
+    def self.available
+      self.instance_methods.map(&:to_sym)
+    end
   end
   
   module Node
@@ -45,14 +49,14 @@ module Less
     #   it calls functions from the Functions module
     #
     class Function < ::String
-      include Functions
       include Entity
+      include Functions
     
       def initialize name, *args
         @args = args.flatten
         super name
       end
-    
+      
       def to_css
         self.evaluate.to_css
       end
@@ -60,16 +64,15 @@ module Less
       #
       # Call the function
       #
-      def evaluate
-        send self.to_sym, *@args
-      end
-      
-      #
       # If the function isn't found, we just print it out,
       # this is the case for url(), for example,
       #
-      def method_missing meth, *args
-        Node::Anonymous.new("#{meth}(#{args.map(&:to_css) * ', '})")
+      def evaluate
+        if Functions.available.include? self.to_sym
+          send to_sym, *@args
+        else
+          Node::Anonymous.new("#{to_sym}(#{@args.map(&:to_css) * ', '})")
+        end
       end
     end
   end
