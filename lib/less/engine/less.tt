@@ -104,7 +104,6 @@ grammar Less
       def build env
         env << (name.text_value =~ /^@/ ? 
           Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
-
       end
     # Empty rule
     } / ws ident s ':' s ';' ws
@@ -123,12 +122,13 @@ grammar Less
   #
   # An operation or compound value
   #
+  # TODO: we can refactor this, by separating entities from operators
   rule expression
-    s '(' s expressions s ')' s {
+    s '(' s expressions s ')' {
       def build env
         Node::Expression.new(['('] + expressions.build(env).flatten + [')'])
       end
-    } / entity tail:(operator entity)* ws {
+    } / s entity tail:(operator entity)* ws {
       def build env 
         exp = all.map do |e|
           e.method(:build).arity.zero?? 
@@ -140,7 +140,7 @@ grammar Less
       def all
         [entity] + tail.elements.map {|i| [i.operator, i.entity] }.flatten.compact
       end
-    }
+    } / operator
   end
   
   #
@@ -234,11 +234,11 @@ grammar Less
   
   rule operator
     S [-+*/] S {
-      def build
+      def build env
         Node::Operator.new(text_value.strip)
       end
     } / [-+*/] {
-      def build
+      def build env
         Node::Operator.new(text_value)
       end
     }

@@ -1056,7 +1056,6 @@ module Less
     def build env
       env << (name.text_value =~ /^@/ ? 
         Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
-
     end
   # Empty rule
   end
@@ -1314,9 +1313,6 @@ module Less
       elements[4]
     end
 
-    def s
-      elements[6]
-    end
   end
 
   module Expression1
@@ -1336,16 +1332,20 @@ module Less
   end
 
   module Expression3
-    def entity
+    def s
       elements[0]
     end
 
-    def tail
+    def entity
       elements[1]
     end
 
-    def ws
+    def tail
       elements[2]
+    end
+
+    def ws
+      elements[3]
     end
   end
 
@@ -1402,10 +1402,6 @@ module Less
                 r7 = nil
               end
               s1 << r7
-              if r7
-                r8 = _nt_s
-                s1 << r8
-              end
             end
           end
         end
@@ -1422,52 +1418,61 @@ module Less
     if r1
       r0 = r1
     else
-      i9, s9 = index, []
-      r10 = _nt_entity
-      s9 << r10
-      if r10
-        s11, i11 = [], index
-        loop do
-          i12, s12 = index, []
-          r13 = _nt_operator
-          s12 << r13
-          if r13
-            r14 = _nt_entity
-            s12 << r14
-          end
-          if s12.last
-            r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
-            r12.extend(Expression2)
-          else
-            @index = i12
-            r12 = nil
-          end
-          if r12
-            s11 << r12
-          else
-            break
-          end
-        end
-        r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
-        s9 << r11
-        if r11
-          r15 = _nt_ws
-          s9 << r15
-        end
-      end
-      if s9.last
-        r9 = instantiate_node(SyntaxNode,input, i9...index, s9)
-        r9.extend(Expression3)
-        r9.extend(Expression4)
-      else
-        @index = i9
-        r9 = nil
-      end
+      i8, s8 = index, []
+      r9 = _nt_s
+      s8 << r9
       if r9
-        r0 = r9
+        r10 = _nt_entity
+        s8 << r10
+        if r10
+          s11, i11 = [], index
+          loop do
+            i12, s12 = index, []
+            r13 = _nt_operator
+            s12 << r13
+            if r13
+              r14 = _nt_entity
+              s12 << r14
+            end
+            if s12.last
+              r12 = instantiate_node(SyntaxNode,input, i12...index, s12)
+              r12.extend(Expression2)
+            else
+              @index = i12
+              r12 = nil
+            end
+            if r12
+              s11 << r12
+            else
+              break
+            end
+          end
+          r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
+          s8 << r11
+          if r11
+            r15 = _nt_ws
+            s8 << r15
+          end
+        end
+      end
+      if s8.last
+        r8 = instantiate_node(SyntaxNode,input, i8...index, s8)
+        r8.extend(Expression3)
+        r8.extend(Expression4)
       else
-        @index = i0
-        r0 = nil
+        @index = i8
+        r8 = nil
+      end
+      if r8
+        r0 = r8
+      else
+        r16 = _nt_operator
+        if r16
+          r0 = r16
+        else
+          @index = i0
+          r0 = nil
+        end
       end
     end
 
@@ -2630,13 +2635,13 @@ module Less
   end
 
   module Operator1
-    def build
+    def build env
       Node::Operator.new(text_value.strip)
     end
   end
 
   module Operator2
-    def build
+    def build env
       Node::Operator.new(text_value)
     end
   end

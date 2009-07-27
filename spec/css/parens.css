@@ -4,4 +4,13 @@
   width: 36;
   padding: 2px 36px;
 }
-.more-parens { padding: 8 4 4 4px; }
+.more-parens {
+  padding: 8 4 4 4px;
+  width: 96;
+  height: 113;
+  margin: 12;
+}
+.nested-parens {
+  width: 71;
+  height: 6;
+}
