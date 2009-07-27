@@ -6,7 +6,9 @@ require 'engine/nodes'
 begin
   require 'engine/parser'
 rescue LoadError
-  Treetop.load LESS_GRAMMAR
+  Treetop.load File.join(LESS_GRAMMAR, 'common.tt')
+  Treetop.load File.join(LESS_GRAMMAR, 'entity.tt')
+  Treetop.load File.join(LESS_GRAMMAR, 'less.tt')
 end
 
 module Less
@@ -23,11 +25,13 @@ module Less
         raise ArgumentError, "argument must be an instance of File or String!"
       end
       
-      @parser = LessParser.new
+      @parser = StyleSheetParser.new
     end
     
-    def parse env = Node::Element.new
+    def parse build = true, env = Node::Element.new
       root = @parser.parse(self.prepare)
+      
+      return root unless build
       
       if root
         @tree = root.build env.tap {|e| e.file = @path }

@@ -1,0 +1,271 @@
+module Less
+  grammar StyleSheet
+    include Common
+    include Entity
+    
+    rule primary
+      (declaration / ruleset / import / comment)+ <Builder> / declaration* <Builder> / import* <Builder> / comment*
+    end
+
+    rule comment
+      ws '/*' (!'*/' . )* '*/' ws / ws '//' (!"\n" .)* "\n" ws
+    end
+
+    #
+    # div, .class, body > p {...}
+    #
+    rule ruleset
+      selectors "{" ws primary ws "}" ws {
+        def build env
+          # Build the ruleset for each selector
+          selectors.build(env, :ruleset).each do |sel|
+            primary.build sel
+          end
+        end
+      } / ws selectors ';' ws {
+        def build env        
+          selectors.build(env, :mixin).each do |path|
+            rules = path.inject(env.root) do |current, node|
+              current.descend(node.selector, node) or raise MixinNameError, path.join
+            end.rules
+            env.rules += rules
+          end
+        end
+      }
+    end
+
+    rule import
+      "@import" S url:(string / url) medias? s ';' ws {
+        def build env
+          path = File.join(env.root.file, url.value)
+          path += '.less' unless path =~ /\.(le|c)ss$/
+          if File.exist? path
+            imported = Less::Engine.new(File.new(path)).to_tree
+            env.rules += imported.rules
+          else
+            raise ImportError, path
+          end
+        end
+      }
+    end
+
+    rule url
+      'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
+        def build env = nil
+          Node::String.new CGI.unescape(path.text_value)
+        end
+    
+        def value
+          build
+        end
+      }
+    end
+
+    rule medias
+      [-a-z]+ (s ',' s [a-z]+)*
+    end
+
+    rule selectors
+      ws selector tail:(s ',' ws selector)* ws {
+        def build env, method 
+          all.map do |e|
+            e.send(method, env) if e.respond_to? method
+          end.compact
+        end
+    
+        def all
+          [selector] + tail.elements.map {|e| e.selector }
+        end
+      }
+    end
+
+    #
+    # div > p a {...}
+    #
+    rule selector
+      sel:(s select element s)+ arguments? {
+        def ruleset env
+          sel.elements.inject(env) do |node, e|
+            node << Node::Element.new(e.element.text_value, e.select.text_value)
+            node.last
+          end
+        end
+    
+        def mixin env
+          sel.elements.map do |e|
+            Node::Element.new(e.element.text_value, e.select.text_value)
+          end
+        end
+      }
+    end
+
+    #
+    # @my-var: 12px;
+    # height: 100%;
+    #
+    rule declaration
+      ws name:(ident / variable) s ':' s expressions s (';'/ ws &'}') ws {
+        def build env
+          env << (name.text_value =~ /^@/ ? 
+            Node::Variable : Node::Property).new(name.text_value, expressions.build(env), env)
+        end
+      # Empty rule
+      } / ws ident s ':' s ';' ws
+    end
+
+    #
+    # An operation or compound value
+    #
+    rule expressions
+      # Operation
+      expression tail:(operator expression)+ {
+        def build env 
+          all.map {|e| e.build(env) }.dissolve
+        end
+
+        def all
+          [expression] + tail.elements.map {|i| [i.operator, i.expression] }.flatten.compact
+        end
+      # Space-delimited expressions
+      } / expression tail:(WS expression)* {
+        def build env
+          all.map {|e| e.build(env) if e.respond_to? :build }.compact
+        end
+        
+        def all
+          [expression] + tail.elements.map {|f| f.expression }
+        end
+      } 
+    end
+
+    rule expression
+      '(' s expressions s ')' {
+        def build env
+          Node::Expression.new(['('] + expressions.build(env).flatten + [')'])
+        end
+      } / entity '' {
+        def build env
+          entity.method(:build).arity.zero?? entity.build : entity.build(env)
+        end
+      }
+    end
+
+    #
+    # An identifier
+    #
+    rule ident
+      '*'? '-'? [-a-z0-9_]+
+    end
+
+    rule variable
+      '@' [-a-zA-Z0-9_]+  {
+        def build
+          Node::Variable.new(text_value)
+        end
+      }
+    end
+
+    #
+    # div / .class / #id / input[type="text"] / lang(fr)
+    #
+    rule element
+      (class_id / tag / ident) attribute* ('(' ident? attribute* ')')? / attribute+ / '@media' / '@font-face'
+    end
+
+    rule class_id
+      tag? (class / id)+
+    end
+
+    #
+    # [type="text"]
+    #
+    rule attribute
+      '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']'
+    end
+
+    rule class
+      '.' [_a-z] [-a-zA-Z0-9_]*
+    end
+
+    rule id
+      '#' [_a-z] [-a-zA-Z0-9_]*
+    end
+
+    rule tag
+      [a-zA-Z] [-a-zA-Z]* [0-9]? / '*'
+    end
+
+    rule select
+      (s [+>~] s / s ':' / S)?
+    end
+
+    # TODO: Merge this with attribute rule
+    rule accessor
+      ident:(class_id / tag) '[' attr:(string / variable) ']' {
+        def build env
+          env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
+        end
+      }
+    end
+
+    rule operator
+      S [-+*/] S {
+        def build env
+          Node::Operator.new(text_value.strip)
+        end
+      } / [-+*/] {
+        def build env
+          Node::Operator.new(text_value)
+        end
+      }
+    end
+    
+    #
+    # Functions and arguments
+    #
+    rule function
+      name:([-a-zA-Z_]+) arguments {
+        def build
+          Node::Function.new(name.text_value, [arguments.build].flatten)
+        end
+      }
+    end
+
+    rule arguments
+      '(' s argument s tail:(',' s argument s)* ')' {
+        def build
+          all.map do |e|
+            e.build if e.respond_to? :build
+          end.compact
+        end
+  
+        def all
+          [argument] + tail.elements.map {|e| e.argument }
+        end
+      }
+    end
+
+    rule argument
+      color / number unit {
+        def build
+          Node::Number.new number.text_value, unit.text_value
+        end
+      } / string {
+        def build
+          Node::String.new text_value
+        end
+      } / [a-zA-Z]+ '=' dimension {
+        def build
+          Node::Anonymous.new text_value
+        end
+      } / [-a-zA-Z0-9_%$/.&=:;#+?]+ {
+        def build
+          Node::String.new text_value
+        end
+      } / function / keyword other:(S keyword)* {
+        def build
+        end
+      }
+    end
+  end
+end

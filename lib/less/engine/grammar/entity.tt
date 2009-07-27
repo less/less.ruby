@@ -1,0 +1,139 @@
+module Less
+  module StyleSheet
+    grammar Entity
+      #
+      # Entity: Any whitespace delimited token
+      #
+      rule entity
+        function / fonts / keyword / accessor / variable / literal / important
+      end
+
+      rule fonts
+        font family:(s ',' s font)+ {
+          def build
+            Node::FontFamily.new(all.map(&:build))
+          end
+
+          def all
+            [font] + family.elements.map {|f| f.font }
+          end
+        }
+      end
+
+      rule font
+        [a-zA-Z] [-a-zA-Z0-9]* {
+          def build
+            Node::Keyword.new(text_value)
+          end
+        } / string {
+          def build
+            Node::String.new(text_value)
+          end
+        }
+      end
+      
+      #
+      # Tokens which don't need to be evaluated
+      #
+      rule literal
+        color / (dimension / [-a-z]+) '/' dimension {
+          def build
+            Node::Anonymous.new(text_value)
+          end
+        } / number unit {
+          def build
+            Node::Number.new(number.text_value, unit.text_value)
+          end
+        } / string {
+          def build
+            Node::String.new(text_value)
+          end
+        }
+      end
+
+      # !important
+      rule important
+        '!important' {
+          def build
+            Node::Keyword.new(text_value)
+          end
+        }
+      end
+
+      #
+      # `blue`, `small`, `normal` etc.
+      #
+      rule keyword
+        [-a-zA-Z]+ !ns {
+          def build
+            Node::Keyword.new(text_value)
+          end
+        }
+      end
+
+      #
+      # 'hello world' / "hello world"
+      #
+      rule string
+        "'" content:(!"'" . )* "'" {
+          def value
+            content.text_value
+          end
+        } / ["] content:(!["] . )* ["] {
+          def value
+            content.text_value
+          end
+        }
+      end
+
+      #
+      # Numbers & Units
+      #
+      rule dimension
+        number unit
+      end
+
+      rule number
+        '-'? [0-9]* '.' [0-9]+ / '-'? [0-9]+
+      end
+
+      rule unit
+        ('px'/'em'/'pc'/'%'/'pt'/'cm'/'mm')?
+      end
+
+      #
+      # Color
+      #
+      rule color
+        '#' rgb {
+          def build
+            Node::Color.new(*rgb.build)
+          end
+        } / fn:(('hsl'/'rgb') 'a'?) arguments {
+          def build
+            Node::Function.new(fn.text_value, arguments.build.flatten)
+          end
+        }
+      end
+
+      #
+      # 00ffdd / 0fd
+      #
+      rule rgb
+        r:(hex hex) g:(hex hex) b:(hex hex) {
+          def build
+            [r.text_value, g.text_value, b.text_value]
+          end
+        } / r:hex g:hex b:hex {
+          def build
+            [r.text_value, g.text_value, b.text_value].map {|c| c * 2 }
+          end
+        }
+      end
+
+      rule hex
+        [a-fA-F0-9]
+      end
+    end
+  end
+end
