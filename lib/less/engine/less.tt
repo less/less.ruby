@@ -373,11 +373,7 @@ grammar Less
   end
   
   rule argument
-    color {
-      def build
-        Node::Color.new text_value
-      end
-    } / number unit {
+    color / number unit {
       def build
         Node::Number.new number.text_value, unit.text_value
       end
@@ -392,6 +388,9 @@ grammar Less
     } / [-a-zA-Z0-9_%$/.&=:;#+?]+ {
       def build
         Node::String.new text_value
+      end
+    } / function / keyword other:(S keyword)* {
+      def build
       end
     }
   end

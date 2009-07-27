@@ -3952,12 +3952,6 @@ module Less
   end
 
   module Argument0
-    def build
-      Node::Color.new text_value
-    end
-  end
-
-  module Argument1
     def number
       elements[0]
     end
@@ -3967,33 +3961,58 @@ module Less
     end
   end
 
-  module Argument2
+  module Argument1
     def build
       Node::Number.new number.text_value, unit.text_value
     end
   end
 
-  module Argument3
+  module Argument2
     def build
       Node::String.new text_value
     end
   end
 
-  module Argument4
+  module Argument3
     def dimension
       elements[2]
     end
   end
 
-  module Argument5
+  module Argument4
     def build
       Node::Anonymous.new text_value
     end
   end
 
-  module Argument6
+  module Argument5
     def build
       Node::String.new text_value
+    end
+  end
+
+  module Argument6
+    def S
+      elements[0]
+    end
+
+    def keyword
+      elements[1]
+    end
+  end
+
+  module Argument7
+    def keyword
+      elements[0]
+    end
+
+    def other
+      elements[1]
+    end
+  end
+
+  module Argument8
+    def build
     end
   end
 
@@ -4007,7 +4026,6 @@ module Less
 
     i0 = index
     r1 = _nt_color
-    r1.extend(Argument0)
     if r1
       r0 = r1
     else
@@ -4020,8 +4038,8 @@ module Less
       end
       if s2.last
         r2 = instantiate_node(SyntaxNode,input, i2...index, s2)
+        r2.extend(Argument0)
         r2.extend(Argument1)
-        r2.extend(Argument2)
       else
         @index = i2
         r2 = nil
@@ -4030,7 +4048,7 @@ module Less
         r0 = r2
       else
         r5 = _nt_string
-        r5.extend(Argument3)
+        r5.extend(Argument2)
         if r5
           r0 = r5
         else
@@ -4072,8 +4090,8 @@ module Less
           end
           if s6.last
             r6 = instantiate_node(SyntaxNode,input, i6...index, s6)
+            r6.extend(Argument3)
             r6.extend(Argument4)
-            r6.extend(Argument5)
           else
             @index = i6
             r6 = nil
@@ -4100,13 +4118,59 @@ module Less
               r11 = nil
             else
               r11 = instantiate_node(SyntaxNode,input, i11...index, s11)
-              r11.extend(Argument6)
+              r11.extend(Argument5)
             end
             if r11
               r0 = r11
             else
-              @index = i0
-              r0 = nil
+              r13 = _nt_function
+              if r13
+                r0 = r13
+              else
+                i14, s14 = index, []
+                r15 = _nt_keyword
+                s14 << r15
+                if r15
+                  s16, i16 = [], index
+                  loop do
+                    i17, s17 = index, []
+                    r18 = _nt_S
+                    s17 << r18
+                    if r18
+                      r19 = _nt_keyword
+                      s17 << r19
+                    end
+                    if s17.last
+                      r17 = instantiate_node(SyntaxNode,input, i17...index, s17)
+                      r17.extend(Argument6)
+                    else
+                      @index = i17
+                      r17 = nil
+                    end
+                    if r17
+                      s16 << r17
+                    else
+                      break
+                    end
+                  end
+                  r16 = instantiate_node(SyntaxNode,input, i16...index, s16)
+                  s14 << r16
+                end
+                if s14.last
+                  r14 = instantiate_node(SyntaxNode,input, i14...index, s14)
+                  r14.extend(Argument7)
+                  r14.extend(Argument8)
+                else
+                  @index = i14
+                  r14 = nil
+                end
+                if r14
+                  r0 = r14
+                else
+                  @index = i0
+                  r0 = nil
+                end
+              end
             end
           end
         end
