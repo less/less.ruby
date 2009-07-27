@@ -61,19 +61,30 @@ end
 
 begin
   require 'lib/less'
+  require 'benchmark'
   
   task :compile do
+    abort "compiling isn't necessary anymore."
     puts "compiling #{LESS_GRAMMAR.split('/').last}..."
     File.open(LESS_PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(LESS_GRAMMAR) }
   end
   
   task :benchmark do
-    print "benchmarking... "
-    less = File.read("spec/less/big.less")
-    start = Time.now.to_f
-    Less::Engine.new(less).parse
-    total = Time.now.to_f - start
-    puts "#{total}s"
+    #require 'profile'
+    puts "benchmarking... "
+    less, tree = File.read("spec/less/big.less"), nil
+    
+    parse = Benchmark.measure do
+      tree = Less::Engine.new(less).parse(false)
+    end.total.round(2)
+    
+    build = Benchmark.measure do
+      tree.build(Less::Node::Element.new)
+    end.total.round(2)
+    
+    puts "parse: #{parse}s\nbuild: #{build}s"
+    puts "------------"
+    puts "total: #{parse + build}s"
   end
 end
 
