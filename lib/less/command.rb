@@ -14,7 +14,6 @@ module Less
       $verbose = options[:debug]
       @source = options[:source]
       @destination = (options[:destination] || options[:source]).gsub /\.(less|lss)/, '.css'
-      @growl = Growl.new if options[:growl]
       @options = options
     end
 
@@ -95,10 +94,13 @@ module Less
     def err s = '', type = ''
       type = type.strip + ' ' unless type.empty?
       print "#{RED["! #{type}Error"]}: #{s}"
-      @growl.title = "LESS"
-      @growl.message = "#{type}Error in #@source!" if @options[:growl]
-      @growl.run
-      false
+      if @options[:growl]
+        growl = Growl.new
+        growl.title = "LESS"
+        growl.message = "#{type}Error in #@source!"
+        growl.run
+        false
+      end
     end
   end
 end
