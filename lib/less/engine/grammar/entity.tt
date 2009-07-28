@@ -98,7 +98,7 @@ module Less
       end
 
       rule unit
-        ('px'/'em'/'pc'/'%'/'pt'/'cm'/'mm')?
+        ('px'/'em'/'pc'/'%'/'ex'/'pt'/'cm'/'mm')?
       end
 
       #
