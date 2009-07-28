@@ -8,7 +8,7 @@ module Treetop
             tf[0].expected_string : 
             "one of #{Less::YELLOW[tf.map {|f| f.expected_string }.uniq * ' ']}"
         ) +
-        " got #{Less::YELLOW[input[failure_index]]}" +
+        " got #{Less::YELLOW[input[failure_index].chr]}" +
         " after:\n\n#{input[index...failure_index]}\n"
       end
     end
