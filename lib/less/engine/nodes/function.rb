@@ -15,7 +15,7 @@ module Less
     # RGBA to Node::Color
     #
     def rgba *rgba
-      Node::Color.new *rgba
+      Node::Color.new *rgba.flatten
     end
     
     #
