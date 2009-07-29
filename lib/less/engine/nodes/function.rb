@@ -8,7 +8,7 @@ module Less
     end
 
     def hsl *args
-      hsla args, 1.0
+      hsla *args, 1.0
     end
 
     #
