@@ -4,7 +4,13 @@ module Less
     include Entity
     
     rule primary
-      (declaration / ruleset / import / comment)+ <Builder> / declaration* <Builder> / import* <Builder> / comment*
+      (declaration / ruleset / import / comment)* {
+        def build env = Less::Element.new
+          elements.map do |e|
+            e.build env if e.respond_to? :build
+          end; env
+        end
+      }
     end
 
     rule comment

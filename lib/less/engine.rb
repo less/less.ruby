@@ -1,6 +1,5 @@
 $:.unshift File.dirname(__FILE__)
 
-require 'engine/builder'
 require 'engine/nodes'
 
 begin
