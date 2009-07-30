@@ -135,7 +135,12 @@ module Less
         def all
           [expression] + tail.elements.map {|f| f.expression }
         end
-      } 
+      # Catch-all rule
+      } / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ {
+        def build env
+          [Node::Anonymous.new(text_value)]
+        end
+      }
     end
 
     rule expression

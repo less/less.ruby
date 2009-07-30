@@ -42,4 +42,5 @@ h2[title] { font-size: 100%; }
   background-color: #009998;
   color: red !important;
   background-image: url(images/image.jpg);
+  background: -webkit-gradient(linear, left top, left bottom, from(red), to(blue));
 }
