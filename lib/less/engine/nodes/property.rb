@@ -32,6 +32,14 @@ module Less
       def inspect
         self + (empty?? "" : ": `#{value.map {|i| i.to_s } * ' | '}`")
       end
+      
+      def == other
+        self.to_s == other.to_s
+      end
+      
+      def eql? other
+        self == other and value.eql? other.value
+      end
  
       def to_s
         super

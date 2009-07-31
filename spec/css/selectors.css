@@ -6,3 +6,8 @@ h3 a:hover { color: red; }
 h3 p:hover { color: red; }
 #all, #the, #same { color: blue; }
 ul, li, div, q, blockquote, textarea { margin: 0; }
+td {
+  margin: 0;
+  padding: 0;
+}
+td, input { line-height: 1em; }
