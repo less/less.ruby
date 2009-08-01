@@ -41,9 +41,9 @@ module Less
     end
 
     rule import
-      "@import" S url:(string / url) medias? s ';' ws {
+      ws "@import" S url:(string / url) medias? s ';' ws {
         def build env
-          path = File.join(env.root.file, url.value)
+          path = File.join(env.root.file || Dir.pwd, url.value)
           path += '.less' unless path =~ /\.(le|c)ss$/
           if File.exist? path
             imported = Less::Engine.new(File.new(path)).to_tree
