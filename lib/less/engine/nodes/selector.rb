@@ -4,11 +4,12 @@ module Less
       include Entity
       
       Selectors = {
-        :Descendant => '',
-        :Child      => '>',
-        :Adjacent   => '+',
-        :Pseudo     => ':',
-        :Sibling    => '~'
+        :Descendant    => '',
+        :Child         => '>',
+        :Adjacent      => '+',
+        :PseudoClass   => ':',
+        :PseudoElement => '::',
+        :Sibling       => '~'
       }
   
       def initialize
@@ -32,7 +33,11 @@ module Less
       def to_css; " #{self} " end
     end
 
-    class Pseudo < Selector
+    class PseudoClass < Selector
+      def to_css; self end
+    end
+    
+    class PseudoElement < Selector
       def to_css; self end
     end
   end
