@@ -133,13 +133,13 @@ module Less
           [expression] + tail.elements.map {|i| [i.operator, i.expression] }.flatten.compact
         end
       # Space-delimited expressions
-      } / expression tail:(WS expression)* {
+      } / expression tail:(WS expression)* i:important? {
         def build env
           all.map {|e| e.build(env) if e.respond_to? :build }.compact
         end
         
         def all
-          [expression] + tail.elements.map {|f| f.expression }
+          [expression] + tail.elements.map {|f| f.expression } + [i]
         end
       # Catch-all rule
       } / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ {
@@ -157,6 +157,15 @@ module Less
       } / entity '' {
         def build env
           entity.method(:build).arity.zero?? entity.build : entity.build(env)
+        end
+      }
+    end
+    
+    # !important
+    rule important
+      s '!' s 'important' {
+        def build env
+          Node::Keyword.new(text_value.strip)
         end
       }
     end
