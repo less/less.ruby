@@ -142,7 +142,7 @@ module Less
           unit = literals.map do |node|
             node.unit
           end.compact.uniq.tap do |ary|
-            raise MixedUnitsError, self * ' ' if ary.size > 1
+            raise MixedUnitsError, self * ' ' if ary.size > 1 && !operators.empty?
           end.join
           
           entity = literals.find {|e| e.unit == unit } || entities.first

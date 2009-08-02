@@ -74,7 +74,7 @@ module Less
       rescue SyntaxError => e
         err "#{e}\n", "Syntax"
       rescue MixedUnitsError => e
-        err "`#{e}` you're  mixing units together! What do you expect?\n"
+        err "`#{e}` you're  mixing units together! What do you expect?\n", "Mixed Units"
       rescue PathError => e
         err "`#{e}` was not found.\n", "Path"
       rescue VariableNameError => e

@@ -14,3 +14,7 @@
   width: 71;
   height: 6;
 }
+.mixed-units {
+  margin: 2px 4em 1 5pc;
+  padding: 6px 1em 2px 2;
+}
