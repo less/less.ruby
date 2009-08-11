@@ -128,8 +128,12 @@ module Less
           path = File.join(env.root.file || Dir.pwd, url.value)
           path += '.less' unless path =~ /\.(le|c)ss$/
           if File.exist? path
-            imported = Less::Engine.new(File.new(path)).to_tree
-            env.rules += imported.rules
+            @@imported_files ||= []
+            unless @@imported_files.include?(path)
+              @@imported_files << path
+              imported = Less::Engine.new(File.new(path)).to_tree
+              env.rules += imported.rules
+            end
           else
             raise ImportError, path
           end
