@@ -39,38 +39,7 @@ module Less
         end
       }
     end
-
-    rule import
-      ws "@import" S url:(string / url) medias? s ';' ws {
-        def build env
-          path = File.join(env.root.file || Dir.pwd, url.value)
-          path += '.less' unless path =~ /\.(le|c)ss$/
-          if File.exist? path
-            imported = Less::Engine.new(File.new(path)).to_tree
-            env.rules += imported.rules
-          else
-            raise ImportError, path
-          end
-        end
-      }
-    end
-
-    rule url
-      'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
-        def build env = nil
-          Node::String.new CGI.unescape(path.text_value)
-        end
     
-        def value
-          build
-        end
-      }
-    end
-
-    rule medias
-      [-a-z]+ (s ',' s [a-z]+)*
-    end
-
     rule selectors
       ws selector tail:(s ',' ws selector)* ws {
         def build env, method 
@@ -103,6 +72,37 @@ module Less
           end
         end
       }
+    end
+
+    rule import
+      ws "@import" S url:(string / url) medias? s ';' ws {
+        def build env
+          path = File.join(env.root.file || Dir.pwd, url.value)
+          path += '.less' unless path =~ /\.(le|c)ss$/
+          if File.exist? path
+            imported = Less::Engine.new(File.new(path)).to_tree
+            env.rules += imported.rules
+          else
+            raise ImportError, path
+          end
+        end
+      }
+    end
+
+    rule url
+      'url(' path:(string / [-a-zA-Z0-9_%$/.&=:;#+?]+) ')' {
+        def build env = nil
+          Node::String.new CGI.unescape(path.text_value)
+        end
+    
+        def value
+          build
+        end
+      }
+    end
+
+    rule medias
+      [-a-z]+ (s ',' s [a-z]+)*
     end
 
     #
