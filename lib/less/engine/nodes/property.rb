@@ -19,7 +19,16 @@ module Less
         @value = Expression.new(value, self)
         @eval = false # Store the first evaluation in here
       end
-  
+      
+      def parent= obj
+        @parent = obj
+        value.parent = self
+      end
+      
+      def copy
+        clone.tap {|c| c.value = value.copy }
+      end
+      
       def << token
         token = Node::Anonymous.new(*token) unless token.is_a? Entity or token.respond_to? :to_ruby
         token.parent = self if token.respond_to? :parent
@@ -97,7 +106,7 @@ module Less
       
       def initialize ary, parent = nil
         self.parent = parent
-        super ary
+        super ary.dup
       end
       
       def expressions; select {|i| i.kind_of? Expression } end
@@ -114,10 +123,18 @@ module Less
         '[' + map {|i| i.inspect }.join(', ') + ']'
       end
       
+      def flatten
+        self
+      end
+      
       def terminal?
         expressions.empty?
       end
-    
+      
+      def copy
+        self.class.new(map {|i| i.dup }, parent)
+      end
+      
       def to_css
         map do |i| 
           i.respond_to?(:to_css) ? i.to_css : i.to_s
@@ -145,7 +162,7 @@ module Less
             raise MixedUnitsError, self * ' ' if ary.size > 1 && !operators.empty?
           end.join
           
-          entity = literals.find {|e| e.unit == unit } || entities.first
+          entity = literals.find {|e| e.unit == unit } || literals.first || entities.first
           result = operators.empty?? self : eval(to_ruby.join)
           
           case result

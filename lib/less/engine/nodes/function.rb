@@ -67,7 +67,7 @@ module Less
       # If the function isn't found, we just print it out,
       # this is the case for url(), for example,
       #
-      def evaluate
+      def evaluate context = nil
         if Functions.available.include? self.to_sym
           send to_sym, *@args
         else

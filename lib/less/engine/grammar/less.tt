@@ -4,7 +4,7 @@ module Less
     include Entity
     
     rule primary
-      (declaration / ruleset / import / comment)* {
+      (import / declaration / mixin / ruleset / comment)* {
         def build env = Less::Element.new
           elements.map do |e|
             e.build env if e.respond_to? :build
@@ -21,21 +21,43 @@ module Less
     # div, .class, body > p {...}
     #
     rule ruleset
-      selectors "{" ws primary ws "}" ws {
+      selectors "{" ws primary ws "}" s hide:(';'?) ws {
         def build env
           # Build the ruleset for each selector
           selectors.build(env, :ruleset).each do |sel|
+            sel.hide unless hide.empty?
             primary.build sel
           end
         end
-      } / ws selectors ';' ws {
+        # Mixin Declaration
+      } / '@' name:[-a-zA-Z0-9_]+ s parameters ws "{" ws primary ws "}" ws {
+        def build env
+          env << Node::Mixin.new(name.text_value, parameters.build(env))
+          primary.build env.last
+          #env.last
+        end
+      }
+    end
+    
+    rule mixin
+      ws selectors ';' ws {
         def build env        
           selectors.build(env, :mixin).each do |path|
             rules = path.inject(env.root) do |current, node|
               current.descend(node.selector, node) or raise MixinNameError, path.join
             end.rules
             env.rules += rules
+            #env.mix(rules)
           end
+        end
+      } / name:('@' [-a-zA-Z0-9_]+) args:(arguments?) s ';' {
+        def build env
+          mix = env.nearest(name.text_value, :mixin) or raise MixinNameError, name.text_value                        
+          params = args.build.map {|i| Node::Expression.new i } unless args.empty?
+
+          env.mix (params.nil? || params.empty?) ?
+              mix.rules + mix.params : 
+              mix.pass(params, env)
         end
       }
     end
@@ -58,7 +80,7 @@ module Less
     # div > p a {...}
     #
     rule selector
-      sel:(s select element s)+ arguments? {
+      sel:(s select element s)+ '' {
         def ruleset env
           sel.elements.inject(env) do |node, e|
             node << Node::Element.new(e.element.text_value, e.select.text_value)
@@ -73,7 +95,33 @@ module Less
         end
       }
     end
+    
+    rule parameters
+      '(' s ')' {
+        def build env
+          []
+        end
+      } / '(' parameter tail:(s ',' s parameter)* ')' {
+        def build env
+          all.map do |e|
+            e.build(env)
+          end
+        end
+        
+        def all
+          [parameter] + tail.elements.map {|e| e.parameter }
+        end
+      }
+    end
 
+    rule parameter
+      variable s ':' s expressions {
+        def build env
+          Node::Variable.new(variable.text_value, expressions.build(env), env)
+        end
+      }
+    end
+    
     rule import
       ws "@import" S url:(string / url) medias? s ';' ws {
         def build env
@@ -125,7 +173,7 @@ module Less
     rule expressions
       # Operation
       expression tail:(operator expression)+ {
-        def build env 
+        def build env = nil
           all.map {|e| e.build(env) }.dissolve
         end
 
@@ -134,7 +182,7 @@ module Less
         end
       # Space-delimited expressions
       } / expression tail:(WS expression)* i:important? {
-        def build env
+        def build env = nil
           all.map {|e| e.build(env) if e.respond_to? :build }.compact
         end
         
@@ -151,11 +199,11 @@ module Less
 
     rule expression
       '(' s expressions s ')' {
-        def build env
+        def build env = nil
           Node::Expression.new(['('] + expressions.build(env).flatten + [')'])
         end
       } / entity '' {
-        def build env
+        def build env = nil
           entity.method(:build).arity.zero?? entity.build : entity.build(env)
         end
       }
@@ -164,7 +212,7 @@ module Less
     # !important
     rule important
       s '!' s 'important' {
-        def build env
+        def build env = nil
           Node::Keyword.new(text_value.strip)
         end
       }
@@ -252,7 +300,7 @@ module Less
     end
 
     rule arguments
-      '(' s argument s tail:(',' s argument s)* ')' {
+      '(' s expressions s tail:(',' s expressions s)* ')' {
         def build
           all.map do |e|
             e.build if e.respond_to? :build
@@ -260,7 +308,11 @@ module Less
         end
   
         def all
-          [argument] + tail.elements.map {|e| e.argument }
+          [expressions] + tail.elements.map {|e| e.expressions }
+        end
+      } / '(' s ')' {
+        def build
+          []
         end
       }
     end

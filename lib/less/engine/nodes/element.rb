@@ -76,7 +76,9 @@ module Less
       def identifiers; @rules.select {|r| r.kind_of?     Property } end
       def properties;  @rules.select {|r| r.instance_of? Property } end
       def variables;   @rules.select {|r| r.instance_of? Variable } end
-      def elements;    @rules.select {|r| r.instance_of? Element  } end
+      def elements;    @rules.select {|r| r.kind_of?     Element  } end
+      def mixins;      @rules.select {|r| r.instance_of? Mixin    } end
+      def parameters;  []                                           end
 
       # Select a child element
       # TODO: Implement full selector syntax & merge with descend()
@@ -117,7 +119,13 @@ module Less
           self[element.name] if self[element.name].selector.class == selector.class
         end
       end
-
+      
+      def mix arr = []
+        @rules += arr.map do |r|
+          r.copy.tap {|i| i.parent = self }
+        end
+      end
+      
       #
       # Add an arbitrary node to this element
       #
@@ -158,10 +166,11 @@ module Less
       end
 
       #
-      # Find the nearest variable in the hierarchy or raise a NameError
+      # Find the nearest node in the hierarchy or raise a NameError
       #
-      def nearest ident
-        ary = ident =~ /^[.#]/ ? :elements : :variables
+      def nearest ident, type = nil
+        puts "nearest #{ident} #{self}"
+        ary = type || ident =~ /^[.#]/ ? :elements : :variables
         path.map do |node|
           node.send(ary).find {|i| i.to_s == ident }
         end.compact.first.tap do |result|
@@ -188,10 +197,43 @@ module Less
 
         (root?? "\n" : "") + [
           indent[ depth ] + self.to_s,
-          put[ properties ],
           put[ variables ],
+          put[ properties ],
           elements.map {|i| i.inspect( depth + 1 ) } * "\n"
         ].reject(&:empty?).join("\n") + "\n" + indent[ depth ]
+      end
+    end
+    
+    class Mixin < Element
+      attr_accessor :params
+      
+      def initialize name, params = []
+        super name
+        @params = params.each do |param|
+          param.parent = self
+        end
+      end
+      
+      def variables
+        @params + super
+      end
+      
+      def pass args, parent
+        params.zip(args).map do |a, b|
+          b ? Node::Variable.new(a.to_s, Expression.new([b])) : a
+        end + identifiers + elements
+      end
+      
+      def parameters
+        @params
+      end
+      
+      def to_s
+        '@' + name
+      end
+      
+      def to_css *args
+        ""
       end
     end
   end

@@ -94,7 +94,11 @@ module Less
       def to_s
         "#{super}#@unit"
       end
-    
+      
+      def dup
+        self
+      end
+      
       def to_ruby
         self.to_f
       end
