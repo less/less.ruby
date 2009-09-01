@@ -64,7 +64,7 @@ module Less
       end
           
       def to_css
-        "#{self}: #{evaluate.to_css};"
+        "#{self}: #{evaluate.map {|i| i.to_css }.join(", ")};"
       end
     end
 
