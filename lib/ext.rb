@@ -47,7 +47,7 @@ end
 unless :symbol.respond_to?(:to_proc)
   class Symbol
     def to_proc
-      proc {|obj, *args| obj.send(self, *args) }
+      Proc.new {|*args| args.shift.__send__(self, *args) }
     end
   end
 end
