@@ -322,28 +322,5 @@ module Less
         end
       }
     end
-
-    rule argument
-      color / number unit {
-        def build
-          Node::Number.new number.text_value, unit.text_value
-        end
-      } / string {
-        def build
-          Node::String.new text_value
-        end
-      } / [a-zA-Z]+ '=' dimension {
-        def build
-          Node::Anonymous.new text_value
-        end
-      } / [-a-zA-Z0-9_%$/.&=:;#+?]+ {
-        def build
-          Node::String.new text_value
-        end
-      } / function / keyword other:(S keyword)* {
-        def build
-        end
-      }
-    end
   end
 end
