@@ -52,8 +52,13 @@ module Less
       include Entity
       include Functions
     
-      def initialize name, *args
-        @args = args.flatten
+      def initialize name, args
+        @args = if args.is_a? Array
+          Value.new(args, self)
+        else
+          [args]
+        end
+        
         super name
       end
       

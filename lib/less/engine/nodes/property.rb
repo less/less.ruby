@@ -15,8 +15,8 @@ module Less
         else
           value
         end
-        
-        @value = Expression.new(value, self)
+
+        @value = value.is_a?(Value) ? value : Value.new(value, self)
         @eval = false # Store the first evaluation in here
       end
       
@@ -59,8 +59,8 @@ module Less
       end
         
       # TODO: @eval and @value should be merged
-      def evaluate    
-        @eval ||= value.evaluate
+      def evaluate
+        @eval ||= value.is_a?(Value) ? value.map {|e| e.evaluate } : [value.evaluate]
       end
           
       def to_css
@@ -97,7 +97,42 @@ module Less
       end
     
       def to_css
-        evaluate.to_css
+        evaluate
+        if @eval.respond_to? :to_css
+          @eval.to_css
+        else
+          @eval.map {|i| i.to_css }.join ', '
+        end
+      end
+    end
+    
+    class Value < Array
+      attr_reader :parent
+      
+      def initialize ary, parent = nil
+        @parent = parent
+        if ary.size == 1 && !ary.first.is_a?(Array)
+          super [Expression.new([ary.first])]
+        else
+          super ary.map {|e| p e.class;e.is_a?(Expression) ? e : Expression.new(e, self) }
+        end
+      end
+      
+      def parent= obj
+        @parent = obj
+        each {|e| e.parent = obj if e.respond_to? :parent }
+      end
+      
+      def evaluate
+        map {|e| e.evaluate }.dissolve
+      end
+      
+      def copy
+        first.copy
+      end
+      
+      def to_css
+        map {|e| e.to_css } * ', '
       end
     end
   

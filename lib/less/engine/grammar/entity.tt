@@ -5,7 +5,7 @@ module Less
       # Entity: Any whitespace delimited token
       #
       rule entity
-        function / fonts / keyword / accessor / variable / literal
+        url / function / accessor / keyword / variable / literal / font
       end
 
       rule fonts
@@ -21,7 +21,7 @@ module Less
       end
 
       rule font
-        [a-zA-Z] [-a-zA-Z0-9]* {
+        [a-zA-Z] [-a-zA-Z0-9]* !ns {
           def build
             Node::Keyword.new(text_value)
           end

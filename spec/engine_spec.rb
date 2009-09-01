@@ -84,16 +84,18 @@ describe Less::Engine do
 
     it "should handle custom functions" do
       module Less::Functions
-        def color arg
+        def color args
+          arg = args.first
+          p arg
           Less::Node::Color.new("99", "99", "99") if arg == "evil red"
         end
         
         def increment a
-          Less::Node::Number.new(a.to_i + 1)
+          Less::Node::Number.new(a.evaluate.to_i + 1)
         end
         
         def add a, b
-          Less::Node::Number.new(a + b)
+          Less::Node::Number.new(a.evaluate + b.evaluate)
         end
       end
       lessify(:functions).should == css(:functions)
