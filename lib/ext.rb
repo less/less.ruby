@@ -27,11 +27,6 @@ class Object
     yield self
     self
   end
-  
-  def log(s = '')  puts "* #{s}" if $verbose end
-  def log!(s = '') puts "* #{s}" end
-  def error(s) $stderr.puts s end
-  def error!(s) raise Exception, s end
 end
 
 class Array
@@ -46,12 +41,6 @@ class Array
   
   def one?
     size == 1
-  end
-end
-
-class Class
-  def to_sym
-    self.to_s.to_sym
   end
 end
 
