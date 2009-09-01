@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.1.13"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-08-21}
+  s.date = %q{2009-08-31}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{self@cloudhead.net}
@@ -160,12 +160,14 @@ Gem::Specification.new do |s|
      "spec/less/exceptions/name-error-1.0.less",
      "spec/less/exceptions/syntax-error-1.0.less",
      "spec/less/functions.less",
+     "spec/less/hidden.less",
      "spec/less/import.less",
      "spec/less/import/import-test-a.less",
      "spec/less/import/import-test-b.less",
      "spec/less/import/import-test-c.less",
      "spec/less/import/import-test-d.css",
      "spec/less/lazy-eval.less",
+     "spec/less/literal-css.less",
      "spec/less/mixins-args.less",
      "spec/less/mixins.less",
      "spec/less/operations.less",
