@@ -48,7 +48,7 @@ module Less
     #
     #   it calls functions from the Functions module
     #
-    class Function < ::String
+    class Function < String
       include Entity
       include Functions
     

@@ -144,7 +144,7 @@ module Less
         end
     
         def value
-          Node::String.new CGI.unescape(path.text_value)
+          Node::Quoted.new CGI.unescape(path.text_value)
         end
       }
     end

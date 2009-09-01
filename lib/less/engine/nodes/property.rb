@@ -1,6 +1,6 @@
 module Less
   module Node
-    class Property < ::String
+    class Property < String
       include Entity
       
       attr_accessor :value

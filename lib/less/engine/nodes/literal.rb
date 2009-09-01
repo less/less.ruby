@@ -17,7 +17,7 @@ module Less
 
       def initialize r, g, b, a = 1.0
         @r, @g, @b = [r, g, b].map do |c|
-          normalize(c.is_a?(::String) ? c.to_i(16) : c)
+          normalize(c.is_a?(String) ? c.to_i(16) : c)
         end
         @a = normalize(a, 1.0)
       end
@@ -115,7 +115,7 @@ module Less
     #
     # "hello world"
     #
-    class String < ::String
+    class Quoted < String
       include Literal
       
       attr_reader :quotes, :content
@@ -156,7 +156,7 @@ module Less
     #   
     #   ex: red, small, border-collapse
     #
-    class Keyword < ::String
+    class Keyword < String
       include Entity
       
       def to_css

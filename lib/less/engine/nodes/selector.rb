@@ -1,6 +1,6 @@
 module Less
   module Node
-    class Selector < ::String
+    class Selector < String
       include Entity
       
       Selectors = {

@@ -86,7 +86,7 @@ module Less
         case key
           when Entity
             @rules.find {|i| i.eql? key }
-          when ::String
+          when String
             @rules.find {|i| i.to_s == key }
           else raise ArgumentError
         end

@@ -57,20 +57,20 @@ module Less
     # An anonymous node, for all the 'other' stuff
     # which doesn't need any specific functionality.
     #
-    class Anonymous < ::String
+    class Anonymous < String
       include Entity
     end
     
     #
     # + * - /
     #
-    class Operator < ::String
+    class Operator < String
       def to_ruby
         self
       end
     end
     
-    class Paren < ::String
+    class Paren < String
       def to_ruby
         self
       end
