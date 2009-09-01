@@ -114,7 +114,7 @@ module Less
         if ary.size == 1 && !ary.first.is_a?(Array)
           super [Expression.new([ary.first])]
         else
-          super ary.map {|e| p e.class;e.is_a?(Expression) ? e : Expression.new(e, self) }
+          super ary.map {|e| e.is_a?(Expression) ? e : Expression.new(e, self) }
         end
       end
       

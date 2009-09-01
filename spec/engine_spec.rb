@@ -86,7 +86,6 @@ describe Less::Engine do
       module Less::Functions
         def color args
           arg = args.first
-          p arg
           Less::Node::Color.new("99", "99", "99") if arg == "evil red"
         end
         

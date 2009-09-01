@@ -169,7 +169,6 @@ module Less
       # Find the nearest node in the hierarchy or raise a NameError
       #
       def nearest ident, type = nil
-        puts "nearest #{ident} #{self}"
         ary = type || ident =~ /^[.#]/ ? :elements : :variables
         path.map do |node|
           node.send(ary).find {|i| i.to_s == ident }
