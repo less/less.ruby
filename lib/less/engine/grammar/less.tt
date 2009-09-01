@@ -228,7 +228,7 @@ module Less
     # An identifier
     #
     rule ident
-      '*'? '-'? [-a-z0-9_]+
+      '*'? '-'? [-a-z_] [-a-z0-9_]*
     end
 
     rule variable
@@ -254,7 +254,7 @@ module Less
     # [type="text"]
     #
     rule attribute
-      '[' tag ([|~*$^]? '=') (tag / string) ']' / '[' (tag / string) ']'
+      '[' tag ([|~*$^]? '=') (string / [-a-zA-Z_0-9]+) ']' / '[' (tag / string) ']'
     end
 
     rule class

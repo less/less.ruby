@@ -22,7 +22,7 @@ module Less
 
       # Non-space char
       rule ns
-        ![ ;,})\n] .
+        ![ ;,!})\n] .
       end
     end
   end
