@@ -33,9 +33,9 @@ module Less
     end
 
     def run!
-      parse(true) unless File.exist? @destination
-
       if watch?
+        parse(true) unless File.exist? @destination
+
         log "Watching for changes in #@source... Ctrl-C to abort.\n: "
 
         # Main watch loop
