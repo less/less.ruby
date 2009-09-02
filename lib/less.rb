@@ -2,6 +2,7 @@ $:.unshift File.dirname(__FILE__)
 
 require 'cgi'
 require 'treetop'
+require 'mutter'
 require 'delegate'
 
 LESS_ROOT = File.expand_path(File.dirname(__FILE__))

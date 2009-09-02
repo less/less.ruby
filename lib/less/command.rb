@@ -1,13 +1,4 @@
 module Less
-  ESC = "\033"
-  RESET   = "#{ESC}[0m"
-  
-  GREEN  = lambda {|s| "#{ESC}[1;32m#{s}#{RESET}"}
-  RED    = lambda {|s| "#{ESC}[1;31m#{s}#{RESET}"}
-  YELLOW = lambda {|s| "#{ESC}[1;33m#{s}#{RESET}"}
-  CYAN   = lambda {|s| "#{ESC}[1;36m#{s}#{RESET}"}
-  BOLD   = lambda {|s| "#{ESC}[1m#{s}#{RESET}"}
-  
   class Command
     attr_accessor :source, :destination, :options
 
@@ -16,6 +7,7 @@ module Less
       @source = options[:source]
       @destination = (options[:destination] || options[:source]).gsub /\.(less|lss)/, '.css'
       @options = options
+      @mutter = Mutter.new.clear
     end
 
     def watch?()    @options[:watch]    end
@@ -68,7 +60,7 @@ module Less
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        print "#{GREEN['* ' + (new ? 'Created'  : 'Updated')]} " + 
+        print "#{o('* ' + (new ? 'Created'  : 'Updated'), :green)} " + 
               "#{@destination.split('/').last}\n: " if watch?
       rescue Errno::ENOENT => e
         abort "#{e}"
@@ -79,9 +71,9 @@ module Less
       rescue PathError => e
         err "`#{e}` was not found.\n", "Path"
       rescue VariableNameError => e
-        err "#{YELLOW[e]} is undefined.\n", "Name"
+        err "#{o(e, :yellow)} is undefined.\n", "Name"
       rescue MixinNameError => e
-        err "#{YELLOW[e]} is undefined.\n", "Name"
+        err "#{o(e, :yellow)} is undefined.\n", "Name"
       else
         true
       end
@@ -94,7 +86,7 @@ module Less
 
     def err s = '', type = ''
       type = type.strip + ' ' unless type.empty?
-      $stderr.print "#{RED["! #{type}Error"]}: #{s}"
+      $stderr.print "#{o("! #{type}Error", :red)}: #{s}"
       if @options[:growl]
         growl = Growl.new
         growl.title = "LESS"
@@ -102,6 +94,12 @@ module Less
         growl.run
         false
       end
+    end
+    
+    private
+    
+    def o str, *styles
+      @mutter.process(str, *(@options[:color] ? styles : []))
     end
   end
 end
