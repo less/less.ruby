@@ -1,5 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__), 'vendor', 'treetop', 'lib'), 
-           File.dirname(__FILE__)
+$:.unshift File.dirname(__FILE__)
 
 require 'cgi'
 require 'treetop'
