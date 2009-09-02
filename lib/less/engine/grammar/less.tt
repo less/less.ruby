@@ -243,7 +243,7 @@ module Less
     # div / .class / #id / input[type="text"] / lang(fr)
     #
     rule element
-      (class_id / tag / ident) attribute* ('(' selector / number ')')? / attribute+ / '@media' / '@font-face'
+      (class_id / tag / ident) attribute* ('(' (selector / number) ')')? / attribute+ / '@media' / '@font-face'
     end
 
     rule class_id

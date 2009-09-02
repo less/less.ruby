@@ -10,5 +10,6 @@
 .other { -moz-transform: translate(0, 11em) rotate(-90deg); }
 p:not([class*="lead"]) { color: black; }
 ul.comma > li:not(:only-child)::after { color: white; }
+ol.comma > li:nth-last-child(2)::after { color: white; }
 a[href^="http://"], a[href$="http://"] { color: black; }
 p::before { color: black; }
