@@ -8,6 +8,7 @@ begin
     s.homepage    = "http://www.lesscss.org"
     s.description = "LESS is leaner CSS"
     s.rubyforge_project = 'less'
+    s.add_dependency('treetop', '>= 1.3.0')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

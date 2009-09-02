@@ -1,7 +1,0 @@
-*.gem
-*.iml
-*.iws
-*.ipr
-doc/site/*.*
-benchmark/*.dat
-benchmark/*.log
