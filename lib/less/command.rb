@@ -54,7 +54,7 @@ module Less
     def parse new = false
       begin
         # Create a new Less object with the contents of a file
-        css = Less::Engine.new(File.new(@source)).to_css
+        css = Less::Engine.new(File.new(@source), @options).to_css
         css = css.delete " \n" if compress?
 
         File.open( @destination, "w" ) do |file|

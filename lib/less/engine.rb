@@ -14,7 +14,7 @@ module Less
   class Engine
     attr_reader :css, :less
     
-    def initialize obj
+    def initialize obj, options = {}
       @less = if obj.is_a? File
         @path = File.dirname File.expand_path(obj.path)
         obj.read
@@ -24,6 +24,7 @@ module Less
         raise ArgumentError, "argument must be an instance of File or String!"
       end
       
+      @options = options
       @parser = StyleSheetParser.new
     end
     
