@@ -102,7 +102,6 @@ module Less
         growl.run
         false
       end
-      return 1
     end
   end
 end

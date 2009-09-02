@@ -83,4 +83,4 @@ case ARGV.size
     exit
 end
 
-Less::Command.new( options ).run!
+Less::Command.new( options ).run! ? exit(0) : exit(1)
