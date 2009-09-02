@@ -19,7 +19,8 @@ options = {
   :watch => false,
   :compress => false,
   :debug => false,
-  :growl => false
+  :growl => false,
+  :color => true
 }
 
 # Get arguments
@@ -42,6 +43,11 @@ opts = OptionParser.new do |o|
       abort "Growl gem not found, please install with: " +
             "`sudo gem install visionmedia-growl -s http://gems.github.com`"
     end
+  end
+  
+  # No color in output
+  o.on("--no-color", "suppress color in output") do
+    options[:color] = false
   end
   
   # Compression needs a proper algorithm
