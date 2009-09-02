@@ -5,6 +5,7 @@ module Less
   GREEN  = lambda {|s| "#{ESC}[1;32m#{s}#{RESET}"}
   RED    = lambda {|s| "#{ESC}[1;31m#{s}#{RESET}"}
   YELLOW = lambda {|s| "#{ESC}[1;33m#{s}#{RESET}"}
+  CYAN   = lambda {|s| "#{ESC}[1;36m#{s}#{RESET}"}
   BOLD   = lambda {|s| "#{ESC}[1m#{s}#{RESET}"}
   
   class Command

@@ -3,13 +3,19 @@ module Treetop
     class CompiledParser
       def failure_message
         return nil unless (tf = terminal_failures) && tf.size > 0
-        "on line #{failure_line}: expected " + (
+        msg = "on line #{failure_line}: expected " + (
           tf.size == 1 ? 
-            tf[0].expected_string : 
+            Less::YELLOW[tf[0].expected_string] : 
             "one of #{Less::YELLOW[tf.map {|f| f.expected_string }.uniq * ' ']}"
-        ) +
-        " got #{Less::YELLOW[input[failure_index].chr]}" +
-        " after:\n\n#{input[index...failure_index]}\n"
+        )
+        f = input[failure_index]
+        got = case f
+          when "\n" then Less::CYAN['\n']
+          when nil  then Less::CYAN["EOF"]
+          when ' '  then Less::CYAN["white-space"]
+          else           Less::YELLOW[f.chr]
+        end
+        msg += " got #{got} after:\n\n#{input[index...failure_index]}\n"
       end
     end
   end
