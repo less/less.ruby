@@ -247,11 +247,7 @@ module Less
     # div / .class / #id / input[type="text"] / lang(fr)
     #
     rule element
-      (class_id / tag / ident) attribute* ('(' (selector / number) ')')? / attribute+ / '@media' / '@font-face'
-    end
-
-    rule class_id
-      tag? (class / id)+
+      ((class / id / tag / ident) attribute* ('(' (selector / number) ')')?)+ / attribute+ / '@media' / '@font-face'
     end
 
     #
@@ -279,7 +275,7 @@ module Less
 
     # TODO: Merge this with attribute rule
     rule accessor
-      ident:(class_id / tag) '[' attr:(string / variable) ']' {
+      ident:(class / id / tag) '[' attr:(string / variable) ']' {
         def build env
           env.nearest(ident.text_value)[attr.text_value.delete(%q["'])].evaluate
         end
