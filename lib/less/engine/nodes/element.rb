@@ -13,11 +13,11 @@ module Less
       include Entity
 
       attr_accessor :rules, :selector, :file,
-                    :set,   :name
+                    :set,   :imported, :name     
 
       def initialize name = "", selector = ''
         @name = name
-        @set = []
+        @set, @imported = [], []
         @rules = [] # Holds all the nodes under this element's hierarchy
         @selector = Selector[selector.strip].new  # descendant | child | adjacent
       end
