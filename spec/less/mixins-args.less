@@ -1,36 +1,36 @@
-@mixin (@a: 1px, @b: 50%) {
+.mixin (@a: 1px, @b: 50%) {
   width: @a * 5;
   height: @b - 1%;
 }
 
-@mixiny
+.mixiny
 (@a: 0, @b: 0) {
   margin: @a;
   padding: @b;
 }
 
-@hidden() {
+.hidden() {
   color: transparent;
 }
 
 .two-args {
   color: blue;
-  @mixin(2px, 100%);
+  .mixin(2px, 100%);
 }
 
 .one-arg {
-  @mixin(3px);
+  .mixin(3px);
 }
 
 .no-parens {
-  @mixin;
+  .mixin;
 }
 
 .no-args {
-  @mixin();
+  .mixin();
 }
 
 .var-args {
   @var: 9;
-  @mixin(@var, @var * 2);
+  .mixin(@var, @var * 2);
 }

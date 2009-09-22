@@ -228,7 +228,7 @@ module Less
       end
       
       def to_s
-        '@' + name
+        '.' + name
       end
       
       def to_css *args
