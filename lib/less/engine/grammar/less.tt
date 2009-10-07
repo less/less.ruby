@@ -55,7 +55,7 @@ module Less
           mix = env.nearest(name.text_value, :mixin) or raise MixinNameError, name.text_value                        
           params = args.build.map {|i| Node::Expression.new i } unless args.empty?
 
-          env.mix ((params.nil? || params.empty?) ?
+          env.mix((params.nil? || params.empty?) ?
               mix.rules + mix.params : 
               mix.pass(params, env))
         end
