@@ -73,12 +73,12 @@ module Less
       #
       # Accessors for the different nodes in @rules
       #
-      def identifiers; @rules.select {|r| r.kind_of?     Property } end
-      def properties;  @rules.select {|r| r.instance_of? Property } end
-      def variables;   @rules.select {|r| r.instance_of? Variable } end
-      def elements;    @rules.select {|r| r.kind_of?     Element  } end
-      def mixins;      @rules.select {|r| r.instance_of? Mixin    } end
-      def parameters;  []                                           end
+      def identifiers; @rules.select {|r| r.kind_of?     Property   } end
+      def properties;  @rules.select {|r| r.instance_of? Property   } end
+      def variables;   @rules.select {|r| r.instance_of? Variable   } end
+      def elements;    @rules.select {|r| r.kind_of?     Element    } end
+      def mixins;      @rules.select {|r| r.instance_of? Mixin::Call} end
+      def parameters;  []                                             end
 
       # Select a child element
       # TODO: Implement full selector syntax & merge with descend()
