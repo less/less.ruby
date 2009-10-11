@@ -71,9 +71,9 @@ module Less
       rescue PathError => e
         err "`#{e}` was not found.\n", "Path"
       rescue VariableNameError => e
-        err "#{o(e, :yellow)} is undefined.\n", "Name"
+        err "#{o(e, :yellow)} is undefined.\n", "Variable Name"
       rescue MixinNameError => e
-        err "#{o(e, :yellow)} is undefined.\n", "Name"
+        err "#{o(e, :yellow)} is undefined.\n", "Mixin Name"
       else
         true
       end
@@ -98,8 +98,8 @@ module Less
     
     private
     
-    def o str, *styles
-      @mutter.process(str, *(@options[:color] ? styles : []))
+    def o ex, *styles
+      @mutter.process(ex.to_s, *(@options[:color] ? styles : []))
     end
   end
 end
