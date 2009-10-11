@@ -15,3 +15,13 @@
   width: 45;
   height: 17%;
 }
+.multi-mix {
+  width: 10px;
+  height: 29%;
+  margin: 4;
+  padding: 5;
+}
+body {
+  padding: 30px;
+  color: #ff0000;
+}
