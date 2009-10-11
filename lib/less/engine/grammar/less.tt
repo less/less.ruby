@@ -32,7 +32,7 @@ module Less
         # Mixin Declaration
       } / '.' name:[-a-zA-Z0-9_]+ ws parameters ws "{" ws primary ws "}" ws {
         def build env
-          env << Node::Mixin.new(name.text_value, parameters.build(env))
+          env << Node::Mixin::Def.new(name.text_value, parameters.build(env))
           primary.build env.last
           #env.last
         end
@@ -40,26 +40,23 @@ module Less
     end
     
     rule mixin
-      ws selectors ';' ws {
+      name:('.' [-a-zA-Z0-9_]+) args:(arguments) s ';' ws {
+        def build env
+          definition = env.nearest(name.text_value, :mixin) or raise MixinNameError, name.text_value                        
+          params = args.build.map {|i| Node::Expression.new i } unless args.empty?
+          env << Node::Mixin::Call.new(definition, params || [], env)
+        end
+    } / ws selectors ';' ws {
         def build env        
           selectors.build(env, :mixin).each do |path|
             rules = path.inject(env.root) do |current, node|
-              current.descend(node.selector, node) or raise MixinNameError, path.join
+              current.descend(node.selector, node) or raise MixinNameError, selectors.text_value
             end.rules
             env.rules += rules
             #env.mix(rules)
           end
         end
-      } / name:('.' [-a-zA-Z0-9_]+) args:(arguments?) s ';' ws {
-        def build env
-          mix = env.nearest(name.text_value, :mixin) or raise MixinNameError, name.text_value                        
-          params = args.build.map {|i| Node::Expression.new i } unless args.empty?
-
-          env.mix((params.nil? || params.empty?) ?
-              mix.rules + mix.params : 
-              mix.pass(params, env))
-        end
-      }
+      } 
     end
     
     rule selectors
