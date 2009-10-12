@@ -9,10 +9,16 @@
 
 @b: @a * 10;
 @c: #888;
+
 @fonts: "Trebuchet MS", Verdana, sans-serif;
+@f: @fonts;
+
+@quotes: "~" "~";
+@q: @quotes;
 
 .variables {
   height: @b + @x + 0px; // 24px
   color: @c;
-  font-family: @fonts;
+  font-family: @f;
+  quotes: @q;
 }
