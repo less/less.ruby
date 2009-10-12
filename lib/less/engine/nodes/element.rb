@@ -147,7 +147,9 @@ module Less
       #
       def to_css path = [], env = nil
         path << @selector.to_css << name unless root?
-        puts "to_css env: #{env ? env.variables : "nil"}"
+
+#        puts "to_css env: #{env ? env.variables : "nil"}"
+
         content = (properties + mixins).map do |i|
           ' ' * 2 + i.to_css(env)
         end.compact.reject(&:empty?) * "\n"
@@ -208,64 +210,64 @@ module Less
         ].reject(&:empty?).join("\n") + "\n" + indent[ depth ]
       end
     end
-    
+
     module Mixin
       class Call
         include Entity
-        
+
         def initialize mixin, params, parent
-          puts "Initializing a Mixin::Call #{mixin}"
+#          puts "Initializing a Mixin::Call #{mixin}"
           @mixin = mixin
           self.parent = parent
           @params = params.each do |e|
             e.parent = self.parent
           end
         end
-        
+
         def to_css env = nil
-          puts "\n\n"
-          puts "call .#{@mixin.name} #{@params} <#{@params.class}>"
+#          puts "\n\n"
+#          puts "call .#{@mixin.name} #{@params} <#{@params.class}>"
           @mixin.call(@params.map {|e| e.evaluate(env) })
         end
-        
+
         def inspect
           "#{@mixin.to_s} (#{@params})"
         end
       end
-      
+
       class Def < Element
         attr_accessor :params
-      
+
         def initialize name, params = []
           super name
           @params = params.each do |param|
             param.parent = self
           end
         end
-        
+
         def call args = []
           env = Element.new
-          
+
           @params.zip(args).each do |param, val|
             env << (val ? Variable.new(param.to_s, Expression.new([val])) : param)
           end
-          
+
           #b ? Node::Variable.new(a.to_s, Expression.new([b])) : a
-          
-          puts "#{self.inspect}"
-          puts "env: #{env.variables}      root?: #{env.root?}"
-          puts "\nTOCSS"
+
+#          puts "#{self.inspect}"
+#          puts "env: #{env.variables}      root?: #{env.root?}"
+#          puts "\nTOCSS"
           to_css([], env)
         end
-        
+
         def variables
           params + super
         end
-      
+
         def to_s
           '.' + name
         end
-      
+
         def to_css path, env
           super(path, env)
         end
