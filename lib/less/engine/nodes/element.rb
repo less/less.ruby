@@ -145,23 +145,28 @@ module Less
       #
       # Entry point for the css conversion
       #
-      def to_css path = []
+      def to_css path = [], env = nil
         path << @selector.to_css << name unless root?
-
-        content = properties.map do |i|
-          ' ' * 2 + i.to_css
+        puts "to_css env: #{env ? env.variables : "nil"}"
+        content = (properties + mixins).map do |i|
+          ' ' * 2 + i.to_css(env)
         end.compact.reject(&:empty?) * "\n"
 
-        content = content.include?("\n") ?
-          "\n#{content}\n" : " #{content.strip} "
-        ruleset = !content.strip.empty??
-          "#{[path.reject(&:empty?).join.strip,
-          *@set.map(&:name)].uniq * ', '} {#{content}}\n" : ""
+        content = content.include?("\n") ? "\n#{content}\n"
+                                         : " #{content.strip} "
+        ruleset = if is_a?(Mixin::Def)
+          content.strip
+        else
+          !content.strip.empty??
+            "#{[path.reject(&:empty?).join.strip,
+            *@set.map(&:name)].uniq * ', '} {#{content}}\n" : ""
+        end
 
-        css = ruleset + elements.map do |i|
-          i.to_css(path)
+        css = ruleset + elements.
+              reject {|e| e.is_a? Mixin::Def }.map do |i|
+          i.to_css(path, env)
         end.reject(&:empty?).join
-        path.pop; path.pop
+        2.times {path.pop}
         css
       end
 

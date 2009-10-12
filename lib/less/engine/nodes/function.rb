@@ -62,8 +62,8 @@ module Less
         super name
       end
       
-      def to_css
-        self.evaluate.to_css
+      def to_css env = nil
+        self.evaluate(env).to_css *env
       end
       
       #
