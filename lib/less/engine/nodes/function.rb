@@ -63,7 +63,7 @@ module Less
       end
       
       def to_css env = nil
-        self.evaluate(env).to_css *env
+        self.evaluate(env).to_css
       end
       
       #

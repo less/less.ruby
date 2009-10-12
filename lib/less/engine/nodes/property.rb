@@ -165,7 +165,7 @@ module Less
       def to_css env = nil
 #        puts "TOCSS, delim: |#{@delimiter}|"
         map do |i| 
-          i.respond_to?(:to_css) ? i.to_css(*env) : i.to_s
+          i.respond_to?(:to_css) ? i.to_css() : i.to_s
         end * @delimiter
       end
       

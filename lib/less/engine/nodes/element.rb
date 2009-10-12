@@ -154,8 +154,7 @@ module Less
           ' ' * 2 + i.to_css(env)
         end.compact.reject(&:empty?) * "\n"
 
-        content = content.include?("\n") ? "\n#{content}\n"
-                                         : " #{content.strip} "
+        content = content.include?("\n") ? "\n#{content}\n" : " #{content.strip} "
         ruleset = if is_a?(Mixin::Def)
           content.strip
         else

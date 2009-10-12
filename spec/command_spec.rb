@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper'
 
 module LessCommandSpecHelper
   def required_options
-    {:source => File.dirname(__FILE__) + '/spec.less'}
+    {:source => File.dirname(__FILE__) + '/less/css.less', :destination => File.dirname(__FILE__) + '/spec.css' }
   end
 
   def valid_options
