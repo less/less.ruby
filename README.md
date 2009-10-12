@@ -2,6 +2,16 @@ LESS
 ====
 It's time CSS was done right – LESS is _leaner_ css.
 
+Setup
+------
+to get the latest development version:
+    
+    sudo gem install less -s http://gemcutter.org
+
+to get the latest stable version:
+
+    sudo gem install less
+
 Explained
 ---------
 LESS allows you to write CSS the way (I think) it was meant to, that is: with *variables*, *nested rules* and *mixins*!
@@ -9,22 +19,21 @@ LESS allows you to write CSS the way (I think) it was meant to, that is: with *v
 ### Here's some example LESS code:
 	
 	@dark: #110011;
-	.outline { border: 1px solid black }
+	.outline (@width: 1) { border: (@width * 10px) solid black }
 	
 	.article {
 		a { text-decoration: none }
 		p { color: @dark }
-		.outline;
+		.outline(3);
 	}
 	
 ### And the CSS output it produces:
 	
-	.outline { border: 1px solid black }
 	.article a { text-decoration: none }
 	.article p { color: #110011 }
-	.article { border: 1px solid black }
+	.article { border: 30px solid black }
 	
-If you have CSS nightmares, just 
+If you have CSS nightmares, just
 	$ lessc style.less
 
 For more information, see you at [http://lesscss.org]
