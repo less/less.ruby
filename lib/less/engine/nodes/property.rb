@@ -7,17 +7,19 @@ module Less
       
       def initialize key, value = nil, parent = nil
         super key, parent
-
         value = if value.is_a? Array
-          value.each {|v| v.parent = self if v.respond_to? :parent }
+          value.each {|v| v.parent = self if v.respond_to? :parent }.
+                map  {|v| v.is_a?(Expression) ? v : Expression.new(v, self) }
         elsif value.nil?
           []
         else
           value
         end
-
-        @value = value.is_a?(Value) ? value : Value.new(value, self)
-        @eval = false # Store the first evaluation in here
+        @value = value.is_a?(Expression) ? value : Expression.new(value, self)
+        @value.parent = self
+        @value.delimiter = ','
+#        puts "new property #{to_s}: #{value} => #{@value}, contains: #{@value[0].class}"
+#        puts
       end
       
       def parent= obj
@@ -58,13 +60,29 @@ module Less
         parent.nearest node
       end
         
-      # TODO: @eval and @value should be merged
-      def evaluate
-        @eval ||= value.is_a?(Value) ? value.map {|e| e.evaluate } : [value.evaluate]
+      def evaluate env = nil
+#        puts "evaluating property `#{to_s}`: #{value.inspect}"
+        if value.is_a?(Expression) #Value
+#          puts "value is a Value"
+          value.map {|e| e.evaluate(env) } #6
+        else
+#          puts "value is a #{value.class}"
+          [value.evaluate(env)]
+        end
+        
+        
       end
           
-      def to_css
-        "#{self}: #{evaluate.map {|i| i.to_css }.join(", ")};"
+      def to_css env = nil
+#        puts "property.to_css `#{to_s}` env:#{env ? env.variables : "nil"}"
+        val = evaluate(env)
+        "#{self}: #{if val.respond_to? :to_css
+            val.to_css
+          else
+#            p val
+#            puts "#{val.class} #{val.first.class}"
+            val.map {|i| i.to_css }.join(", ")
+          end};"
       end
     end
 
@@ -84,11 +102,13 @@ module Less
         "@#{super}"
       end
     
-      def evaluate
+      def evaluate env = nil
         if declaration
-          @eval ||= value.evaluate
-        else          
-          @eval ||= self.parent.nearest(to_s).evaluate
+#          puts "evaluating DEC"
+          value.evaluate #2
+        else
+#          puts "evaluating #{to_s} par: #{parent} env: #{env ? env.variables : "nil"}"
+          (env || self.parent).nearest(to_s).evaluate #3
         end
       end
        
@@ -96,55 +116,28 @@ module Less
         evaluate.to_ruby
       end
     
-      def to_css
-        evaluate
-        if @eval.respond_to? :to_css
-          @eval.to_css
+      def to_css env = nil
+        val = evaluate env
+        if val.respond_to? :to_css
+          env ? val.to_css(env) : val.to_css
         else
-          @eval.map {|i| i.to_css }.join ', '
+          val.map {|i| env ? i.to_css(env) : i.to_css }.join ', '
         end
       end
     end
-    
-    class Value < Array
-      attr_reader :parent
-      
-      def initialize ary, parent = nil
-        @parent = parent
-        if ary.size == 1 && !ary.first.is_a?(Array)
-          super [Expression.new([ary.first])]
-        else
-          super ary.map {|e| e.is_a?(Expression) ? e : Expression.new(e, self) }
-        end
-      end
-      
-      def parent= obj
-        @parent = obj
-        each {|e| e.parent = obj if e.respond_to? :parent }
-      end
-      
-      def evaluate
-        map {|e| e.evaluate }.dissolve
-      end
-      
-      def copy
-        first.copy
-      end
-      
-      def to_css
-        map {|e| e.to_css } * ', '
-      end
-    end
-  
+
     class Expression < Array
-      attr_reader :parent
+      attr_accessor :parent, :delimiter
       
-      def initialize ary, parent = nil
+      def initialize ary, parent = nil, delimiter = ' '
         self.parent = parent
-        super ary.dup
+        self.delimiter = delimiter
+#        puts "new expression #{ary} |#{delimiter}|"
+        super(ary.is_a?(Array) ? ary : [ary].flatten)
       end
       
       def expressions; select {|i| i.kind_of? Expression } end
+      def variables;   select {|i| i.kind_of? Variable   } end
       def operators;   select {|i| i.is_a? Operator }      end
       def entities;    select {|i| i.kind_of? Entity }     end
       def literals;    select {|i| i.kind_of? Literal }    end
@@ -158,22 +151,23 @@ module Less
         '[' + map {|i| i.inspect }.join(', ') + ']'
       end
       
+      def delimiter= d
+        @delimiter = d.strip + ' '
+      end
+      
       def flatten
         self
       end
       
       def terminal?
-        expressions.empty?
+        expressions.empty? #&& variables.empty?
       end
       
-      def copy
-        self.class.new(map {|i| i.dup }, parent)
-      end
-      
-      def to_css
+      def to_css env = nil
+#        puts "TOCSS, delim: |#{@delimiter}|"
         map do |i| 
-          i.respond_to?(:to_css) ? i.to_css : i.to_s
-        end * ' '
+          i.respond_to?(:to_css) ? i.to_css(*env) : i.to_s
+        end * @delimiter
       end
       
       def to_ruby
@@ -186,27 +180,42 @@ module Less
       # Evaluates the expression and instantiates a new Literal with the result
       # ex: [#111, +, #111] will evaluate to a Color node, with value #222
       # 
-      def evaluate
+      def evaluate env = nil
+#        puts "expression #{self.inspect} env: #{env ? env.variables : "nil"}"
         if size > 2 or !terminal?
-          # Replace self with an evaluated sub-expression
-          replace map {|e| e.respond_to?(:evaluate) ? e.evaluate : e }
+#          puts " SIZE > 2 or !terminal"
+          
+#          puts "--- sub evaluation ---"
 
-          unit = literals.map do |node|
+          # Replace self with an evaluated sub-expression
+          evaled = self.class.new(map {|e| e.respond_to?(:evaluate) ? e.evaluate(env) : e }, parent, delimiter) #5
+          
+#          puts "======================"
+#          puts "evaled => #{evaled.inspect}"
+
+          unit = evaled.literals.map do |node|
             node.unit
           end.compact.uniq.tap do |ary|
-            raise MixedUnitsError, self * ' ' if ary.size > 1 && !operators.empty?
+            raise MixedUnitsError, evaled * ' ' if ary.size > 1 && !evaled.operators.empty?
           end.join
           
-          entity = literals.find {|e| e.unit == unit } || literals.first || entities.first
-          result = operators.empty?? self : eval(to_ruby.join)
-          
+          entity = evaled.literals.find {|e| e.unit == unit } || evaled.literals.first || evaled.entities.first
+          result = evaled.operators.empty?? evaled : eval(evaled.to_ruby.join)
+
+#          puts "entity is a #{entity.class}"
+#          puts "delimiter is |#{@delimiter}|"
+
           case result
             when Entity     then result
-            when Expression then result.one?? result.first : self.class.new(result)
+            when Expression then result.one?? result.first : self.class.new(result, parent, delimiter)
             else entity.class.new(result, *(unit if entity.class == Node::Number))
           end
         elsif size == 1
-          first
+          if first.is_a? Variable
+            first.evaluate(env)
+          else
+            first
+          end
         else
           self
         end
