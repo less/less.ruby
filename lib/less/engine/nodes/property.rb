@@ -31,14 +31,13 @@ module Less
         clone.tap {|c| c.value = value.copy }
       end
       
-      def << token
+      def << token        
         token = Node::Anonymous.new(*token) unless token.is_a? Entity or token.respond_to? :to_ruby
         token.parent = self if token.respond_to? :parent
         @value << token
       end
   
       def empty?; !@value || @value.empty? end
-      def eval?;  @eval end
 
       def inspect
         self + (empty?? "" : ": `#{value.map {|i| i.to_s } * ' | '}`")
