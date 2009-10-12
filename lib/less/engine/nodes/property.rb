@@ -107,7 +107,12 @@ module Less
           value.evaluate #2
         else
 #          puts "evaluating #{to_s} par: #{parent} env: #{env ? env.variables : "nil"}"
-          (env || self.parent).nearest(to_s).evaluate #3
+        begin
+          var = (env || self.parent).nearest(to_s) #3
+        rescue VariableNameError
+          var = self.parent.nearest(to_s)
+        end
+          var.evaluate
         end
       end
        

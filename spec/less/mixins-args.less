@@ -48,3 +48,12 @@
 body {
   .maxa(15);
 }
+
+@glob: 5;
+.global-mixin(@a:2) {
+  width: @glob + @a;
+}
+
+.scope-mix {
+  .global-mixin(3);
+}
