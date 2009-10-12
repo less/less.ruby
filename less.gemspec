@@ -112,14 +112,14 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<treetop>, [">= 1.3.0"])
-      s.add_runtime_dependency(%q<mutter>, [">= 0.3.3"])
+      s.add_runtime_dependency(%q<treetop>, [">= 1.4.2"])
+      s.add_runtime_dependency(%q<mutter>, [">= 0.3.7"])
     else
-      s.add_dependency(%q<treetop>, [">= 1.3.0"])
-      s.add_dependency(%q<mutter>, [">= 0.3.3"])
+      s.add_dependency(%q<treetop>, [">= 1.4.2"])
+      s.add_dependency(%q<mutter>, [">= 0.3.7"])
     end
   else
-    s.add_dependency(%q<treetop>, [">= 1.3.0"])
-    s.add_dependency(%q<mutter>, [">= 0.3.3"])
+    s.add_dependency(%q<treetop>, [">= 1.4.2"])
+    s.add_dependency(%q<mutter>, [">= 0.3.7"])
   end
 end
