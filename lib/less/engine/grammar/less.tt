@@ -242,7 +242,14 @@ module Less
     # div / .class / #id / input[type="text"] / lang(fr)
     #
     rule element
-      ((class / id / tag / ident) attribute* ('(' (selector / number) ')')?)+ / attribute+ / '@media' / '@font-face'
+      ((class / id / tag / ident) attribute* ('(' ([a-zA-Z]+ / pseudo_exp / selector / [0-9]+) ')')?)+ / attribute+ / '@media' / '@font-face'
+    end
+
+    #
+    # 4n+1
+    #
+    rule pseudo_exp
+      '-'? ([0-9]+)? 'n' ([-+] [0-9]+)?
     end
 
     #
