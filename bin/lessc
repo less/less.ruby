@@ -49,6 +49,10 @@ opts = OptionParser.new do |o|
   o.on("--no-color", "suppress color in output") do
     options[:color] = false
   end
+
+  o.on('--verbose', 'show success messages when using growl') do
+    options[:verbose] = true
+  end
   
   # Compression needs a proper algorithm
   #
