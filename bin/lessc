@@ -20,7 +20,7 @@ options = {
   :compress => false,
   :debug => false,
   :growl => false,
-  :color => true
+  :color => $stdout.tty?
 }
 
 # Get arguments
