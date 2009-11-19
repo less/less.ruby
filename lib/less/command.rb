@@ -60,8 +60,10 @@ module Less
         File.open( @destination, "w" ) do |file|
           file.write css
         end
-        print "#{o('* ' + (new ? 'Created'  : 'Updated'), :green)} " + 
-              "#{@destination.split('/').last}\n: " if watch?
+
+        act, file = (new ? 'Created' : 'Updated'), @destination.split('/').last
+        print "#{o("* #{act}", :green)} #{file}\n: " if watch?
+        Growl.notify "#{act} #{file}", :title => 'LESS' if @options[:growl] && @options[:verbose]
       rescue Errno::ENOENT => e
         abort "#{e}"
       rescue SyntaxError => e
