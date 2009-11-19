@@ -157,7 +157,7 @@ module Less
     # height: 100%;
     #
     rule declaration
-      ws name:(ident / variable) s ':' s expressions tail:(ws ',' ws expressions)* s (';'/ ws &'}') ws {
+      ws name:(ident / variable) s ':' ws expressions tail:(ws ',' ws expressions)* s (';'/ ws &'}') ws {
         def build env
           result = all.map {|e| e.build(env) if e.respond_to? :build }.compact
           env << (name.text_value =~ /^@/ ? 
