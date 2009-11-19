@@ -120,13 +120,13 @@ module Less
           self[element.name] if self[element.name].selector.class == selector.class
         end
       end
-      
+
       def mix arr = []
         @rules += arr.map do |r|
           r.copy.tap {|i| i.parent = self }
         end
       end
-      
+
       #
       # Add an arbitrary node to this element
       #
