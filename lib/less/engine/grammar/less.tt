@@ -4,7 +4,7 @@ module Less
     include Entity
     
     rule primary
-      (import / declaration / mixin / ruleset / comment)* {
+      (import / declaration / ruleset / mixin / comment)* {
         def build env = Less::Element.new
           elements.map do |e|
             e.build env if e.respond_to? :build
@@ -30,7 +30,7 @@ module Less
           end
         end
         # Mixin Declaration
-      } / '.' name:[-a-zA-Z0-9_]+ ws parameters ws "{" ws primary ws "}" ws {
+      } / ws '.' name:[-a-zA-Z0-9_]+ ws parameters ws "{" ws primary ws "}" ws {
         def build env
           env << Node::Mixin::Def.new(name.text_value, parameters.build(env))
           primary.build env.last
