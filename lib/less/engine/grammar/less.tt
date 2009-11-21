@@ -41,7 +41,7 @@ module Less
     rule mixin
       name:('.' [-a-zA-Z0-9_]+) args:(arguments) s ';' ws {
         def build env
-          definition = env.nearest(name.text_value, :mixin) or raise MixinNameError, name.text_value                        
+          definition = env.nearest(name.text_value, :mixin) or raise MixinNameError, "#{name.text_value}() in #{env}"
           params = args.build.map {|i| Node::Expression.new i } unless args.empty?
           env << Node::Mixin::Call.new(definition, params || [], env)
         end
@@ -49,7 +49,7 @@ module Less
         def build env        
           selectors.build(env, :mixin).each do |path|
             rules = path.inject(env.root) do |current, node|
-              current.descend(node.selector, node) or raise MixinNameError, selectors.text_value
+              current.descend(node.selector, node) or raise MixinNameError, "#{selectors.text_value} in #{env}"
             end.rules
             env.rules += rules
           end
