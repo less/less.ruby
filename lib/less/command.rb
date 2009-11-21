@@ -37,6 +37,7 @@ module Less
 
           # File has changed
           if File.stat( @source ).mtime > File.stat( @destination ).mtime
+            print Time.now.strftime("%H:%M:%S -- ") if @options[:timestamps]
             print "Change detected... "
 
             # Loop until error is fixed
@@ -97,9 +98,9 @@ module Less
         false
       end
     end
-    
-    private
-    
+
+  private
+
     def o ex, *styles
       @mutter.process(ex.to_s, *(@options[:color] ? styles : []))
     end

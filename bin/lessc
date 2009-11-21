@@ -20,6 +20,7 @@ options = {
   :compress => false,
   :debug => false,
   :growl => false,
+  :timestamps => false,
   :color => $stdout.tty?
 }
 
@@ -27,12 +28,12 @@ options = {
 opts = OptionParser.new do |o|
   o.banner = "usage: lessc source [destination] [--watch]"
   o.separator ""
-  
+
   # Watch mode
   o.on("-w", "--watch", "watch for changes") do
     options[:watch] = true
   end
-  
+
   # Growl
   o.on("-g", "--growl", "growl notifications") do
     if Less::GROWL && (Growl.installed? rescue false)
@@ -44,7 +45,12 @@ opts = OptionParser.new do |o|
             "`sudo gem install visionmedia-growl -s http://gems.github.com`"
     end
   end
-  
+
+  # Timestamps
+  o.on("-t", "--timestamps", "show timestamps in watch mode") do
+    options[:timestamps] = true
+  end
+
   # No color in output
   o.on("--no-color", "suppress color in output") do
     options[:color] = false
@@ -53,13 +59,13 @@ opts = OptionParser.new do |o|
   o.on('--verbose', 'show success messages when using growl') do
     options[:verbose] = true
   end
-  
+
   # Compression needs a proper algorithm
   #
   #  o.on("-x", "--compress", "compress css file") do
   #    options[:compress] = true
   #  end
-  
+
   o.separator ""
 
   # Help
@@ -67,7 +73,7 @@ opts = OptionParser.new do |o|
     puts opts
     exit
   end
-  
+
   o.on_tail("-d", "--debug", "show full error messages") do
     options[:debug] = true
   end
