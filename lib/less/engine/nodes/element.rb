@@ -13,7 +13,7 @@ module Less
       include Entity
 
       attr_accessor :rules, :selector, :file,
-                    :set,   :imported, :name     
+                    :set,   :imported, :name
 
       def initialize name = "", selector = ''
         @name = name
