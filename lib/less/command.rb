@@ -69,6 +69,8 @@ module Less
         abort "#{e}"
       rescue SyntaxError => e
         err "#{e}\n", "Syntax"
+      rescue CompileError => e
+        err "#{e}\n", "Compile"
       rescue MixedUnitsError => e
         err "`#{e}` you're  mixing units together! What do you expect?\n", "Mixed Units"
       rescue PathError => e

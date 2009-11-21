@@ -121,12 +121,6 @@ module Less
         end
       end
 
-      def mix arr = []
-        @rules += arr.map do |r|
-          r.copy.tap {|i| i.parent = self }
-        end
-      end
-
       #
       # Add an arbitrary node to this element
       #
@@ -248,6 +242,10 @@ module Less
         end
 
         def call args = []
+          if e = @rules.find {|r| r.is_a? Element }
+            raise CompileError, "#{e} in #{self.inspect}: can't nest selectors inside a dynamic mixin."
+          end
+
           env = Element.new
 
           @params.zip(args).each do |param, val|
@@ -268,6 +266,10 @@ module Less
 
         def to_s
           '.' + name
+        end
+
+        def inspect
+          ".#{name}()"
         end
 
         def to_css path, env

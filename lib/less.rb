@@ -13,20 +13,21 @@ require 'ext'
 require 'less/command'
 require 'less/engine'
 
-module Less  
+module Less
   MixedUnitsError   = Class.new(RuntimeError)
   PathError         = Class.new(RuntimeError)
   VariableNameError = Class.new(NameError)
   MixinNameError    = Class.new(NameError)
   SyntaxError       = Class.new(RuntimeError)
   ImportError       = Class.new(RuntimeError)
-  
+  CompileError      = Class.new(RuntimeError)
+
   $verbose = false
 
   def self.version
     File.read( File.join( File.dirname(__FILE__), '..', 'VERSION') ).strip
   end
-  
+
   def self.parse less
     Engine.new(less).to_css
   end
