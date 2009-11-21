@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.2.13"
+  s.version = "1.2.14"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-11-19}
+  s.date = %q{2009-11-20}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{self@cloudhead.net}
@@ -112,14 +112,14 @@ Gem::Specification.new do |s|
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<treetop>, [">= 1.4.2"])
-      s.add_runtime_dependency(%q<mutter>, [">= 0.3.7"])
+      s.add_runtime_dependency(%q<mutter>, [">= 0.4.2"])
     else
       s.add_dependency(%q<treetop>, [">= 1.4.2"])
-      s.add_dependency(%q<mutter>, [">= 0.3.7"])
+      s.add_dependency(%q<mutter>, [">= 0.4.2"])
     end
   else
     s.add_dependency(%q<treetop>, [">= 1.4.2"])
-    s.add_dependency(%q<mutter>, [">= 0.3.7"])
+    s.add_dependency(%q<mutter>, [">= 0.4.2"])
   end
 end
 
