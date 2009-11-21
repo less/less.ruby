@@ -176,7 +176,7 @@ module Less
         path.map do |node|
           node.send(ary).find {|i| i.to_s == ident }
         end.compact.first.tap do |result|
-          raise VariableNameError, ("#{ident} in #{self.to_s}") if result.nil? && type == :variable
+          raise VariableNameError, ("#{ident} in #{self.to_s}") if result.nil? && type != :mixin
         end
       end
 
