@@ -2,9 +2,9 @@ module Less
   grammar StyleSheet
     include Common
     include Entity
-    
+
     rule primary
-      (import / declaration / mixin / ruleset / comment)* {
+      (import / declaration / ruleset / mixin / comment)* {
         def build env = Less::Element.new
           elements.map do |e|
             e.build env if e.respond_to? :build
@@ -30,7 +30,7 @@ module Less
           end
         end
         # Mixin Declaration
-      } / '.' name:[-a-zA-Z0-9_]+ ws parameters ws "{" ws primary ws "}" ws {
+      } / ws '.' name:[-a-zA-Z0-9_]+ ws parameters ws "{" ws primary ws "}" ws {
         def build env
           env << Node::Mixin::Def.new(name.text_value, parameters.build(env))
           primary.build env.last
@@ -64,7 +64,7 @@ module Less
             e.send(method, env) if e.respond_to? method
           end.compact
         end
-    
+
         def all
           [selector] + tail.elements.map {|e| e.selector }
         end
@@ -82,7 +82,7 @@ module Less
             node.last
           end
         end
-    
+
         def mixin env
           sel.elements.map do |e|
             Node::Element.new(e.element.text_value, e.select.text_value)
@@ -90,7 +90,7 @@ module Less
         end
       }
     end
-    
+
     rule parameters
       '(' s ')' {
         def build env
@@ -102,7 +102,7 @@ module Less
             e.build(env)
           end
         end
-        
+
         def all
           [parameter] + tail.elements.map {|e| e.parameter }
         end
@@ -116,7 +116,7 @@ module Less
         end
       }
     end
-    
+
     rule import
       ws "@import" S url:(string / url) medias? s ';' ws {
         def build env
@@ -294,7 +294,7 @@ module Less
         end
       }
     end
-    
+
     #
     # Functions and arguments
     #
@@ -313,7 +313,7 @@ module Less
             e.build if e.respond_to? :build
           end.compact
         end
-  
+
         def all
           [expressions] + tail.elements.map {|e| e.expressions }
         end

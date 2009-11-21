@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.2.12"
+  s.version = "1.2.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-11-18}
+  s.date = %q{2009-11-19}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{self@cloudhead.net}
