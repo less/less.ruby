@@ -5,3 +5,4 @@
   font-family: "Trebuchet MS", Verdana, sans-serif;
   quotes: "~" "~";
 }
+.alpha { filter: alpha(opacity=95); }
