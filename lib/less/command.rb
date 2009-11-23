@@ -37,6 +37,7 @@ module Less
 
           # File has changed
           if File.stat( @source ).mtime > File.stat( @destination ).mtime
+            print Time.now.strftime("%H:%M:%S -- ") if @options[:timestamps]
             print "Change detected... "
 
             # Loop until error is fixed
@@ -68,6 +69,8 @@ module Less
         abort "#{e}"
       rescue SyntaxError => e
         err "#{e}\n", "Syntax"
+      rescue CompileError => e
+        err "#{e}\n", "Compile"
       rescue MixedUnitsError => e
         err "`#{e}` you're  mixing units together! What do you expect?\n", "Mixed Units"
       rescue PathError => e
@@ -97,9 +100,9 @@ module Less
         false
       end
     end
-    
-    private
-    
+
+  private
+
     def o ex, *styles
       @mutter.process(ex.to_s, *(@options[:color] ? styles : []))
     end
