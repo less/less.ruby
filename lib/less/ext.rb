@@ -5,8 +5,8 @@ module Treetop
         o = color ? Mutter.new.clear : lambda {|i, *args| i }
         return nil unless (tf = terminal_failures) && tf.size > 0
         msg = "on line #{failure_line}: expected " + (
-          tf.size == 1 ? 
-            o[tf[0].expected_string, :yellow] : 
+          tf.size == 1 ?
+            o[tf[0].expected_string, :yellow] :
             "one of #{o[tf.map {|f| f.expected_string }.uniq * ' ', :yellow]}"
         )
         f = input[failure_index]

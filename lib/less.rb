@@ -9,7 +9,7 @@ LESS_GRAMMAR = File.join(LESS_ROOT, 'less', 'engine', 'grammar')
 
 $:.unshift File.dirname(__FILE__)
 
-require 'ext'
+require 'less/ext'
 require 'less/command'
 require 'less/engine'
 
