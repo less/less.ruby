@@ -1,5 +1,3 @@
-$:.unshift File.dirname(__FILE__)
-
 require 'cgi'
 require 'treetop'
 require 'mutter'
@@ -8,6 +6,8 @@ require 'delegate'
 LESS_ROOT = File.expand_path(File.dirname(__FILE__))
 LESS_PARSER = File.join(LESS_ROOT, 'less', 'engine', 'parser.rb')
 LESS_GRAMMAR = File.join(LESS_ROOT, 'less', 'engine', 'grammar')
+
+$:.unshift File.dirname(__FILE__)
 
 require 'ext'
 require 'less/command'
