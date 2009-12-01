@@ -30,6 +30,10 @@ describe Less::Engine do
       lessify(:css_3).should == css(:css_3)
     end
     
+    it "should handle properties prefixed with a dash" do
+      lessify(:dash_prefix).should == css(:dash_prefix)
+    end
+    
     it "should parse comments" do
       lessify(:comments).should == css(:comments)
     end
