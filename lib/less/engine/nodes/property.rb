@@ -60,7 +60,7 @@ module Less
       end
 
       def evaluate env = nil
-#        puts "evaluating property `#{to_s}`: #{value.inspect}"
+        puts "evaluating property `#{to_s}`: #{value.inspect}"
         if value.is_a?(Expression) #Value
 #          puts "value is a Value"
           value.map {|e| e.evaluate(env) } #6
@@ -170,6 +170,7 @@ module Less
       def to_css env = nil
 #        puts "TOCSS, delim: |#{@delimiter}|"
         map do |i|
+          i.parent = self.parent
           i.respond_to?(:to_css) ? i.to_css() : i.to_s
         end * @delimiter
       end
@@ -216,6 +217,8 @@ module Less
           end
         elsif size == 1
           if first.is_a? Variable
+            first.evaluate(env)
+          elsif first.is_a? Function
             first.evaluate(env)
           else
             first

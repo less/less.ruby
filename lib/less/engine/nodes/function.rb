@@ -66,6 +66,10 @@ module Less
         self.evaluate(env).to_css
       end
       
+      def nearest node
+        parent.nearest node
+      end
+      
       #
       # Call the function
       #
