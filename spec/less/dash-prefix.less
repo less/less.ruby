@@ -1,0 +1,8 @@
+@top_color: red;
+@bottom_color: green;
+
+body {
+  background: @bottom_color;
+  background-image: -moz-linear-gradient(top, bottom, from(@top_color), to(@bottom_color));
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.00, @top_color), color-stop(1.00, @bottom_color));
+}
