@@ -80,7 +80,12 @@ module Less
         if Functions.available.include? self.to_sym
           send to_sym, *@args
         else
-          Node::Anonymous.new("#{to_sym}(#{@args.map(&:to_css) * ', '})")
+          args = @args.map { |e|
+            e.parent = self.parent
+            e = e.evaluate(context) if e.respond_to?(:evaluate)
+            e.to_css
+          }  * ', '
+          Node::Anonymous.new("#{to_sym}(#{args})")
         end
       end
     end
