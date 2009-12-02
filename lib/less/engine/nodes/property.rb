@@ -60,7 +60,7 @@ module Less
       end
 
       def evaluate env = nil
-        puts "evaluating property `#{to_s}`: #{value.inspect}"
+#        puts "evaluating property `#{to_s}`: #{value.inspect}"
         if value.is_a?(Expression) #Value
 #          puts "value is a Value"
           value.map {|e| e.evaluate(env) } #6
