@@ -1,3 +1,6 @@
+require 'grammar/common'
+require 'grammar/entity'
+
 module Less
   grammar StyleSheet
     include Common

@@ -1,3 +1,5 @@
+require 'grammar/common'
+
 module Less
   module StyleSheet
     grammar Entity

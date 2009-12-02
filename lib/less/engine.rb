@@ -5,8 +5,6 @@ require 'engine/nodes'
 begin
   require 'engine/parser'
 rescue LoadError
-  Treetop.load File.join(LESS_GRAMMAR, 'common.tt')
-  Treetop.load File.join(LESS_GRAMMAR, 'entity.tt')
   Treetop.load File.join(LESS_GRAMMAR, 'less.tt')
 end
 
