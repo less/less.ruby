@@ -11,7 +11,7 @@ end
 module Less
   class Engine
     attr_reader :css, :less
-    
+
     def initialize obj, options = {}
       @less = if obj.is_a? File
         @path = File.dirname File.expand_path(obj.path)
@@ -21,16 +21,16 @@ module Less
       else
         raise ArgumentError, "argument must be an instance of File or String!"
       end
-      
+
       @options = options
       @parser = StyleSheetParser.new
     end
-    
+
     def parse build = true, env = Node::Element.new
       root = @parser.parse(self.prepare)
-      
+
       return root unless build
-      
+
       if root
         @tree = root.build env.tap {|e| e.file = @path }
       else
@@ -40,11 +40,11 @@ module Less
       @tree
     end
     alias :to_tree :parse
-    
+
     def to_css
       @css || @css = self.parse.group.to_css
     end
-    
+
     def prepare
       @less.gsub(/\r\n/, "\n").gsub(/\t/, '  ')
     end

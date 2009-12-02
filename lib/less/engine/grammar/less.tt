@@ -40,7 +40,7 @@ module Less
         end
       }
     end
-    
+
     rule mixin
       name:('.' [-a-zA-Z0-9_]+) args:(arguments) s ';' ws {
         def build env
@@ -49,7 +49,7 @@ module Less
           env << Node::Mixin::Call.new(definition, params || [], env)
         end
     } / ws selectors ';' ws {
-        def build env        
+        def build env
           selectors.build(env, :mixin).each do |path|
             rules = path.inject(env.root) do |current, node|
               current.descend(node.selector, node) or raise MixinNameError, "#{selectors.text_value} in #{env}"
@@ -57,12 +57,12 @@ module Less
             env.rules += rules
           end
         end
-      } 
+      }
     end
-    
+
     rule selectors
       ws selector tail:(s ',' ws selector)* ws {
-        def build env, method 
+        def build env, method
           all.map do |e|
             e.send(method, env) if e.respond_to? method
           end.compact
@@ -142,7 +142,7 @@ module Less
         def build env = nil
           Node::Function.new('url', value)
         end
-    
+
         def value
           Node::Quoted.new CGI.unescape(path.text_value)
         end
@@ -161,7 +161,7 @@ module Less
       ws name:(ident / variable) s ':' ws expressions tail:(ws ',' ws expressions)* s (';'/ ws &'}') ws {
         def build env
           result = all.map {|e| e.build(env) if e.respond_to? :build }.compact
-          env << (name.text_value =~ /^@/ ? 
+          env << (name.text_value =~ /^@/ ?
             Node::Variable : Node::Property).new(name.text_value, result, env)
         end
 
@@ -178,7 +178,7 @@ module Less
     rule expressions
       # Operation
       expression tail:(operator expression)+ {
-        def build env = nil          
+        def build env = nil
           all.map {|e| e.build(env) }.dissolve
         end
 
@@ -190,12 +190,12 @@ module Less
         def build env = nil
           all.map {|e| e.build(env) if e.respond_to? :build }.compact
         end
-        
+
         def all
           [expression] + tail.elements.map {|f| f.expression } + [i]
         end
       # Catch-all rule
-      } / [-a-zA-Z0-9_%*/.&=:,#+? \[\]()]+ {
+      } / [-a-zA-Z0-9_.&*/=:,+? \[\]()#%]+ {
         def build env
           [Node::Anonymous.new(text_value)]
         end
@@ -214,7 +214,7 @@ module Less
         end
       }
     end
-    
+
     # !important
     rule important
       s '!' s 'important' {
