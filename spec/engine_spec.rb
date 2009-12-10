@@ -107,6 +107,20 @@ describe Less::Engine do
     it "should work with import" do
       lessify(:import).should == css(:import)
     end
+
+    it "should work tih import using extra paths" do
+      lambda {
+        lessify(:import_with_extra_paths).should == css(:import_with_extra_paths)
+      }.should raise_error(Less::ImportError)
+      # finding a partial in another location
+      LESS_SOURCE_PATHS = ["spec/less/extra_import_path"]
+      lessify(:import_with_extra_paths).should == css(:import_with_extra_paths)
+      # overriding a partial in another location so this takes priority over the same named partial in the same directory
+      puts '-'
+      puts '-'
+      puts '-'*100
+      lessify(:import).should == css(:import_with_partial_in_extra_path)
+    end
     
     it "should parse a big file"
     it "should handle complex color operations"
