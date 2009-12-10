@@ -126,7 +126,7 @@ module Less
           standard_path = File.join(env.root.file || Dir.pwd, url.value)
 
           # Compile a list of possible paths for this file
-          paths = LESS_SOURCE_PATHS.map { |p| File.join(p, url.value) } + [standard_path]
+          paths = $LESS_LOAD_PATH.map { |p| File.join(p, url.value) } + [standard_path]
           # Standardize and make uniq
           paths = paths.map do |p|
             p = File.expand_path(p)
@@ -136,7 +136,6 @@ module Less
 
           # Use the first that exists if any
           if path = paths.detect {|p| File.exists?(p)}
-            puts "importing from path #{path}"
             unless env.root.imported.include?(path)
               env.root.imported << path
               env.rules += Less::Engine.new(File.new(path)).to_tree.rules
