@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{less}
-  s.version = "1.2.19"
+  s.version = "1.2.20"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["cloudhead"]
-  s.date = %q{2009-12-02}
+  s.date = %q{2009-12-14}
   s.default_executable = %q{lessc}
   s.description = %q{LESS is leaner CSS}
   s.email = %q{self@cloudhead.net}
@@ -51,6 +51,8 @@ Gem::Specification.new do |s|
      "spec/css/css.css",
      "spec/css/dash-prefix.css",
      "spec/css/functions.css",
+     "spec/css/import-with-extra-paths.css",
+     "spec/css/import-with-partial-in-extra-path.css",
      "spec/css/import.css",
      "spec/css/lazy-eval.css",
      "spec/css/mixins-args.css",
@@ -74,8 +76,12 @@ Gem::Specification.new do |s|
      "spec/less/exceptions/mixed-units-error.less",
      "spec/less/exceptions/name-error-1.0.less",
      "spec/less/exceptions/syntax-error-1.0.less",
+     "spec/less/extra_import_path/extra.less",
+     "spec/less/extra_import_path/import/import-test-a.css",
+     "spec/less/extra_import_path/import/import-test-a.less",
      "spec/less/functions.less",
      "spec/less/hidden.less",
+     "spec/less/import-with-extra-paths.less",
      "spec/less/import.less",
      "spec/less/import/import-test-a.less",
      "spec/less/import/import-test-b.less",
