@@ -7,3 +7,6 @@
   padding: 0;
   margin: 2em;
 }
+div { color: red; }
+div > p a { color: blue; }
+p { text-align: left; }
