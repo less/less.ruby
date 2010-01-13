@@ -15,6 +15,7 @@ ul.comma > li:not(:only-child)::after { color: white; }
 ol.comma > li:nth-last-child(2)::after { color: white; }
 li:nth-child(4n+1) { color: white; }
 li:nth-child(-5n) { color: white; }
+li:nth-child(n+1) { color: white; }
 li:nth-child(-n+2) { color: white; }
 a[href^="http://"], a[href$="http://"] { color: black; }
 p::before { color: black; }
