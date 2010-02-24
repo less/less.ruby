@@ -2,6 +2,8 @@ LESS
 ====
 It's time CSS was done right – LESS is _leaner_ css.
 
+**Note: From now on, most of the new development on LESS will be happening in <http://github.com/cloudhead/less.js>**
+
 Setup
 ------
 to get the latest development version:
