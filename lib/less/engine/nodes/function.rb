@@ -36,6 +36,17 @@ module Less
 
       rgba hue[ h + 1/3 ], hue[ h ], hue[ h - 1/3 ], a
     end
+
+    def unescape parent, *args 
+      args = @args.map { |e|
+        e.parent = parent
+        e = e.evaluate(nil) if e.respond_to?(:evaluate)
+        e.to_css
+      }  * ', '
+
+      args.gsub! '"',''
+      Node::Anonymous.new "#{args}"
+    end
     
     def self.available
       self.instance_methods.map(&:to_sym)
@@ -77,8 +88,10 @@ module Less
       # this is the case for url(), for example,
       #
       def evaluate context = nil
+        print self.to_sym
+        print "#{@args}"
         if Functions.available.include? self.to_sym
-          send to_sym, *@args
+          send to_sym, parent, *@args 
         else
           args = @args.map { |e|
             e.parent = self.parent

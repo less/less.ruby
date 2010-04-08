@@ -160,6 +160,18 @@ module Less
       }
     end
 
+    rule filter 
+      'unescape(' unescaped:(string / [-a-zA-Z0-9_%$/.&=:'";,#+?]+) ')' {
+        def build env = nil
+          Node::Function.new('unescape', value)
+        end
+
+        def value
+          Node::Quoted.new unescaped.text_value
+        end
+      }
+    end
+
     rule medias
       [-a-z]+ (s ',' s [a-z]+)*
     end

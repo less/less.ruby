@@ -7,7 +7,7 @@ module Less
       # Entity: Any whitespace delimited token
       #
       rule entity
-        url / alpha / function / accessor / keyword / variable / literal / font
+        url / filter / alpha / function / accessor / keyword / variable / literal / font
       end
 
       rule fonts
@@ -50,7 +50,7 @@ module Less
           def build
             Node::Quoted.new(text_value)
           end
-        }
+        } 
       end
 
       #
