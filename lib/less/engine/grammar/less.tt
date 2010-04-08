@@ -160,7 +160,7 @@ module Less
       }
     end
 
-    rule filter 
+    rule unescape 
       'unescape(' unescaped:(string / [-a-zA-Z0-9_%$/.&=:'";,#+?]+) ')' {
         def build env = nil
           Node::Function.new('unescape', value)
@@ -168,6 +168,18 @@ module Less
 
         def value
           Node::Quoted.new unescaped.text_value
+        end
+      }
+    end
+
+    rule trim 
+      'trim(' params:(string / [-a-zA-Z0-9_%$/.&=:'";,#+?]+) ')' {
+        def build env = nil
+          Node::Function.new('trim', value)
+        end
+
+        def value
+          Node::Quoted.new params.text_value
         end
       }
     end

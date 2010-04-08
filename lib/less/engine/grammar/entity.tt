@@ -7,7 +7,7 @@ module Less
       # Entity: Any whitespace delimited token
       #
       rule entity
-        url / filter / alpha / function / accessor / keyword / variable / literal / font
+        url / unescape / trim / alpha / function / accessor / keyword / variable / literal / font
       end
 
       rule fonts

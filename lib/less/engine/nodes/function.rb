@@ -47,6 +47,20 @@ module Less
       args.gsub! '"',''
       Node::Anonymous.new "#{args}"
     end
+
+    # Uber hack:
+    #  Remove any spaces and quotes from string, but still mantain the general string form (start and end commas)
+    def trim parent, *args
+      args = @args.map { |e|
+        e.parent = parent
+        e = e.evaluate(nil) if e.respond_to?(:evaluate)
+        e.to_css
+      }  * ', '
+
+      args.gsub! ' ',''
+      args.gsub! '"',''
+      Node::Anonymous.new "\"#{args}\""
+    end
     
     def self.available
       self.instance_methods.map(&:to_sym)
@@ -88,8 +102,6 @@ module Less
       # this is the case for url(), for example,
       #
       def evaluate context = nil
-        print self.to_sym
-        print "#{@args}"
         if Functions.available.include? self.to_sym
           send to_sym, parent, *@args 
         else
