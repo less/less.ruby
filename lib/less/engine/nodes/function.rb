@@ -3,25 +3,25 @@ module Less
   # Functions useable from within the style-sheet go here
   #
   module Functions
-    def rgb *rgb
+    def rgb parent, context, *rgb
       rgba rgb, 1.0
     end
 
-    def hsl *args
+    def hsl parent, context, *args
       hsla *[args, 1.0].flatten
     end
 
     #
     # RGBA to Node::Color
     #
-    def rgba *rgba
+    def rgba parent, context, *rgba
       Node::Color.new *rgba.flatten
     end
     
     #
     # HSLA to RGBA
     #
-    def hsla h, s, l, a = 1.0
+    def hsla parent, context, h, s, l, a = 1.0
       m2 = ( l <= 0.5 ) ? l * ( s + 1 ) : l + s - l * s
       m1 = l * 2 - m2;
 
@@ -37,10 +37,10 @@ module Less
       rgba hue[ h + 1/3 ], hue[ h ], hue[ h - 1/3 ], a
     end
 
-    def unescape parent, *args 
+    def unescape parent, context, *args 
       args = @args.map { |e|
         e.parent = parent
-        e = e.evaluate(nil) if e.respond_to?(:evaluate)
+        e = e.evaluate(context) if e.respond_to?(:evaluate)
         e.to_css
       }  * ', '
 
@@ -50,10 +50,10 @@ module Less
 
     # Uber hack:
     #  Remove any spaces and quotes from string, but still mantain the general string form (start and end commas)
-    def trim parent, *args
+    def trim parent, context, *args
       args = @args.map { |e|
         e.parent = parent
-        e = e.evaluate(nil) if e.respond_to?(:evaluate)
+        e = e.evaluate(context) if e.respond_to?(:evaluate)
         e.to_css
       }  * ', '
 
@@ -103,7 +103,7 @@ module Less
       #
       def evaluate context = nil
         if Functions.available.include? self.to_sym
-          send to_sym, parent, *@args 
+          send to_sym, self.parent, context, *@args 
         else
           args = @args.map { |e|
             e.parent = self.parent
