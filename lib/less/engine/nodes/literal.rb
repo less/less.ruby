@@ -21,15 +21,15 @@ module Less
         end
         @a = normalize(a, 1.0)
       end
-      
+
       def alpha v
         self.class.new r, g, b, v
       end
-      
+
       def rgb
         [r, g, b]
       end
-      
+
       def operate op, other
         color = if other.is_a? Numeric
           rgb.map {|c| c.send(op, other) }
@@ -38,12 +38,12 @@ module Less
         end
         self.class.new *[color, @a].flatten # Ruby 1.8 hack
       end
-      
+
       def + other; operate :+, other end
       def - other; operate :-, other end
       def * other; operate :*, other end
       def / other; operate :/, other end
-      
+
       def coerce other
         return self, other
       end
@@ -67,17 +67,17 @@ module Less
       def to_css
         to_s
       end
-      
+
       def to_ruby
         "#{self.class}.new(#{r},#{g},#{b},#{a})"
       end
-      
+
     protected
       def normalize(v, max = 255, min = 0)
         [[min, v].max, max].min
       end
     end
-  
+
     #
     # 6 10px 125%
     #

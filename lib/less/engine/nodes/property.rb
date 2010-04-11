@@ -185,17 +185,9 @@ module Less
       # ex: [#111, +, #111] will evaluate to a Color node, with value #222
       #
       def evaluate env = nil
-#        puts "expression #{self.inspect} env: #{env ? env.variables : "nil"}"
         if size > 2 or !terminal?
-#          puts " SIZE > 2 or !terminal"
-
-#          puts "--- sub evaluation ---"
-
           # Replace self with an evaluated sub-expression
           evaled = self.class.new(map {|e| e.respond_to?(:evaluate) ? e.evaluate(env) : e }, parent, delimiter) #5
-
-#          puts "======================"
-#          puts "evaled => #{evaled.inspect}"
 
           unit = evaled.literals.map do |node|
             node.unit
@@ -205,9 +197,6 @@ module Less
 
           entity = evaled.literals.find {|e| e.unit == unit } || evaled.literals.first || evaled.entities.first
           result = evaled.operators.empty?? evaled : eval(evaled.to_ruby.join)
-
-#          puts "entity is a #{entity.class}"
-#          puts "delimiter is |#{@delimiter}|"
 
           case result
             when Entity     then result
