@@ -1,0 +1,21 @@
+@global_color: #010101;
+@red_color: red;
+@green_color: green;
+
+.gradient (@local_color: #030303) {
+  background-image: -moz-linear-gradient(top, bottom, from(@local_color), to(@global_color));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@local_color), to(@global_color));
+}
+
+.test1 {
+  .gradient;
+}
+
+.test2 {
+  .gradient(#020202);
+}
+
+.test3 {
+  background-image: -moz-linear-gradient(top, bottom, from(@red_color), to(@green_color));
+  background-image: -webkit-gradient(linear, left top, left bottom, from(@red_color), to(@green_color));
+}

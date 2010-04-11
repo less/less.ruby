@@ -12,7 +12,6 @@ begin
     s.add_dependency('mutter', '>= 0.4.2')
   end
   Jeweler::GemcutterTasks.new
-  Jeweler::RubyforgeTasks.new
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"
 end
@@ -32,29 +31,21 @@ end
 begin
   require 'lib/less'
   require 'benchmark'
-  
+
   task :compile do
     abort "compiling isn't necessary anymore."
     puts "compiling #{LESS_GRAMMAR.split('/').last}..."
     File.open(LESS_PARSER, 'w') {|f| f.write Treetop::Compiler::GrammarCompiler.new.ruby_source(LESS_GRAMMAR) }
   end
-  
+
   task :benchmark do
-    #require 'profile'
-    puts "benchmarking... "
-    less, tree = File.read("spec/less/big.less"), nil
-    
-    parse = Benchmark.measure do
-      tree = Less::Engine.new(less).parse(false)
-    end.total.round(2)
-    
-    build = Benchmark.measure do
-      tree.build(Less::Node::Element.new)
-    end.total.round(2)
-    
-    puts "parse: #{parse}s\nbuild: #{build}s"
-    puts "------------"
-    puts "total: #{parse + build}s"
+    less = File.read("spec/less/big.less")
+    result = nil
+    Benchmark.bmbm do |b|
+      b.report("parse:  ") { result = Less::Engine.new(less).parse(false) }
+      b.report("build:  ") { result = result.build(Less::Node::Element.new) }
+      b.report("compile:") { result.to_css }
+    end
   end
 end
 
