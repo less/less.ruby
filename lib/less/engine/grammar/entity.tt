@@ -1,3 +1,5 @@
+require 'grammar/common'
+
 module Less
   module StyleSheet
     grammar Entity
@@ -5,7 +7,7 @@ module Less
       # Entity: Any whitespace delimited token
       #
       rule entity
-        url / function / accessor / keyword / variable / literal / font
+        url / unescape / trim / alpha / function / accessor / keyword / variable / literal / font
       end
 
       rule fonts
@@ -48,7 +50,7 @@ module Less
           def build
             Node::Quoted.new(text_value)
           end
-        }
+        } 
       end
 
       #
@@ -124,6 +126,18 @@ module Less
 
       rule hex
         [a-fA-F0-9]
+      end
+
+      #
+      # Special case for IE alpha filter
+      #
+      rule alpha
+        "alpha" '(' "opacity=" variable ')' {
+          def build env
+            var = variable.text_value
+            Node::Quoted.new(text_value.sub(var, env.nearest(var).evaluate.to_i.to_s))
+          end
+        }
       end
     end
   end

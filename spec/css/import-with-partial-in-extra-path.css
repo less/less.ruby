@@ -1,0 +1,6 @@
+.mixin { font-size: 0.75em; }
+#import-test {
+  font-size: 0.75em;
+  width: 10px;
+  height: 30%;
+}
