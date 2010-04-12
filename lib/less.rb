@@ -1,11 +1,9 @@
 require 'cgi'
-require 'treetop'
 require 'mutter'
 require 'delegate'
+require 'johnson'
 
 LESS_ROOT = File.expand_path(File.dirname(__FILE__))
-LESS_PARSER = File.join(LESS_ROOT, 'less', 'engine', 'parser.rb')
-LESS_GRAMMAR = File.join(LESS_ROOT, 'less', 'engine', 'grammar')
 
 $LESS_LOAD_PATH = []
 
@@ -20,7 +18,7 @@ module Less
   PathError         = Class.new(RuntimeError)
   VariableNameError = Class.new(NameError)
   MixinNameError    = Class.new(NameError)
-  SyntaxError       = Class.new(RuntimeError)
+  ParseError        = Class.new(RuntimeError)
   ImportError       = Class.new(RuntimeError)
   CompileError      = Class.new(RuntimeError)
 

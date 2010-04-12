@@ -1,13 +1,5 @@
 $:.unshift File.dirname(__FILE__)
 
-require 'engine/nodes'
-
-begin
-  require 'engine/parser'
-rescue LoadError
-  Treetop.load File.join(LESS_GRAMMAR, 'less.tt')
-end
-
 module Less
   class Engine
     attr_reader :css, :less
@@ -23,26 +15,23 @@ module Less
       end
 
       @options = options
-      @parser = StyleSheetParser.new
+      @parser = Johnson::Runtime.new.load(
+        "#{File.dirname(__FILE__)}/engine/less.js")
     end
 
-    def parse build = true, env = Node::Element.new
-      root = @parser.parse(self.prepare)
-
-      return root unless build
-
-      if root
-        @tree = root.build env.tap {|e| e.file = @path }
-      else
-        raise SyntaxError, @parser.failure_message(@options[:color])
+    def parse &blk
+      @parser.parser().parse(self.prepare) do |err, tree|
+        if err
+          raise Less::ParseError, err.message
+        else
+          yield tree
+        end
       end
-
-      @tree
     end
     alias :to_tree :parse
 
-    def to_css
-      @css || @css = self.parse.group.to_css
+    def to_css &blk
+      @css || @css = self.parse {|tree| blk.call(tree.toCSS) }
     end
 
     def prepare
