@@ -30,8 +30,10 @@ module Less
     end
     alias :to_tree :parse
 
-    def to_css &blk
-      @css || @css = self.parse {|tree| blk.call(tree.toCSS) }
+    def to_css
+      result = nil
+      @css || @css = self.parse {|tree| result = tree.toCSS }
+      result
     end
 
     def prepare

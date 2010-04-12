@@ -55,17 +55,16 @@ module Less
     def parse new = false
       begin
         # Create a new Less object with the contents of a file
-        Less::Engine.new(File.new(@source), @options).to_css do |css|
-          css = css.delete " \n" if compress?
+        css = Less::Engine.new(File.new(@source), @options).to_css
+        css = css.delete " \n" if compress?
 
-          File.open( @destination, "w" ) do |file|
-            file.write css
-          end
-
-          act, file = (new ? 'Created' : 'Updated'), @destination.split('/').last
-          print "#{o("* #{act}", :green)} #{file}\n: " if watch?
-          Growl.notify "#{act} #{file}", :title => 'LESS' if @options[:growl] && @options[:verbose]
+        File.open( @destination, "w" ) do |file|
+          file.write css
         end
+
+        act, file = (new ? 'Created' : 'Updated'), @destination.split('/').last
+        print "#{o("* #{act}", :green)} #{file}\n: " if watch?
+        Growl.notify "#{act} #{file}", :title => 'LESS' if @options[:growl] && @options[:verbose]
 
       rescue Johnson::Error => e
         abort "#{e.message}"
