@@ -1,8 +1,0 @@
-#css { color: yellow; }
-#import { color: red; }
-.mixin {
-  height: 10px;
-  color: red;
-}
-body { font-size: 0.75em; }
-h2 { font-size: 2em; }
