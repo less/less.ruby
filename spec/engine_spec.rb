@@ -18,26 +18,13 @@ describe Less::Engine do
   include LessEngineSpecHelper
 
   describe "to_css" do
-    it "should handle custom functions" do
-      module Less::Functions
-        def color args
-          arg = args.first
-          Less::Node::Color.new("99", "99", "99") if arg == "evil red"
-        end
-
-        def increment a
-          Less::Node::Number.new(a.evaluate.to_i + 1)
-        end
-
-        def add a, b
-          Less::Node::Number.new(a.evaluate + b.evaluate)
-        end
-      end
-      lessify(:functions).should == css(:functions)
-    end
-
     it "should work with import" do
-      lessify(:import).should == css(:import)
+      lessify(File.new("spec/test-import.less")).should == <<-CSS
+.test-import {
+  height: 10px;
+  width: 98px;
+}
+CSS
     end
 
     it "should work tih import using extra paths" do
