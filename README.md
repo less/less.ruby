@@ -1,4 +1,7 @@
-**Note: From now on, most of the new development on LESS will be happening in <http://github.com/cloudhead/less.js>**
+**Note: From now on, new development on LESS will be happening in <http://github.com/less/less.js>**
+=====================================================================================================================
+
+See http://github.com/cowboyd/less.rb for less ruby development.
 
 LESS
 ====
